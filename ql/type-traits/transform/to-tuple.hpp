@@ -12,9 +12,4 @@ namespace ql
     return std::make_tuple(std::forward<Args>(args)...);
   }
 
-  template <typename T, ql::size N>
-  constexpr auto array_to_tuple(const std::array<T, N> &array)
-  {
-    return ql::constexpr_iterate<N>([])
-  }
 }
