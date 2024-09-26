@@ -1,0 +1,14 @@
+#pragma once
+
+#include <ql/definition/definition.hpp>
+#include <ql/type-traits/check/is-tuple.hpp>
+
+namespace ql
+{
+  template <typename T>
+    requires(ql::is_tuple<T>())
+  constexpr ql::size tuple_size()
+  {
+    return std::tuple_size_v<T>;
+  }
+}
