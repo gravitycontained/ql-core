@@ -15,11 +15,13 @@ namespace ql
     template <typename T, typename U>
     concept castable_test_default
       = requires(T v, U x) { v = static_cast<T>(x); };
+
     template <typename T>
     concept castable_test_stream = requires(T x, std::wstringstream stream) {
       stream << x;
       stream >> x;
     };
+
     template <typename T>
     concept castable_test_from_chars = requires(T x, std::string_view sv) {
       std::from_chars(sv.data(), sv.data() + sv.size(), x);
