@@ -8,7 +8,7 @@ namespace ql
 {
 
 	template <ql::size N, typename F>
-	constexpr auto constexpr_apply(F&& function)
+	constexpr auto constexpr_apply(F function)
 	{
 		auto unpack = [&]<ql::size... Ints>(std::index_sequence<Ints...>)
 		{

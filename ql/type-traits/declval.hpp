@@ -7,7 +7,7 @@ namespace ql
   template <typename T>
   constexpr auto declval()
   {
-    using pointer = std::decay_t<T> *;
+    using pointer = std::decay_t<T>*;
     return *(pointer{});
   }
 }

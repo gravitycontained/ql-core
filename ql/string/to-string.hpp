@@ -53,6 +53,10 @@ namespace ql
 				stream << '{' << ql::to_string(value.first) << ", "
 							 << ql::to_string(value.second) << '}';
 			}
+			else if constexpr (ql::has_to_string<T>())
+			{
+				stream << value.to_string();
+			}
 			else
 			{
 				stream << value;

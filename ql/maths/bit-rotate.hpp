@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include <ql/definition/definition.hpp>
