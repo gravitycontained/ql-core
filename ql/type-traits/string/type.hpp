@@ -1,6 +1,9 @@
 #pragma once
 
 #include <ql/type-traits/compare/compare.hpp>
+#include <ql/type-traits/declval.hpp>
+#include <sstream>
+#include <string>
 
 namespace ql
 {

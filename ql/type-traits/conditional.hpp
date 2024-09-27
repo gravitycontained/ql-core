@@ -3,7 +3,7 @@
 #include <type_traits>
 
 #include <ql/definition/definition.hpp>
-#include <ql/type-traits/compare.hpp>
+#include <ql/type-traits/compare/compare.hpp>
 #include <ql/type-traits/identity.hpp>
 
 namespace ql
@@ -52,7 +52,6 @@ namespace ql
     ql::error_type, conditional_impl<Truth, T, Args...>>;
 
   template <class Truth, class T, typename... Args>
-  using conditional =
-    typename ql::conditional_identity<Truth, T, Args...>::type;
+  using conditional = typename ql::conditional_identity<Truth, T, Args...>::type;
 
 }

@@ -7,7 +7,7 @@ namespace ql
   template <class T>
   constexpr bool is_true()
   {
-    return std::is_same_v<T, true_type>;
+    return std::is_same_v<T, ql::true_type>;
   }
 
   template <typename T, typename U>
@@ -86,6 +86,6 @@ namespace ql
   template <class T>
   constexpr bool is_truth_type()
   {
-    return ql::is_any_type_equal_to<T, true_type, false_type>();
+    return ql::is_any_type_equal_to<T, ql::true_type, ql::false_type>();
   }
 }

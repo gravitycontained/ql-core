@@ -1,7 +1,7 @@
 #pragma once
 
 #include <ql/definition/definition.hpp>
-#include <ql/type-traits/check/is-tuple.hpp>
+#include <ql/type-traits/tuple/is-tuple.hpp>
 
 namespace ql
 {

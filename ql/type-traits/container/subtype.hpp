@@ -1,6 +1,7 @@
 #pragma once
 
-#include <ql/type-traits/check/is-container.hpp>
+#include <ql/type-traits/container/is-container.hpp>
+#include <ql/type-traits/string/type.hpp>
 #include <ql/type-traits/declval.hpp>
 
 #include <vector>
