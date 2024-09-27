@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ql/definition/definition.hpp>
+#include <ql/definition.hpp>
 
 #include <ql/type-traits/arithmetic.hpp>
 #include <ql/type-traits/compare.hpp>
