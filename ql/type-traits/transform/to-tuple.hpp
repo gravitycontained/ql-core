@@ -15,6 +15,6 @@ namespace ql
   template <typename T, ql::size N>
   constexpr auto array_to_tuple(const std::array<T, N> &array)
   {
-    return ql::constexpr_iterate<N>([])
+    // return ql::constexpr_iterate<N>([])
   }
 }

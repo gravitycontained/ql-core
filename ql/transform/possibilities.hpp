@@ -310,20 +310,20 @@ namespace ql
   template <typename... Ts>
   constexpr auto list_possibilities(Ts... values)
   {
-    return ql::impl::possibilities(ql::tuple_to_array(values...));
+    return ql::list_possibilities(ql::tuple_to_array(values...));
   }
 
   template <typename T, ql::size N>
   constexpr auto list_possibilities(const std::array<T, N> &start)
   {
-    return ql::impl::possibilities(start);
+    return ql::list_possibilities(start);
   }
 
   template <typename T, ql::size N>
   constexpr auto list_possibilities(const std::array<T, N> &start,
                                     const std::array<T, N> &end)
   {
-    return ql::impl::possibilities(start, end);
+    return ql::list_possibilities(start, end);
   }
 
   template <typename... Ts>

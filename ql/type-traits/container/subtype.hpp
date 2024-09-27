@@ -9,5 +9,5 @@ namespace ql
   template <typename C>
     requires(ql::is_container<C>())
   using container_subtype
-      = std::decay_t<decltype(*(ql::declval<C>().begin()))>;
+    = std::decay_t<decltype(*(ql::declval<C>().begin()))>;
 }
