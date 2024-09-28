@@ -1,0 +1,837 @@
+#pragma once
+
+#include <ql/core/advanced-type/fundamental/vector.hpp>
+#include <ql/core/definition/definition.hpp>
+#include <ql/core/time/time.hpp>
+#include <ql/core/type/type.hpp>
+#include <ql/core/system/system.hpp>
+#include <array>
+#include <iterator>
+#include <type_traits>
+#include <random>
+#include <iostream>
+
+#include <span>
+
+namespace ql
+{
+	// 2^19937-1
+
+	template <typename Ty,
+						ql::u64 W,
+						ql::u64 N,
+						ql::u64 M,
+						ql::u64 R,
+						Ty P,
+						ql::u64 U,
+						Ty D,
+						ql::u64 S,
+						Ty B,
+						ql::u64 T,
+						Ty C,
+						ql::u64 L,
+						Ty F>
+	class mersenne_twister
+	{
+	 public:
+		using result_type = Ty;
+		static constexpr ql::u64 state_size = N;
+		static constexpr ql::u64 word_size = W;
+
+		mersenne_twister()
+		{
+			this->init();
+		}
+
+		Ty get_at(ql::u32 index) const
+		{
+			Ty x = this->state[index] & WMSK;
+			x ^= (x >> U) & D;
+			x ^= (x << S) & B;
+			x ^= (x << T) & C;
+			x ^= (x & WMSK) >> L;
+			return x;
+		}
+
+		Ty get_current() const
+		{
+			Ty x = this->state[this->index] & WMSK;
+			x ^= (x >> U) & D;
+			x ^= (x << S) & B;
+			x ^= (x << T) & C;
+			x ^= (x & WMSK) >> L;
+			return x;
+		}
+
+		template <typename R = ql::fbit<ql::bits_in_type<Ty>()>>
+		R generate_0_1()
+		{
+			return std::generate_canonical<R, std::numeric_limits<R>::digits>(*this);
+		}
+
+		template <typename T>
+		T get(T a, T b)
+		{
+			if (a == b)
+			{
+				return a;
+			}
+			if (a > b)
+			{
+				std::swap(a, b);
+			}
+			auto f = this->generate_0_1();
+			auto d = (b - a) + 1;
+			return static_cast<T>(std::floor(f * d)) + a;
+		}
+
+		// returns current and advances by 1
+		Ty generate()
+		{
+			if (this->index >= N)
+			{
+				this->shuffle();
+			}
+			auto current = this->get_current();
+
+			++this->index;
+			++this->state_position;
+
+			return current;
+		}
+
+		Ty operator()()
+		{
+			auto generate = this->generate();
+			return generate;
+		}
+
+		void seed(Ty seed)
+		{
+			Ty prev = this->state[0] = seed & WMSK;
+			for (ql::i32 i = 1; i < N; ++i)
+			{
+				prev = this->state[i] = (i + F * (prev ^ (prev >> (W - 2)))) & WMSK;
+			}
+			this->put_index_end();
+		}
+
+		void put_index_end()
+		{
+			this->index = N;
+		}
+
+		void seed(const std::seed_seq& seq)
+		{
+			constexpr auto K = (W + (ql::bits_in_type<ql::u32>() - 1)) / ql::bits_in_type<ql::u32>();
+			ql::u32 data[K * N];
+			seq.generate(&data[0], &data[K * N]);
+
+			ql::i32 word_id = 0;
+			Ty sum = 0;
+			for (int i = 0; i < N; ++i, word_id += K)
+			{
+				this->state[i] = data[word_id];
+				for (int j = 0; ++j < K;)
+				{
+					this->state[i] |= ql::type_cast<Ty>(data[word_id + j]) << (ql::bits_in_type<ql::u32>() * j);
+				}
+
+				this->state[i] &= WMSK;
+
+				if (i == 0)
+				{
+					sum = this->state[i] >> R;
+				}
+				else
+				{
+					sum |= this->state[i];
+				}
+			}
+
+			if (sum == 0)
+			{
+				this->state[0] = WMSK;
+			}
+
+			this->state_position = 0u;
+			this->index = N;
+		}
+
+		void discard(ql::u64 count)
+		{
+			for (ql::u64 i = 0; i < count; ++i)
+			{
+				this->generate();
+			}
+		}
+
+		static constexpr Ty min()
+		{
+			return Ty{0};
+		}
+
+		static constexpr Ty max()
+		{
+			return WMSK;
+		}
+
+		void clear()
+		{
+			this->state_position = 0;
+			this->index = 0;
+			this->using_seed_seq = false;
+		}
+
+		void init()
+		{
+			this->clear();
+		}
+
+		void shuffle()
+		{
+			ql::i32 i;
+			for (i = 0; i < FH; ++i)
+			{
+				Ty bits = (this->state[i] & HMSK) | (this->state[i + 1] & LMSK);
+				this->state[i] = (bits >> 1) ^ this->state[i + M] ^ (bits & 0x1 ? P : 0);
+			}
+			for (; i < N - 1; ++i)
+			{
+				Ty bits = (this->state[i] & HMSK) | (this->state[i + 1] & LMSK);
+				this->state[i] = (bits >> 1) ^ this->state[i - FH] ^ (bits & 0x1 ? P : 0);
+			}
+			Ty bits = (this->state[i] & HMSK) | (this->state[0] & LMSK);
+			this->state[i] = (bits >> 1) ^ this->state[M - 1] ^ (bits & 0x1 ? P : 0);
+
+			this->index = 0;
+		}
+
+		std::array<Ty, N * 2> state{};
+		ql::u32 state_position = 0u;
+		ql::u32 index = 0u;
+		bool using_seed_seq = false;
+		static constexpr Ty FH = N - M;
+		static constexpr Ty WMSK = ~((~Ty{0} << (W - 1)) << 1);
+		static constexpr Ty HMSK = (WMSK << R) & WMSK;
+		static constexpr Ty LMSK = ~HMSK & WMSK;
+	};
+
+	using mt19937_32 = ql::mersenne_twister<ql::u32,
+																					 ql::bits_in_type<ql::u32>(),
+																					 624,
+																					 397,
+																					 31,
+																					 0x9908b0df,
+																					 11,
+																					 0xffffffff,
+																					 7,
+																					 0x9d2c5680,
+																					 15,
+																					 0xefc60000,
+																					 18,
+																					 1812433253>;
+	using mt19937_64 = ql::mersenne_twister<ql::u64,
+																					 ql::bits_in_type<ql::u64>(),
+																					 312,
+																					 156,
+																					 31,
+																					 0xb5026f5aa96619e9ULL,
+																					 29,
+																					 0x5555555555555555ULL,
+																					 17,
+																					 0x71d67fffeda60000ULL,
+																					 37,
+																					 0xfff7eee000000000ULL,
+																					 43,
+																					 6364136223846793005ULL>;
+
+	template <ql::u32 bits>
+	class random_engine;
+
+	template <typename T>
+	class distribution
+	{
+	 public:
+		distribution(T min, T max) : m_dist(min, max)
+		{
+		}
+
+		distribution(T max = T{1}) : m_dist(T{}, max)
+		{
+		}
+
+		using type = typename ql::conditional<ql::if_true<ql::is_integer<T>()>,
+																					 std::uniform_int_distribution<T>,
+																					 ql::if_true<ql::is_floating_point<T>()>,
+																					 std::uniform_real_distribution<T>>;
+
+		void set_range(T min, T max)
+		{
+			this->m_dist = type(min, max);
+		}
+
+		void set_range(T max)
+		{
+			this->m_dist = type(T{}, max);
+		}
+
+		void set_min(T min)
+		{
+			this->m_dist = type(min, this->max());
+		}
+
+		void set_max(T max)
+		{
+			this->m_dist = type(this->min(), max);
+		}
+
+		T min() const
+		{
+			return this->m_dist.min();
+		}
+
+		T max() const
+		{
+			return this->m_dist.max();
+		}
+
+		template <ql::u32 bits>
+		friend class random_engine;
+
+		template <ql::u32 bits>
+		T generate(ql::random_engine<bits>& engine) const
+		{
+			return engine.generate(*this);
+		}
+
+		type m_dist;
+	};
+
+	template <ql::u32 bits>
+	class random_engine
+	{
+	 public:
+		using type =
+				typename ql::conditional<ql::if_true<bits == 32u>, ql::mt19937_32, ql::if_true<bits == 64u>, ql::mt19937_64>;
+
+		void seed(ql::u64 value)
+		{
+			this->engine.seed(value);
+		}
+
+		void seed(const std::seed_seq& seq)
+		{
+			this->engine.seed(seq);
+		}
+
+		void seed_time()
+		{
+			this->engine.seed(ql::u32_cast(ql::time::clock_time()));
+		}
+
+		auto get_current() const
+		{
+			return this->engine.get_current();
+		}
+
+		void clear()
+		{
+			this->engine.clear();
+		}
+
+		void discard(ql::u64 count)
+		{
+			this->engine.discard(count);
+		}
+
+		void seed_random()
+		{
+			std::array<ql::u32, random_engine::type::state_size * random_engine::type::word_size / ql::bits_in_type<ql::u32>()>
+					random_data;
+			std::random_device source;
+			std::generate(std::begin(random_data), std::end(random_data), std::ref(source));
+			std::seed_seq seeds(std::begin(random_data), std::end(random_data));
+			this->engine.seed(seeds);
+		}
+
+		template <typename T>
+		T generate(ql::distribution<T> dist)
+		{
+			return dist.m_dist(this->engine);
+		}
+
+		template <typename T>
+		T generate(std::normal_distribution<T> dist)
+		{
+			return dist(this->engine);
+		}
+
+		template <typename T>
+		T generate(std::binomial_distribution<T> dist)
+		{
+			return dist(this->engine);
+		}
+
+		template <typename T>
+		T generate(std::uniform_real_distribution<T> dist)
+		{
+			return dist(this->engine);
+		}
+
+		template <typename T>
+		T generate(std::uniform_int_distribution<T> dist)
+		{
+			return dist(this->engine);
+		}
+
+		template <typename T>
+		T generate(T min, T max)
+		{
+			ql::distribution<T> dist(min, max);
+			return dist.m_dist(this->engine);
+		}
+
+		template <typename T>
+		T generate(T max)
+		{
+			ql::distribution<T> dist(max);
+			return dist.m_dist(this->engine);
+		}
+
+		auto generate()
+		{
+			return this->engine.generate();
+		}
+
+		auto generate_0_1()
+		{
+			return this->engine.generate_0_1();
+		}
+
+		bool generate_b()
+		{
+			return this->generate() & 0x1ull;
+		}
+
+		bool generate_b(ql::f64 probability)
+		{
+			return this->generate_0_1() <= probability;
+		}
+
+		type engine;
+	};
+
+	namespace detail
+	{
+		struct rng_t
+		{
+			rng_t()
+			{
+				this->seeded = false;
+				this->set_seed_random();
+			}
+
+			void set_seed_random()
+			{
+				if (!this->seeded)
+				{
+					this->engine.seed_random();
+					this->seeded = true;
+				}
+			}
+
+			ql::random_engine<64> engine;
+			ql::distribution<ql::i64> idist;
+			ql::distribution<ql::u64> udist;
+			ql::distribution<ql::f64> fdist;
+			bool seeded = false;
+		};
+
+		QL_SOURCE extern ql::detail::rng_t rng;
+	}	 // namespace detail
+
+	QL_SOURCE void set_random_range_i(ql::i64 max);
+	QL_SOURCE void set_random_range_i(ql::i64 min, ql::i64 max);
+	QL_SOURCE void set_random_range_u(ql::u64 max);
+	QL_SOURCE void set_random_range_u(ql::u64 min, ql::u64 max);
+	QL_SOURCE void set_random_range_f(ql::f64 max);
+	QL_SOURCE void set_random_range_f(ql::f64 min, ql::f64 max);
+	QL_SOURCE void set_random_seed(ql::u64 seed);
+	QL_SOURCE bool random_b();
+	QL_SOURCE bool random_b(ql::f64 probability);
+	QL_SOURCE ql::i64 random_i();
+	QL_SOURCE ql::u64 random_u();
+	QL_SOURCE ql::f64 random_f();
+	QL_SOURCE ql::u64 random_current();
+	QL_SOURCE ql::i64 random_i(ql::i64 min, ql::i64 max);
+	QL_SOURCE ql::u64 random_u(ql::u64 min, ql::u64 max);
+	QL_SOURCE ql::f64 random_f(ql::f64 min, ql::f64 max);
+	QL_SOURCE ql::i64 random_i(ql::i64 max);
+	QL_SOURCE ql::u64 random_u(ql::u64 max);
+	QL_SOURCE ql::f64 random_f(ql::f64 max);
+	QL_SOURCE ql::u64 random();
+
+	template <typename T>
+	requires (ql::is_arithmetic<T>())
+	T random(T min, T max)
+	{
+		ql::distribution<T> dist(min, max);
+		return ql::detail::rng.engine.generate(dist);
+	}
+
+	template <typename T>
+	requires (ql::is_arithmetic<T>())
+	T random(T max)
+	{
+		ql::distribution<T> dist(T{}, max);
+		return ql::detail::rng.engine.generate(dist);
+	}
+
+	template <ql::size N, typename T>
+	ql::vectorN<T, N> random(ql::vectorN<T, N> max)
+	{
+		ql::vectorN<T, N> result;
+		for (ql::u32 i = 0u; i < N; ++i)
+		{
+			ql::distribution<T> dist(T{}, max.data[i]);
+			result.data[i] = ql::detail::rng.engine.generate(dist);
+		}
+		return result;
+	}
+
+	template <ql::size N, typename T>
+	ql::vectorN<T, N> random(ql::vectorN<T, N> min, ql::vectorN<T, N> max)
+	{
+		ql::vectorN<T, N> result;
+		for (ql::u32 i = 0u; i < N; ++i)
+		{
+			ql::distribution<T> dist(min.data[i], max.data[i]);
+			result.data[i] = ql::detail::rng.engine.generate(dist);
+		}
+		return result;
+	}
+
+	template <typename T>
+	requires (ql::is_arithmetic<T>())
+	T random()
+	{
+		ql::distribution<T> dist(ql::type_min<T>(), ql::type_max<T>());
+		return ql::detail::rng.engine.generate(dist);
+	}
+
+	template <typename T>
+	requires (ql::is_arithmetic<T>())
+	T random(std::normal_distribution<T> dist)
+	{
+		return ql::detail::rng.engine.generate(dist);
+	}
+
+	template <typename T>
+	requires (ql::is_integer<T>())
+	T random(std::binomial_distribution<T> dist)
+	{
+		return ql::detail::rng.engine.generate(dist);
+	}
+
+	template <typename T>
+	requires (ql::is_integer<T>())
+	T random(std::uniform_int_distribution<T> dist)
+	{
+		return ql::detail::rng.engine.generate(dist);
+	}
+
+	template <typename T>
+	requires (ql::is_floating_point<T>())
+	T random(std::uniform_real_distribution<T> dist)
+	{
+		return ql::detail::rng.engine.generate(dist);
+	}
+
+	QL_SOURCE ql::f64 random_falling(ql::f64 n);
+
+	template <typename C>
+	void shuffle(C& data, ql::u32 offset = 0u)
+	{
+		ql::detail::rng.engine.discard(1);
+		std::shuffle(data.begin() + offset, data.end(), ql::detail::rng.engine.engine);
+	}
+
+	template <typename C>
+	requires (ql::is_container<C>() && ql::has_size<C>())
+	const ql::container_subtype<C>& random_element(const C& data)
+	{
+		auto size = data.size();
+		if (size == 0u)
+		{
+			throw ql::exception("ql::random_element( ", ql::type_name<C>(), " ) : array is empty.");
+		}
+		auto index = ql::random_i(ql::size{}, size - ql::size{1});
+		return data[index];
+	}
+
+	template <typename C>
+	requires (ql::is_container<C>() && ql::has_size<C>())
+	ql::container_subtype<C>& random_element(C& data)
+	{
+		auto size = data.size();
+		if (size == 0u)
+		{
+			throw ql::exception("ql::random_element( ", ql::type_name<C>(), " ) : array is empty.");
+		}
+		auto index = ql::random_i(ql::size{}, size - ql::size{1});
+		return data[index];
+	}
+
+	template <typename T>
+	ql::u32 random_weighted_index(std::vector<T> weights)
+	{
+		std::decay_t<T> sum = 0;
+		for (auto& i : weights)
+		{
+			sum += i;
+		}
+
+		auto index = ql::random(std::decay_t<T>{}, sum - 1);
+		std::decay_t<T> target_sum = 0;
+		for (ql::u32 i = 0u; i < weights.size(); ++i)
+		{
+			target_sum += weights[i];
+			if (index < target_sum)
+			{
+				return i;
+			}
+		}
+		return weights.size();
+	}
+
+	template <typename T>
+	ql::u32 random_weighted_index(std::span<T> weights)
+	{
+		std::decay_t<T> sum = 0;
+		for (auto& i : weights)
+		{
+			sum += i;
+		}
+		if (sum == 0)
+		{
+			return 0u;
+		}
+		auto index = ql::random(T{}, sum - 1);
+		std::decay_t<T> target_sum = 0;
+		for (ql::u32 i = 0u; i < weights.size(); ++i)
+		{
+			target_sum += weights[i];
+			if (index < target_sum)
+			{
+				return i;
+			}
+		}
+		return weights.size();
+	}
+
+	template <typename T, typename U, typename... Args>
+	T random_element(T&& first, U&& second, Args&&... n)
+	{
+		return ql::random_element(std::vector<T>{first, second, n...});
+	}
+
+	template <typename T>
+	std::vector<T> random_vector_from_sum_target(T target, ql::size size)
+	{
+		std::vector<T> result(size);
+		for (ql::u32 i = 0u; i < size; ++i)
+		{
+			T value = T{};
+			if (i == size - 1)
+			{
+				value = target;
+			}
+			else if (ql::signed_cast(target - (size - i - 1)) >= T{1})
+			{
+				value = ql::random<T>(T{1}, target - (size - i - 1));
+			}
+			result[i] = value;
+			target -= value;
+		}
+		ql::shuffle(result);
+		return result;
+	}
+
+	template <typename T>
+	std::vector<T> random_vector(ql::size size, T min = ql::type_min<T>(), T max = ql::type_max<T>())
+	{
+		std::vector<T> result(size);
+		for (ql::u32 i = 0u; i < size; ++i)
+		{
+			result[i] = ql::random(min, max);
+		}
+		return result;
+	}
+
+	template <typename T>
+	std::vector<T> random_distribution_frequency(T min, T max, ql::size N, const std::vector<ql::f64>& probabilities)
+	{
+		auto size = (max - min + 1);
+		std::vector<T> result(size, T{0});
+
+		ql::f64 div = ql::f64_cast(size);
+		ql::f64 sum = 0.0;
+
+		auto probability = probabilities[0u];
+		for (T i = min; i <= max; ++i)
+		{
+			div = (1 / probabilities[i - min]) * (1 - sum);
+			probability = 1.0 / div;
+
+			std::binomial_distribution<ql::i64> dist(N, probability);
+			auto value = ql::random(dist);
+			result[i - min] = value;
+			N -= value;
+
+			sum += probabilities[i - min];
+		}
+		return result;
+	}
+
+	template <typename T, typename R>
+	requires (ql::is_integer<T>())
+	std::vector<T> random_unique_range(T min, T max, ql::size N, R& engine)
+	{
+		std::vector<T> result(N);
+
+		std::set<T> used;
+		for (ql::size i = 0u; i < N; ++i)
+		{
+			auto stop = max - static_cast<T>(i);
+			auto n = engine.generate(min, stop);
+
+			for (auto& u : used)
+			{
+				if (u <= n)
+				{
+					++n;
+				}
+				else
+				{
+					break;
+				}
+			}
+			result[i] = n;
+			used.insert(n);
+		}
+		return result;
+	}
+
+	template <typename T>
+	requires (ql::is_integer<T>())
+	std::vector<T> random_unique_range(T min, T max, ql::size N)
+	{
+		return ql::random_unique_range(min, max, N, detail::rng.engine);
+	}
+
+	template <typename T>
+	requires (ql::is_integer<T>())
+	std::vector<T> random_unique_range_shuffle(T min, T max, ql::size N)
+	{
+		std::vector<T> result(max - min + 1);
+		for (T i = min; i <= max; ++i)
+		{
+			result[i - min] = i;
+		}
+
+		ql::shuffle(result);
+		std::vector<T> res(N);
+		for (ql::size i = 0u; i < N; ++i)
+		{
+			res[i] = result[i];
+		}
+		return res;
+	}
+
+	template <typename T>
+	std::vector<T> random_distribution_frequency(T min, T max, ql::size N)
+	{
+		auto size = (max - min + 1);
+		std::vector<T> result(size, T{0});
+
+		for (T i = min; i <= max; ++i)
+		{
+			auto probability = 1.0 / (size - (i - min));
+
+			std::binomial_distribution<ql::i64> dist(N, probability);
+			auto value = ql::random(dist);
+			result[i - min] = value;
+			N -= value;
+		}
+		return result;
+	}
+
+	template <ql::size B = 64, ql::size MN = 256u, ql::u64 MX = 0xFA581ull, ql::u64 MY = 0x17CD5ull>
+	struct white_noise_engine_N
+	{
+		constexpr static ql::u64 chunk_width = (B == 64u ? 17u : 24u);
+		using utype = ql::ubit<B>;
+		using ftype = ql::fbit<B>;
+
+		ql::random_engine<B> seed_engine;
+		ql::random_engine<B> chunk_engine;
+		std::array<utype, MN> hash;
+		ql::u64 hash_key;
+		ql::u64 seed = 5489ull;
+		ql::u64 loaded_chunk = ql::u64_max;
+		ql::u64 loaded_seed_chunk = ql::u64_max;
+		bool first = true;
+
+		void set_seed(ql::u64 seed)
+		{
+			this->seed = seed;
+
+			this->seed_engine.seed(this->seed);
+			this->seed_engine.engine.shuffle();
+			for (ql::size i = 0u; i < MN; ++i)
+			{
+				this->hash[i] = ql::bits_reversed(this->seed_engine.engine.get_at(i));
+			}
+			this->hash_key = ql::bit_rotate_right(this->seed_engine.engine.get_at(MN), ql::bits_in_type<utype>() / 2);
+			this->first = true;
+		}
+
+		auto generate(ql::i64 x, ql::i64 y)
+		{
+			auto ux = ql::u64_cast(x);
+			auto uy = ql::u64_cast(y);
+
+			auto cx = ux / chunk_width;
+			auto cy = uy / chunk_width;
+
+			auto c = cy * chunk_width + cx;
+			auto sc = (cy / chunk_width) * chunk_width + (cx / chunk_width);
+
+			if (first || this->loaded_seed_chunk != sc)
+			{
+				this->loaded_seed_chunk = sc;
+				this->seed_engine.seed(this->seed ^ sc);
+				this->seed_engine.engine.shuffle();
+			}
+			if (first || this->loaded_chunk != c)
+			{
+				this->loaded_chunk = c;
+				auto seed_engine_index = (cy % chunk_width) * chunk_width + (cx % chunk_width);
+				this->chunk_engine.seed(this->seed_engine.engine.get_at(seed_engine_index) ^ this->seed);
+				this->chunk_engine.engine.shuffle();
+			}
+			first = false;
+			auto index = (uy % chunk_width) * chunk_width + (ux % chunk_width);
+			auto magic = (((ux % MX) * (uy % MY)) ^ (~this->seed) ^ this->hash_key) % MN;
+			return this->chunk_engine.engine.get_at(index) ^ this->hash[magic];
+		}
+
+		auto generate_0_1(ql::i64 x, ql::i64 y)
+		{
+			return this->generate(x, y) / static_cast<ftype>(ql::type_max<utype>());
+		}
+	};
+
+	using white_noise_engine = white_noise_engine_N<64u>;
+}	 // namespace ql
