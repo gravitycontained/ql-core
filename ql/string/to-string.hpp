@@ -2,10 +2,10 @@
 
 #include <string>
 
-#include <ql/type-traits/string/is-printable.hpp>
-#include <ql/type-traits/tuple/tuple.hpp>
-#include <ql/type-traits/variadic/type.hpp>
-#include <ql/type-traits/variadic/value.hpp>
+#include <ql/type/string/is-printable.hpp>
+#include <ql/type/tuple/tuple.hpp>
+#include <ql/type/variadic/type.hpp>
+#include <ql/type/variadic/value.hpp>
 
 namespace ql
 {

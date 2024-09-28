@@ -1,9 +1,9 @@
 #pragma once
 
-#ifndef QL
+#ifndef QL_SOURCE
 #ifdef QL_EXPORT
-#define QL __declspec(dllexport)
+#define QL_SOURCE __declspec(dllexport)
 #else
-#define QL __declspec(dllimport)
+#define QL_SOURCE __declspec(dllimport)
 #endif
 #endif

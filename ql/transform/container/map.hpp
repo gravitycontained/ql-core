@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ql/type-traits/type-traits.hpp>
+#include <ql/type/type.hpp>
 
 namespace ql
 {

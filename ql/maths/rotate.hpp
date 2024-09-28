@@ -1,8 +1,7 @@
 #pragma once
 
 #include <ql/definition/definition.hpp>
-#include <ql/maths/type/matrix.hpp>
-#include <ql/maths/type/vector.hpp>
+#include <ql/advanced-type/fundamental/fundamental.hpp>
 
 namespace ql
 {

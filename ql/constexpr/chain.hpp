@@ -4,11 +4,11 @@
 #include <ql/constexpr/index.hpp>
 #include <ql/maths/operation.hpp>
 
-#include <ql/type-traits/tuple/is-tuple.hpp>
-#include <ql/type-traits/tuple/type.hpp>
-#include <ql/type-traits/tuple/value.hpp>
+#include <ql/type/tuple/is-tuple.hpp>
+#include <ql/type/tuple/type.hpp>
+#include <ql/type/tuple/value.hpp>
 
-#include <ql/type-traits/compare/compare.hpp>
+#include <ql/type/compare/compare.hpp>
 
 #include <functional>
 

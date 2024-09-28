@@ -1,8 +1,8 @@
 #pragma once
 
 #include <ql/definition/definition.hpp>
-#include <ql/type-traits/type-traits.hpp>
-#include <ql/type-traits/transform/tuple-to-array.hpp>
+#include <ql/type/type.hpp>
+#include <ql/type/transform/tuple-to-array.hpp>
 
 #include <array>
 

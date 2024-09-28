@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ql/type-traits/arithmetic/is-arithmetic.hpp>
+#include <ql/type/arithmetic/is-arithmetic.hpp>
 #include <ql/transform/cast/cast.hpp>
 #include <limits>
 

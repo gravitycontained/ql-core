@@ -21,4 +21,11 @@ namespace ql
 
   template<bool condition>
 	using if_true = std::conditional_t<condition, true_type, false_type>;
+
+  template <typename T>
+  T& singleton()
+  {
+		static T value;
+		return value;
+  }
 }

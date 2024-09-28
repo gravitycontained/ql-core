@@ -5,16 +5,16 @@
 
 #include <ql/definition/definition.hpp>
 
-#include <ql/type-traits/string/is-printable.hpp>
+#include <ql/type/string/is-printable.hpp>
 
-#include <ql/type-traits/container/is-container.hpp>
-#include <ql/type-traits/container/method.hpp>
+#include <ql/type/container/is-container.hpp>
+#include <ql/type/container/method.hpp>
 
-#include <ql/type-traits/string/string.hpp>
-#include <ql/type-traits/tuple/size.hpp>
-#include <ql/type-traits/arithmetic/arithmetic.hpp>
+#include <ql/type/string/string.hpp>
+#include <ql/type/tuple/size.hpp>
+#include <ql/type/arithmetic/arithmetic.hpp>
 
-#include <ql/type-traits/container/type.hpp>
+#include <ql/type/container/type.hpp>
 
 namespace ql
 {
