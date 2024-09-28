@@ -1,7 +1,6 @@
 #pragma once
 
-#include <ql/core/definition/definition.hpp>
-
+#include <ql/core/type/arithmetic/is-arithmetic.hpp>
 namespace ql
 {
   template <typename T>

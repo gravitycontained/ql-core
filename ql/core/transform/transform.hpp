@@ -7,4 +7,5 @@
 #include <ql/core/transform/memory/memory.hpp>
 #include <ql/core/transform/limit.hpp>
 #include <ql/core/transform/shuffle.hpp>
+#include <ql/core/transform/sort.hpp>
 #include <ql/core/transform/possibilities.hpp>

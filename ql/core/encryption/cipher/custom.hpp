@@ -1,5 +1,3 @@
-#ifndef ql_ENCRYPTION_HPP
-#define ql_ENCRYPTION_HPP
 #pragma once
 #include <cstdlib>
 #include <memory>
@@ -15,7 +13,6 @@
 #include <ql/core/system/print/print.hpp>
 
 #include <ql/core/advanced-type/container/bitset.hpp>
-
 
 #include <ql/core/string/base.hpp>
 
@@ -5162,8 +5159,9 @@ namespace ql
 		{
 			auto index = round * this->key_size;
 			auto sbox_index = ql::u8_cast((this->round_key[index] ^ this->state_byte) % this->table_size);
-			auto mds_index = this->table.sbox[sbox_index][ql::bit_rotate_left(ql::u8_cast(this->round_key[index] ^ this->state_byte), 3)] %
-											 this->table_size;
+			auto mds_index =
+					this->table.sbox[sbox_index][ql::bit_rotate_left(ql::u8_cast(this->round_key[index] ^ this->state_byte), 3)] %
+					this->table_size;
 			const auto& mds = this->table.mds[mds_index];
 
 			auto copy = this->state;
@@ -5193,8 +5191,9 @@ namespace ql
 		{
 			auto index = round * this->key_size;
 			auto sbox_index = ql::u8_cast((this->round_key[index] ^ this->state_byte) % this->table_size);
-			auto mds_index = this->table.sbox[sbox_index][ql::bit_rotate_left(ql::u8_cast(this->round_key[index] ^ this->state_byte), 3)] %
-											 this->table_size;
+			auto mds_index =
+					this->table.sbox[sbox_index][ql::bit_rotate_left(ql::u8_cast(this->round_key[index] ^ this->state_byte), 3)] %
+					this->table_size;
 			const auto& mds = this->table.mds_inverse[mds_index];
 
 			auto copy = this->state;
@@ -6010,7 +6009,7 @@ namespace ql
 
 			auto encrypted = this->cipher.encrypted(message, cipher_key);
 
-			ql::collection_string result;
+			ql::string_collection result;
 			result.add_string(rsa_header.value());
 			result.add_string(encrypted);
 			return result.get_finalized_string();
@@ -6021,26 +6020,24 @@ namespace ql
 																			 std::string label = "",
 																			 ql::hash_type hash_object = ql::sha512_object)
 		{
-			ql::collection_string collection_string;
-			collection_string.set_string_and_read(message);
+			ql::string_collection string_collection;
+			string_collection.set_string_and_read(message);
 
-			if (collection_string.size() != 2u)
+			if (string_collection.size() != 2u)
 			{
 				return std::nullopt;
 			}
 
-			auto rsa_header = collection_string.get_string(0u);
+			auto rsa_header = string_collection.get_string(0u);
 			auto cipher_key = this->rsa.verify_and_decrypt(rsa_header, signature, label, hash_object);
 			if (!cipher_key.has_value())
 			{
 				return std::nullopt;
 			}
-			auto encrypted = collection_string.get_string(1u);
+			auto encrypted = string_collection.get_string(1u);
 			return this->cipher.decrypted(encrypted, cipher_key.value());
 		}
 	};
 #endif
 #endif
 }	 // namespace ql
-
-#endif

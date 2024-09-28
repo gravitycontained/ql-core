@@ -8,7 +8,7 @@
 
 namespace ql
 {
-	std::string ql::base64_string(const std::string_view& input)
+	std::string base64_string(const std::string_view& input)
 	{
 		std::string output;
 		for (ql::size i = 0u; i < input.length(); i += 3u)
@@ -33,7 +33,7 @@ namespace ql
 		return output;
 	}
 
-	std::string ql::from_base64_string(const std::string_view& input)
+	std::string from_base64_string(const std::string_view& input)
 	{
 		std::string output;
 		for (ql::size i = 0; i < input.length(); i += 4)
@@ -61,7 +61,7 @@ namespace ql
 		return output;
 	}
 
-	std::string ql::hex_string(const std::string_view& string)
+	std::string hex_string(const std::string_view& string)
 	{
 		std::ostringstream stream;
 		for (auto& i : string)
@@ -71,7 +71,7 @@ namespace ql
 		return stream.str();
 	}
 
-	std::string ql::from_hex_string(const std::string_view& string)
+	std::string from_hex_string(const std::string_view& string)
 	{
 		std::ostringstream stream;
 		for (ql::size i = 0u; i < string.length(); i += 2u)
@@ -81,17 +81,17 @@ namespace ql
 		return stream.str();
 	}
 
-	std::string ql::hex_to_base64_string(const std::string_view& string)
+	std::string hex_to_base64_string(const std::string_view& string)
 	{
 		return ql::base64_string(ql::from_hex_string(string));
 	}
 
-	std::string ql::base64_to_hex_string(const std::string_view& string)
+	std::string base64_to_hex_string(const std::string_view& string)
 	{
 		return ql::hex_string(ql::from_base64_string(string));
 	}
 
-	std::string ql::binary_string(const std::string& string)
+	std::string binary_string(const std::string& string)
 	{
 		std::ostringstream stream;
 		for (auto& i : string)
@@ -101,7 +101,7 @@ namespace ql
 		return stream.str();
 	}
 
-	std::string ql::string_xor(std::string a, std::string b)
+	std::string string_xor(std::string a, std::string b)
 	{
 		std::string result;
 		result.resize(ql::min(a.size(), b.size()));
@@ -112,7 +112,7 @@ namespace ql
 		return result;
 	}
 
-	std::string ql::hex_string_xor(std::string a, std::string b)
+	std::string hex_string_xor(std::string a, std::string b)
 	{
 		std::string result;
 		result.resize(ql::min(a.size(), b.size()));
@@ -123,4 +123,4 @@ namespace ql
 		}
 		return result;
 	}
-}
+}	 // namespace ql

@@ -20,5 +20,10 @@ namespace ql
 		{
 			return this->string.c_str();
 		}
+
+		std::string to_string() const
+		{
+			return this->string;
+		}
 	};
 }	 // namespace qpl

@@ -81,4 +81,85 @@ namespace ql
 		}
 		return stream.str();
 	}
+
+		// format is like (a, b)
+	template <typename... Args>
+	requires (ql::is_printable<Args...>())
+	std::string to_string_format(std::string_view format, Args&&... args)
+	{
+		std::ostringstream stream;
+
+		ql::size open_i = 0u;
+		std::string_view open;
+		std::string_view close;
+		std::string_view delimiter;
+		for (ql::size i = 0u; i < format.length(); ++i)
+		{
+			if (format[i] == 'a')
+			{
+				open = format.substr(0u, i);
+				open_i = i;
+			}
+			if (format[i] == 'b')
+			{
+				if (i)
+				{
+					delimiter = format.substr(open_i + 1, i - open_i - 1);
+					if (i != format.length() - 1)
+					{
+						close = format.substr(i + 1);
+					}
+				}
+			}
+		}
+
+		bool first = true;
+		auto add_to_stream = [&]<typename T>(T value)
+		{
+			if constexpr (ql::is_container<T>() && !ql::is_long_string_type<T>())
+			{
+				stream << open;
+				bool first = true;
+				for (auto& i : value)
+				{
+					if (!first)
+					{
+						stream << delimiter;
+					}
+					stream << ql::to_string_format(format, i);
+					first = false;
+				}
+			}
+			else if constexpr (ql::is_tuple<T>())
+			{
+				stream << open;
+				if constexpr (ql::tuple_size<T>() > 1)
+				{
+					auto unpack = [&]<ql::size... Ints>(std::index_sequence<Ints...>)
+					{ ((stream << ql::to_string_format(format, std::get<Ints>(value)) << delimiter), ...); };
+					unpack(std::make_index_sequence<ql::tuple_size<T>() - 1>());
+				}
+				stream << ql::to_string_format(format, ql::tuple_value_back(value));
+			}
+			else
+			{
+				if (!first)
+				{
+					stream << delimiter;
+				}
+				else
+				{
+					stream << open;
+				}
+				first = false;
+				stream << value;
+			}
+		};
+
+		(add_to_stream(args), ...);
+		stream << close;
+
+		return stream.str();
+	}
+
 }	 // namespace ql
