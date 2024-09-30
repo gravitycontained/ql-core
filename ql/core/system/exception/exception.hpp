@@ -13,7 +13,7 @@ namespace ql
 		template <typename... Args>
 		exception(Args&&... args)
 		{
-			this->string = ql::to_string(std::forward<Args>(args)...);
+			this->string = ql::to_string(args...);
 		}
 
 		const char* what() const override
