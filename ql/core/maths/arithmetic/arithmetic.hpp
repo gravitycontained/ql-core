@@ -20,27 +20,27 @@ namespace ql
 	{
 		return n ? ql::size{1} + ql::significant_digit(static_cast<T>(n / base), base) : ql::size{};
 	}
-	
-	
+
 	template <typename T>
 	requires (ql::is_integer<T>())
 	constexpr bool is_power_of_two(T n)
 	{
 		return n == T{} ? false : (n == (T{1} << (ql::significant_bit(n) - 1)));
 	}
-	
+
 	template <typename T>
 	requires (ql::is_integer<T>())
 	constexpr bool base_full_bit_usage(T base)
 	{
 		return ql::is_power_of_two(base) ? ql::bits_in_type<T>() % (ql::significant_bit(base) - 1) == 0 : false;
 	}
+
 	template <typename T>
 	requires (ql::is_integer<T>())
 	constexpr T base_max_log(T base)
 	{
 		return ql::base_full_bit_usage(base) ? static_cast<T>(ql::bits_in_type<T>() / (ql::significant_bit(base) - 1))
-																					: ql::log<T>(base, T{1} << (ql::bits_in_type<T>() - 1));
+																				 : ql::log<T>(base, T{1} << (ql::bits_in_type<T>() - 1));
 	}
 
 	template <typename T>

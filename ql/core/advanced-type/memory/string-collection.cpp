@@ -71,7 +71,8 @@ namespace ql
 		if (index >= this->sizes.size())
 		{
 			throw std::exception(
-					ql::to_string("ql::string_collection::get_string(", index, "): size is only ", this->sizes.size()).c_str());
+					ql::to_string("ql::string_collection::get_string(", index, "): size is only ", this->sizes.size()).c_str()
+			);
 		}
 		return std::string(this->string.begin() + this->sizes[index].first, this->string.begin() + this->sizes[index].second);
 	}
@@ -81,7 +82,8 @@ namespace ql
 		if (index >= this->sizes.size())
 		{
 			throw std::exception(
-					ql::to_string("ql::string_collection::get_string_sv(", index, "): size is only ", this->sizes.size()).c_str());
+					ql::to_string("ql::string_collection::get_string_sv(", index, "): size is only ", this->sizes.size()).c_str()
+			);
 		}
 		return std::string_view(this->string.begin() + this->sizes[index].first, this->string.begin() + this->sizes[index].second);
 	}
@@ -136,4 +138,4 @@ namespace ql
 		this->sizes.clear();
 		this->string.clear();
 	}
-}
+}	 // namespace ql

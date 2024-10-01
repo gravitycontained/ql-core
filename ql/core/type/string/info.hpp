@@ -16,4 +16,4 @@ namespace ql
 	{
 		return ql::type_name(value);
 	}
-}
+}	 // namespace ql

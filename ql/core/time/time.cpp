@@ -10,14 +10,13 @@
 
 #include <ql/core/system/system.hpp>
 
-
 namespace ql
 {
 	ql::time ql::time::clock_time()
 	{
 		return ql::time{static_cast<ql::u64>(
-				std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now().time_since_epoch())
-						.count())};
+				std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count()
+		)};
 	}
 
 	ql::time& ql::time::operator+=(const ql::time& other)
@@ -113,62 +112,72 @@ namespace ql
 	{
 		return ql::to_string(
 				ql::string_to_fit(ql::to_string(this->nsecs_mod()), '0', ql::number_of_digits(this->nsecs_in_usec - 1)),
-				this->nsecs_mod(), "ns");
+				this->nsecs_mod(), "ns"
+		);
 	}
 
 	std::string ql::time::single_short_usecs_string() const
 	{
 		return ql::to_string(
 				ql::string_to_fit(ql::to_string(this->usecs_mod()), '0', ql::number_of_digits(this->usecs_in_msec - 1)),
-				this->usecs_mod(), "us");
+				this->usecs_mod(), "us"
+		);
 	}
 
 	std::string ql::time::single_short_msecs_string() const
 	{
 		return ql::to_string(
-				ql::string_to_fit(ql::to_string(this->msecs_mod()), '0', ql::number_of_digits(this->msecs_in_sec - 1)),
-				this->msecs_mod(), "ms");
+				ql::string_to_fit(ql::to_string(this->msecs_mod()), '0', ql::number_of_digits(this->msecs_in_sec - 1)), this->msecs_mod(),
+				"ms"
+		);
 	}
 
 	std::string ql::time::single_short_secs_string() const
 	{
-		return ql::to_string(ql::string_to_fit(ql::to_string(this->secs_mod()), '0', ql::number_of_digits(this->secs_in_min - 1)),
-													this->secs_mod(), 's');
+		return ql::to_string(
+				ql::string_to_fit(ql::to_string(this->secs_mod()), '0', ql::number_of_digits(this->secs_in_min - 1)), this->secs_mod(),
+				's'
+		);
 	}
 
 	std::string ql::time::single_short_mins_string() const
 	{
 		return ql::to_string(
-				ql::string_to_fit(ql::to_string(this->mins_mod()), '0', ql::number_of_digits(this->mins_in_hour - 1)),
-				this->mins_mod(), 'm');
+				ql::string_to_fit(ql::to_string(this->mins_mod()), '0', ql::number_of_digits(this->mins_in_hour - 1)), this->mins_mod(),
+				'm'
+		);
 	}
 
 	std::string ql::time::single_short_hours_string() const
 	{
 		return ql::to_string(
-				ql::string_to_fit(ql::to_string(this->hours_mod()), '0', ql::number_of_digits(this->hours_in_day - 1)),
-				this->hours_mod(), 'h');
+				ql::string_to_fit(ql::to_string(this->hours_mod()), '0', ql::number_of_digits(this->hours_in_day - 1)), this->hours_mod(),
+				'h'
+		);
 	}
 
 	std::string ql::time::single_short_days_string() const
 	{
 		return ql::to_string(
-				ql::string_to_fit(ql::to_string(this->days_mod()), '0', ql::number_of_digits(this->days_in_year - 1)),
-				this->days_mod(), 'd');
+				ql::string_to_fit(ql::to_string(this->days_mod()), '0', ql::number_of_digits(this->days_in_year - 1)), this->days_mod(),
+				'd'
+		);
 	}
 
 	std::string ql::time::single_short_days_week_string() const
 	{
 		return ql::to_string(
 				ql::string_to_fit(ql::to_string(this->days_week_mod()), '0', ql::number_of_digits(this->days_in_week - 1)),
-				this->days_week_mod(), 'd');
+				this->days_week_mod(), 'd'
+		);
 	}
 
 	std::string ql::time::single_short_weeks_string() const
 	{
 		return ql::to_string(
 				ql::string_to_fit(ql::to_string(this->weeks_mod()), '0', ql::number_of_digits(this->weeks_in_year - 1)),
-				this->weeks_mod(), 'w');
+				this->weeks_mod(), 'w'
+		);
 	}
 
 	std::string ql::time::single_short_years_string() const
@@ -638,13 +647,15 @@ namespace ql
 		return result;
 	}
 
-	std::string ql::time::string_until_segment(ql::size stop_at_segment,
-																							std::string_view parantheses,
-																							std::string_view seperation,
-																							bool short_string,
-																							bool weeks,
-																							ql::size precision,
-																							bool use_and) const
+	std::string ql::time::string_until_segment(
+			ql::size stop_at_segment,
+			std::string_view parantheses,
+			std::string_view seperation,
+			bool short_string,
+			bool weeks,
+			ql::size precision,
+			bool use_and
+	) const
 	{
 		std::ostringstream stream;
 		if (parantheses.size() > 0)
@@ -710,47 +721,53 @@ namespace ql
 		return stream.str();
 	}
 
-	std::string ql::time::string(std::string_view parantheses,
-																std::string_view seperation,
-																bool short_string,
-																bool weeks,
-																ql::size precision) const
+	std::string
+	ql::time::string(std::string_view parantheses, std::string_view seperation, bool short_string, bool weeks, ql::size precision)
+			const
 	{
 		return this->string_until_segment(ql::size_max, parantheses, seperation, short_string, weeks, precision);
 	}
 
-	std::string ql::time::string_until_hour(std::string_view parantheses,
-																					 std::string_view seperation,
-																					 bool short_string,
-																					 bool weeks,
-																					 ql::size precision) const
+	std::string ql::time::string_until_hour(
+			std::string_view parantheses,
+			std::string_view seperation,
+			bool short_string,
+			bool weeks,
+			ql::size precision
+	) const
 	{
 		return this->string_until_segment(weeks ? 4u : 3u, parantheses, seperation, short_string, weeks, precision);
 	}
 
-	std::string ql::time::string_until_min(std::string_view parantheses,
-																					std::string_view seperation,
-																					bool short_string,
-																					bool weeks,
-																					ql::size precision) const
+	std::string ql::time::string_until_min(
+			std::string_view parantheses,
+			std::string_view seperation,
+			bool short_string,
+			bool weeks,
+			ql::size precision
+	) const
 	{
 		return this->string_until_segment(weeks ? 5u : 4u, parantheses, seperation, short_string, weeks, precision);
 	}
 
-	std::string ql::time::string_until_sec(std::string_view parantheses,
-																					std::string_view seperation,
-																					bool short_string,
-																					bool weeks,
-																					ql::size precision) const
+	std::string ql::time::string_until_sec(
+			std::string_view parantheses,
+			std::string_view seperation,
+			bool short_string,
+			bool weeks,
+			ql::size precision
+	) const
 	{
 		return this->string_until_segment(weeks ? 6u : 5u, parantheses, seperation, short_string, weeks, precision);
 	}
 
-	std::string ql::time::string_until_ms(std::string_view parantheses,
-																				 std::string_view seperation,
-																				 bool short_string,
-																				 bool weeks,
-																				 ql::size precision) const
+	std::string ql::time::string_until_ms(
+			std::string_view parantheses,
+			std::string_view seperation,
+			bool short_string,
+			bool weeks,
+			ql::size precision
+	) const
 	{
 		return this->string_until_segment(weeks ? 7u : 6u, parantheses, seperation, short_string, weeks, precision);
 	}
@@ -770,11 +787,13 @@ namespace ql
 		return this->string_until_segment(stop_at_segment, "[]", " : ", true, weeks, precision);
 	}
 
-	std::string ql::time::small_string(ql::size precision,
-																			bool weeks,
-																			bool short_string,
-																			std::string_view parantheses,
-																			std::string_view seperation) const
+	std::string ql::time::small_string(
+			ql::size precision,
+			bool weeks,
+			bool short_string,
+			std::string_view parantheses,
+			std::string_view seperation
+	) const
 	{
 		return this->string(parantheses, seperation, short_string, weeks, precision);
 	}
@@ -948,7 +967,6 @@ namespace ql
 	ql::time::operator ql::u64() const
 	{
 		return this->ns;
-		
 	}
 
 	void ql::clock::reset()
@@ -1465,7 +1483,7 @@ namespace ql
 	void print_benchmark()
 	{
 		ql::time sum = 0;
-		
+
 		ql::size length_max = 0u;
 		std::vector<std::pair<std::string, double>> sorted;
 		for (auto& i : ql::detail::benchmark_clocks)
@@ -1475,7 +1493,7 @@ namespace ql
 			sorted.emplace_back(std::make_pair(i.first, i.second.elapsed_f()));
 		}
 		std::sort(sorted.begin(), sorted.end(), [](const auto& a, const auto& b) { return a.second < b.second; });
-		
+
 		for (auto i : ql::detail::benchmark_clocks)
 		{
 			if (i.first == sorted.front().first && sorted.size() >= 2u)
@@ -1487,13 +1505,15 @@ namespace ql
 				ql::print(ql::bright_red);
 			}
 			auto f = i.second.elapsed().nsecs_f() / sum.nsecs_f();
-		
+
 			auto precision = ql::size{3};
 			auto percentage_string = ql::string_percentage_precision(f, precision);
 			percentage_string = ql::string_prepended(percentage_string, ' ', precision + 4);
-			ql::print(ql::to_string(ql::string_right_spaced(i.first, length_max + 1), " - ",
-																ql::string_left_spaced(percentage_string, 10), " time usage : ", i.second.elapsed().string()));
-		
+			ql::print(ql::to_string(
+					ql::string_right_spaced(i.first, length_max + 1), " - ", ql::string_left_spaced(percentage_string, 10),
+					" time usage : ", i.second.elapsed().string()
+			));
+
 			if (i.first != sorted.back().first && sorted.size() >= 2u)
 			{
 				auto p = ql::size_cast(sorted.back().second / i.second.elapsed_f());
@@ -1515,7 +1535,7 @@ namespace ql
 				sorted.emplace_back(std::make_pair(i.first, i.second.elapsed_f()));
 			}
 			std::sort(sorted.begin(), sorted.end(), [](const auto& a, const auto& b) { return a.second < b.second; });
-		
+
 			for (auto& i : sub.second)
 			{
 				if (i.first == sorted.front().first && sorted.size() >= 2u)
@@ -1526,20 +1546,24 @@ namespace ql
 				{
 					ql::print(ql::bright_red);
 				}
-		
+
 				auto f = i.second.elapsed().nsecs_f() / sum.nsecs_f();
 				if (i.first != sorted.back().first && sorted.size() >= 2u)
 				{
 					auto p = ql::size_cast(sorted.back().second / i.second.elapsed_f());
-					ql::println(ql::to_string(sub.first, ": ", ql::string_left_spaced(i.first, length_max + 1), " - ",
-																			ql::string_left_spaced(ql::string_precision(7,  ql::size_cast(f * 100)), 14), "% time usage : ",
-																			i.second.elapsed().string(), " [ ", ql::string_precision(3, p), "x ]"));
+					ql::println(ql::to_string(
+							sub.first, ": ", ql::string_left_spaced(i.first, length_max + 1), " - ",
+							ql::string_left_spaced(ql::string_precision(7, ql::size_cast(f * 100)), 14),
+							"% time usage : ", i.second.elapsed().string(), " [ ", ql::string_precision(3, p), "x ]"
+					));
 				}
 				else
 				{
-					ql::println(ql::to_string(sub.first, ": ", ql::string_left_spaced(i.first, length_max + 1), " - ",
-																			ql::string_left_spaced(ql::string_precision(7, ql::size_cast(f * 100)), 14),
-																			"% time usage : ", i.second.elapsed().string()));
+					ql::println(ql::to_string(
+							sub.first, ": ", ql::string_left_spaced(i.first, length_max + 1), " - ",
+							ql::string_left_spaced(ql::string_precision(7, ql::size_cast(f * 100)), 14),
+							"% time usage : ", i.second.elapsed().string()
+					));
 				}
 			}
 		}
@@ -1596,7 +1620,7 @@ namespace ql
 		this->reversed = false;
 		this->internal_reset();
 	}
-	
+
 	void ql::animation::start()
 	{
 		this->running = true;
@@ -1740,15 +1764,15 @@ namespace ql
 		return this->progress;
 	}
 
-	//ql::f64 ql::animation::get_curve_progress(ql::f64 curve) const
+	// ql::f64 ql::animation::get_curve_progress(ql::f64 curve) const
 	//{
 	//	return ql::curve_slope(this->progress, curve);
-	//}
+	// }
 	//
-	//ql::f64 ql::animation::get_double_curve_progress(ql::f64 curve) const
+	// ql::f64 ql::animation::get_double_curve_progress(ql::f64 curve) const
 	//{
 	//	return ql::double_curve_slope(this->progress, curve);
-	//}
+	// }
 
 	void ql::timed_task::update()
 	{

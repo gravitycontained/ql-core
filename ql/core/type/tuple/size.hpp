@@ -19,7 +19,6 @@ namespace ql
 		return 1;
 	}
 
-
 	template <typename T>
 	requires (ql::is_tuple<T>())
 	constexpr ql::size tuple_size(T tuple)

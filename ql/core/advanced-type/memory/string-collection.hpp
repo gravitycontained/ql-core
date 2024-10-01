@@ -7,7 +7,6 @@
 #include <vector>
 #include <string>
 
-
 namespace ql
 {
 	struct string_collection
@@ -46,4 +45,4 @@ namespace ql
 			return *this;
 		}
 	};
-}
+}	 // namespace ql

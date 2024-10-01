@@ -24,4 +24,4 @@ namespace ql
 	{
 		return sizeof(T);
 	}
-}
+}	 // namespace ql

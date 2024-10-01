@@ -4,10 +4,10 @@
 
 namespace ql
 {
-  template <typename T>
-  constexpr auto declval()
-  {
-    using pointer = std::decay_t<T>*;
-    return *(pointer{});
-  }
-}
+	template <typename T>
+	constexpr auto declval()
+	{
+		using pointer = std::decay_t<T>*;
+		return *(pointer{});
+	}
+}	 // namespace ql

@@ -23,55 +23,50 @@ namespace ql
 	namespace detail
 	{
 		constexpr std::array<ql::u8, 64> base_64 = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
-																								 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
-																								 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
-																								 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'};
+																								'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
+																								'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+																								'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'};
 		constexpr std::array<ql::u8, ql::type_configurations<ql::u8>()> base_64_inv = {
-				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
-				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
-				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
-				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
-				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
-				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
-				ql::u8{0xFFu}, ql::u8{0x3eu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0x3fu}, ql::u8{0x34u},
-				ql::u8{0x35u}, ql::u8{0x36u}, ql::u8{0x37u}, ql::u8{0x38u}, ql::u8{0x39u}, ql::u8{0x3au}, ql::u8{0x3bu},
-				ql::u8{0x3cu}, ql::u8{0x3du}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0x40u}, ql::u8{0xFFu},
-				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0x0u},	ql::u8{0x1u},	ql::u8{0x2u},	ql::u8{0x3u},	ql::u8{0x4u},
-				ql::u8{0x5u},	ql::u8{0x6u},	ql::u8{0x7u},	ql::u8{0x8u},	ql::u8{0x9u},	ql::u8{0xau},	ql::u8{0xbu},
-				ql::u8{0xcu},	ql::u8{0xdu},	ql::u8{0xeu},	ql::u8{0xfu},	ql::u8{0x10u}, ql::u8{0x11u}, ql::u8{0x12u},
-				ql::u8{0x13u}, ql::u8{0x14u}, ql::u8{0x15u}, ql::u8{0x16u}, ql::u8{0x17u}, ql::u8{0x18u}, ql::u8{0x19u},
-				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0x1au},
-				ql::u8{0x1bu}, ql::u8{0x1cu}, ql::u8{0x1du}, ql::u8{0x1eu}, ql::u8{0x1fu}, ql::u8{0x20u}, ql::u8{0x21u},
-				ql::u8{0x22u}, ql::u8{0x23u}, ql::u8{0x24u}, ql::u8{0x25u}, ql::u8{0x26u}, ql::u8{0x27u}, ql::u8{0x28u},
-				ql::u8{0x29u}, ql::u8{0x2au}, ql::u8{0x2bu}, ql::u8{0x2cu}, ql::u8{0x2du}, ql::u8{0x2eu}, ql::u8{0x2fu},
-				ql::u8{0x30u}, ql::u8{0x31u}, ql::u8{0x32u}, ql::u8{0x33u}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
-				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
-				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
-				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
-				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
-				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
-				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
-				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
-				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
-				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
-				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
-				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
-				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
-				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
-				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
-				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
-				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
-				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
-				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
-				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
+				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
+				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
+				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
+				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
+				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
+				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0x3eu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0x3fu},
+				ql::u8{0x34u}, ql::u8{0x35u}, ql::u8{0x36u}, ql::u8{0x37u}, ql::u8{0x38u}, ql::u8{0x39u}, ql::u8{0x3au}, ql::u8{0x3bu},
+				ql::u8{0x3cu}, ql::u8{0x3du}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0x40u}, ql::u8{0xFFu}, ql::u8{0xFFu},
+				ql::u8{0xFFu}, ql::u8{0x0u},	ql::u8{0x1u},	 ql::u8{0x2u},	ql::u8{0x3u},	 ql::u8{0x4u},	ql::u8{0x5u},	 ql::u8{0x6u},
+				ql::u8{0x7u},	 ql::u8{0x8u},	ql::u8{0x9u},	 ql::u8{0xau},	ql::u8{0xbu},	 ql::u8{0xcu},	ql::u8{0xdu},	 ql::u8{0xeu},
+				ql::u8{0xfu},	 ql::u8{0x10u}, ql::u8{0x11u}, ql::u8{0x12u}, ql::u8{0x13u}, ql::u8{0x14u}, ql::u8{0x15u}, ql::u8{0x16u},
+				ql::u8{0x17u}, ql::u8{0x18u}, ql::u8{0x19u}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
+				ql::u8{0xFFu}, ql::u8{0x1au}, ql::u8{0x1bu}, ql::u8{0x1cu}, ql::u8{0x1du}, ql::u8{0x1eu}, ql::u8{0x1fu}, ql::u8{0x20u},
+				ql::u8{0x21u}, ql::u8{0x22u}, ql::u8{0x23u}, ql::u8{0x24u}, ql::u8{0x25u}, ql::u8{0x26u}, ql::u8{0x27u}, ql::u8{0x28u},
+				ql::u8{0x29u}, ql::u8{0x2au}, ql::u8{0x2bu}, ql::u8{0x2cu}, ql::u8{0x2du}, ql::u8{0x2eu}, ql::u8{0x2fu}, ql::u8{0x30u},
+				ql::u8{0x31u}, ql::u8{0x32u}, ql::u8{0x33u}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
+				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
+				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
+				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
+				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
+				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
+				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
+				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
+				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
+				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
+				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
+				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
+				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
+				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
+				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
+				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
+				ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu}, ql::u8{0xFFu},
 		};
 		constexpr std::array<ql::u8, 36> base_36_upper = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B',
-																											 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
-																											 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+																											'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
+																											'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
 
 		constexpr std::array<ql::u8, 36> base_36_lower = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b',
-																											 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
-																											 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
+																											'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
+																											'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
 		constexpr std::array<ql::u8, ql::type_configurations<ql::u8>()> base_36_inv = {
 				ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff},
 				ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff},
@@ -79,13 +74,13 @@ namespace ql
 				ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff},
 				ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff},
 				ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff},
-				ql::u8{0x0},	 ql::u8{0x1},	ql::u8{0x2},	 ql::u8{0x3},	ql::u8{0x4},	 ql::u8{0x5},	ql::u8{0x6},	 ql::u8{0x7},
-				ql::u8{0x8},	 ql::u8{0x9},	ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff},
-				ql::u8{0xff}, ql::u8{0xa},	ql::u8{0xb},	 ql::u8{0xc},	ql::u8{0xd},	 ql::u8{0xe},	ql::u8{0xf},	 ql::u8{0x10},
+				ql::u8{0x0},	ql::u8{0x1},	ql::u8{0x2},	ql::u8{0x3},	ql::u8{0x4},	ql::u8{0x5},	ql::u8{0x6},	ql::u8{0x7},
+				ql::u8{0x8},	ql::u8{0x9},	ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff},
+				ql::u8{0xff}, ql::u8{0xa},	ql::u8{0xb},	ql::u8{0xc},	ql::u8{0xd},	ql::u8{0xe},	ql::u8{0xf},	ql::u8{0x10},
 				ql::u8{0x11}, ql::u8{0x12}, ql::u8{0x13}, ql::u8{0x14}, ql::u8{0x15}, ql::u8{0x16}, ql::u8{0x17}, ql::u8{0x18},
 				ql::u8{0x19}, ql::u8{0x1a}, ql::u8{0x1b}, ql::u8{0x1c}, ql::u8{0x1d}, ql::u8{0x1e}, ql::u8{0x1f}, ql::u8{0x20},
 				ql::u8{0x21}, ql::u8{0x22}, ql::u8{0x23}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff},
-				ql::u8{0xff}, ql::u8{0xa},	ql::u8{0xb},	 ql::u8{0xc},	ql::u8{0xd},	 ql::u8{0xe},	ql::u8{0xf},	 ql::u8{0x10},
+				ql::u8{0xff}, ql::u8{0xa},	ql::u8{0xb},	ql::u8{0xc},	ql::u8{0xd},	ql::u8{0xe},	ql::u8{0xf},	ql::u8{0x10},
 				ql::u8{0x11}, ql::u8{0x12}, ql::u8{0x13}, ql::u8{0x14}, ql::u8{0x15}, ql::u8{0x16}, ql::u8{0x17}, ql::u8{0x18},
 				ql::u8{0x19}, ql::u8{0x1a}, ql::u8{0x1b}, ql::u8{0x1c}, ql::u8{0x1d}, ql::u8{0x1e}, ql::u8{0x1f}, ql::u8{0x20},
 				ql::u8{0x21}, ql::u8{0x22}, ql::u8{0x23}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff},
@@ -104,7 +99,8 @@ namespace ql
 				ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff},
 				ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff},
 				ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff},
-				ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}};
+				ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}, ql::u8{0xff}
+		};
 
 		constexpr std::array<bool, ql::type_configurations<ql::u8>()> special_table = {
 				1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -232,12 +228,14 @@ namespace ql
 
 	template <typename T>
 	requires (ql::is_integer<T>())
-	std::string base_string(T value,
-													T base,
-													const std::string& prefix = "",
-													base_format base_format = base_format::base36l,
-													bool prepend_zeroes = false,
-													ql::size prepend_size = ql::size_max)
+	std::string base_string(
+			T value,
+			T base,
+			const std::string& prefix = "",
+			base_format base_format = base_format::base36l,
+			bool prepend_zeroes = false,
+			ql::size prepend_size = ql::size_max
+	)
 	{
 		if (value == T{})
 		{
@@ -246,23 +244,23 @@ namespace ql
 				switch (base_format)
 				{
 					case base_format::base36l:
-						return prefix +
-									 ql::string_repeat(ql::char_cast(ql::detail::base_36_lower[0]), ql::size_cast(ql::base_max_log(base)));
+						return prefix + ql::string_repeat(ql::char_cast(ql::detail::base_36_lower[0]), ql::size_cast(ql::base_max_log(base)));
 					case base_format::base36u:
-						return prefix +
-									 ql::string_repeat(ql::char_cast(ql::detail::base_36_upper[0]), ql::size_cast(ql::base_max_log(base)));
+						return prefix + ql::string_repeat(ql::char_cast(ql::detail::base_36_upper[0]), ql::size_cast(ql::base_max_log(base)));
 					case base_format::base64:
-						return prefix +
-									 ql::string_repeat(ql::char_cast(ql::detail::base_64[0]), ql::size_cast(ql::base_max_log(base)));
+						return prefix + ql::string_repeat(ql::char_cast(ql::detail::base_64[0]), ql::size_cast(ql::base_max_log(base)));
 				}
 			}
 			else
 			{
 				switch (base_format)
 				{
-					case base_format::base36l: return prefix + ql::to_string(ql::char_cast(ql::detail::base_36_lower[0]));
-					case base_format::base36u: return prefix + ql::to_string(ql::char_cast(ql::detail::base_36_upper[0]));
-					case base_format::base64: return prefix + ql::to_string(ql::char_cast(ql::detail::base_64[0]));
+					case base_format::base36l:
+						return prefix + ql::to_string(ql::char_cast(ql::detail::base_36_lower[0]));
+					case base_format::base36u:
+						return prefix + ql::to_string(ql::char_cast(ql::detail::base_36_upper[0]));
+					case base_format::base64:
+						return prefix + ql::to_string(ql::char_cast(ql::detail::base_64[0]));
 				}
 			}
 		}
@@ -464,8 +462,12 @@ namespace ql
 			switch (base_format)
 			{
 				case base_format::base36l:
-				case base_format::base36u: result += static_cast<T>(ql::detail::base_36_inv[string[i]]) * mul; break;
-				case base_format::base64: result += static_cast<T>(ql::detail::base_64_inv[string[i]]) * mul; break;
+				case base_format::base36u:
+					result += static_cast<T>(ql::detail::base_36_inv[string[i]]) * mul;
+					break;
+				case base_format::base64:
+					result += static_cast<T>(ql::detail::base_64_inv[string[i]]) * mul;
+					break;
 			}
 			mul *= base;
 		}
@@ -481,10 +483,8 @@ namespace ql
 
 	template <typename T>
 	requires (ql::is_integer<T>())
-	std::string base64_string(T value,
-														const std::string& prefix = "",
-														base_format base_format = base_format::base64,
-														bool prepend_zeroes = false)
+	std::string
+	base64_string(T value, const std::string& prefix = "", base_format base_format = base_format::base64, bool prepend_zeroes = false)
 	{
 		return ql::base_string(value, T{64}, prefix, base_format, prepend_zeroes);
 	}
@@ -494,10 +494,8 @@ namespace ql
 
 	template <typename T>
 	requires (ql::is_integer<T>())
-	std::string hex_string(T value,
-												 const std::string& prefix = "0x",
-												 base_format base_format = base_format::base36l,
-												 bool prepend_zeroes = false)
+	std::string
+	hex_string(T value, const std::string& prefix = "0x", base_format base_format = base_format::base36l, bool prepend_zeroes = false)
 	{
 		return ql::base_string(value, T{16}, prefix, base_format, prepend_zeroes);
 	}
@@ -526,8 +524,7 @@ namespace ql
 
 	template <typename T>
 	requires (ql::is_integer<T>())
-	std::string
-	binary_string_full(T value, ql::size prepended_size = ql::size_max, base_format base_format = base_format::base36l)
+	std::string binary_string_full(T value, ql::size prepended_size = ql::size_max, base_format base_format = base_format::base36l)
 	{
 		return ql::base_string(value, T{2}, "", base_format, true, prepended_size);
 	}
@@ -571,4 +568,4 @@ namespace ql
 		return str.str();
 	}
 
-}
+}	 // namespace ql

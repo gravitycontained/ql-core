@@ -46,4 +46,4 @@ namespace ql
 		return ql::rotate_towards(vec, angle, ql::vec(0, 0, 1));
 	}
 
-}
+}	 // namespace ql

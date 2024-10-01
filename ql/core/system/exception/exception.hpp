@@ -27,4 +27,4 @@ namespace ql
 			return this->string;
 		}
 	};
-}	 // namespace qpl
+}	 // namespace ql

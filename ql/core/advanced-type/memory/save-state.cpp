@@ -85,4 +85,4 @@ namespace ql
 			throw ql::exception("save_state::set_string: failed to load.");
 		}
 	}
-}
+}	 // namespace ql

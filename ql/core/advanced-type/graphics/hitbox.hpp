@@ -5,7 +5,7 @@
 
 namespace ql
 {
-	
+
 	enum class box_side
 	{
 		top_left = 0,
@@ -201,8 +201,10 @@ namespace ql
 
 		constexpr bool contains(ql::vector2f position) const
 		{
-			return (position.x > this->position.x && position.x < (this->position.x + this->dimension.x) &&
-							position.y > this->position.y && position.y < (this->position.y + this->dimension.y));
+			return (
+					position.x > this->position.x && position.x < (this->position.x + this->dimension.x) && position.y > this->position.y &&
+					position.y < (this->position.y + this->dimension.y)
+			);
 		}
 
 		template <typename U>
@@ -472,10 +474,14 @@ namespace ql
 		{
 			switch (side)
 			{
-				case 0u: return this->get_side(ql::box_side::top_left);
-				case 1u: return this->get_side(ql::box_side::right_top);
-				case 2u: return this->get_side(ql::box_side::bottom_left);
-				case 3u: return this->get_side(ql::box_side::left_top);
+				case 0u:
+					return this->get_side(ql::box_side::top_left);
+				case 1u:
+					return this->get_side(ql::box_side::right_top);
+				case 2u:
+					return this->get_side(ql::box_side::bottom_left);
+				case 3u:
+					return this->get_side(ql::box_side::left_top);
 			}
 			return {};
 		}
@@ -485,10 +491,18 @@ namespace ql
 		{
 			switch (side)
 			{
-				case 0u: this->set_side(ql::box_side::top_left, position); break;
-				case 1u: this->set_side(ql::box_side::right_top, position); break;
-				case 2u: this->set_side(ql::box_side::bottom_left, position); break;
-				case 3u: this->set_side(ql::box_side::left_top, position); break;
+				case 0u:
+					this->set_side(ql::box_side::top_left, position);
+					break;
+				case 1u:
+					this->set_side(ql::box_side::right_top, position);
+					break;
+				case 2u:
+					this->set_side(ql::box_side::bottom_left, position);
+					break;
+				case 3u:
+					this->set_side(ql::box_side::left_top, position);
+					break;
 			}
 		}
 
@@ -646,4 +660,4 @@ namespace ql
 	};
 
 	using hitbox = hitbox_t<ql::f32>;
-}
+}	 // namespace ql

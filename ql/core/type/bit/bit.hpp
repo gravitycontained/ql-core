@@ -18,4 +18,4 @@ namespace ql
 	{
 		return ql::binary_configurations<ql::size>(ql::bits_in_type<T>());
 	}
-}
+}	 // namespace ql

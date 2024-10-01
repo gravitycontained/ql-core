@@ -35,6 +35,6 @@ namespace ql
 			return str;
 		}
 	}
-}
+}	 // namespace ql
 
 #endif

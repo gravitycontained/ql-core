@@ -17,11 +17,11 @@ namespace ql
 	 public:
 		using uint_type = ql::conditional<ql::if_true<(bits <= 64u)>, ql::ubit<bits>, ql::default_type, ql::u64>;
 
-		using holding_type =
-				ql::conditional<ql::if_true<(bits <= 64u)>,
-												 ql::ubit<bits>,
-												 ql::default_type,
-												 ql::array<ql::u64, ql::approximate_multiple_up(bits, ql::u64{64}) / 64, BOUNDARY_CHECK>>;
+		using holding_type = ql::conditional<
+				ql::if_true<(bits <= 64u)>,
+				ql::ubit<bits>,
+				ql::default_type,
+				ql::array<ql::u64, ql::approximate_multiple_up(bits, ql::u64{64}) / 64, BOUNDARY_CHECK>>;
 
 		class bitset_range_proxy
 		{
@@ -628,8 +628,7 @@ namespace ql
 			if constexpr (is_array())
 			{
 				std::ostringstream stream;
-				stream << ql::string_prepended(ql::binary_string(this->data.back()), '0',
-																									this->size() % ql::bits_in_type<ql::u64>());
+				stream << ql::string_prepended(ql::binary_string(this->data.back()), '0', this->size() % ql::bits_in_type<ql::u64>());
 				for (ql::u32 i = 0u; i < this->data.size() - 1; ++i)
 				{
 					stream << ql::binary_string_full(this->data[this->data.size() - 2 - i]);
@@ -767,4 +766,4 @@ namespace ql
 
 		holding_type data;
 	};
-}
+}	 // namespace ql

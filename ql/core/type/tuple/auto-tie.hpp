@@ -12,7 +12,7 @@ namespace ql
 	template <typename T>
 	constexpr auto reference_if_lvalue(auto&& value)
 	{
-		if constexpr(std::is_lvalue_reference_v<T>)
+		if constexpr (std::is_lvalue_reference_v<T>)
 			return std::ref(value);
 		else
 			return std::forward<T>(value);
@@ -26,10 +26,7 @@ namespace ql
 
 		constexpr auto size = ql::variadic_size<Args...>();
 		auto unpack = [&]<ql::size... i>(std::index_sequence<i...>)
-		{
-			return std::make_tuple(reference_if_lvalue<ql::tuple_type<i, tuple>>(
-					std::get<i>(tupleRef))...);
-		};
+		{ return std::make_tuple(reference_if_lvalue<ql::tuple_type<i, tuple>>(std::get<i>(tupleRef))...); };
 		return unpack(std::make_index_sequence<size>());
 	}
-}
+}	 // namespace ql

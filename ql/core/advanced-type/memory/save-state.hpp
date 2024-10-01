@@ -21,7 +21,8 @@ namespace ql
 
 		template <typename T>
 		concept has_load = requires(T a, load_state& state) { a.load(state); };
-	}
+	}	 // namespace detail
+
 	template <typename T>
 	constexpr bool has_save()
 	{
@@ -157,8 +158,9 @@ namespace ql
 		{
 			if (this->ctr >= this->string_collection.size())
 			{
-				throw ql::exception("save_state: trying to load resource #", this->ctr, " but size is only ",
-														 this->string_collection.size());
+				throw ql::exception(
+						"save_state: trying to load resource #", this->ctr, " but size is only ", this->string_collection.size()
+				);
 			}
 			if constexpr (ql::is_standard_string_type<T>())
 			{
@@ -223,4 +225,4 @@ namespace ql
 			}
 		}
 	};
-}
+}	 // namespace ql

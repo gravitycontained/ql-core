@@ -551,8 +551,9 @@ namespace ql
 
 	std::wstring ql::aes::encrypted(const std::wstring& message, const std::string& key)
 	{
-		auto s = this->encrypted(reinterpret_cast<const ql::u8*>(message.c_str()),
-														 message.length() * (sizeof(wchar_t) / sizeof(char)), key);
+		auto s = this->encrypted(
+				reinterpret_cast<const ql::u8*>(message.c_str()), message.length() * (sizeof(wchar_t) / sizeof(char)), key
+		);
 		return std::wstring(std::move(reinterpret_cast<const wchar_t*>(s.data())), s.size() / (sizeof(wchar_t) / sizeof(char)));
 	}
 
@@ -577,8 +578,9 @@ namespace ql
 
 	void ql::aes::encrypt(std::wstring& message, const std::string& key)
 	{
-		auto s = this->encrypted(reinterpret_cast<const ql::u8*>(message.c_str()),
-														 message.length() * (sizeof(wchar_t) / sizeof(char)), key);
+		auto s = this->encrypted(
+				reinterpret_cast<const ql::u8*>(message.c_str()), message.length() * (sizeof(wchar_t) / sizeof(char)), key
+		);
 		ql::container_memory_to_wstring(s, message);
 	}
 
@@ -698,8 +700,10 @@ namespace ql
 
 	std::wstring ql::aes::decrypted(const std::wstring& message, const std::string& key, bool remove_null_terminations)
 	{
-		auto s = ql::aes::decrypted(reinterpret_cast<const ql::u8*>(message.c_str()),
-																message.length() * (sizeof(wchar_t) / sizeof(char)), key, remove_null_terminations);
+		auto s = ql::aes::decrypted(
+				reinterpret_cast<const ql::u8*>(message.c_str()), message.length() * (sizeof(wchar_t) / sizeof(char)), key,
+				remove_null_terminations
+		);
 		return std::wstring(std::move(reinterpret_cast<const wchar_t*>(s.data())), s.size() / (sizeof(wchar_t) / sizeof(char)));
 	}
 
@@ -711,8 +715,10 @@ namespace ql
 
 	std::wstring ql::aes::decrypted(const std::vector<wchar_t>& message, const std::string& key, bool remove_null_terminations)
 	{
-		auto s = ql::aes::decrypted(reinterpret_cast<const ql::u8*>(message.data()),
-																message.size() * (sizeof(wchar_t) / sizeof(char)), key, remove_null_terminations);
+		auto s = ql::aes::decrypted(
+				reinterpret_cast<const ql::u8*>(message.data()), message.size() * (sizeof(wchar_t) / sizeof(char)), key,
+				remove_null_terminations
+		);
 		return std::wstring(std::move(reinterpret_cast<const wchar_t*>(s.data())), s.size() / (sizeof(wchar_t) / sizeof(char)));
 	}
 
@@ -723,8 +729,10 @@ namespace ql
 
 	void ql::aes::decrypt(std::wstring& message, const std::string& key, bool remove_null_terminations)
 	{
-		auto s = ql::aes::decrypted(reinterpret_cast<const ql::u8*>(message.c_str()),
-																message.size() * (sizeof(wchar_t) / sizeof(char)), key, remove_null_terminations);
+		auto s = ql::aes::decrypted(
+				reinterpret_cast<const ql::u8*>(message.c_str()), message.size() * (sizeof(wchar_t) / sizeof(char)), key,
+				remove_null_terminations
+		);
 		ql::container_memory_to_wstring(s, message);
 	}
 
@@ -1389,9 +1397,15 @@ namespace ql
 	{
 		switch (mode)
 		{
-			case ql::aes::mode::_128: ql::aes_128_encrypt_keep_size(string, key); break;
-			case ql::aes::mode::_192: ql::aes_192_encrypt_keep_size(string, key); break;
-			case ql::aes::mode::_256: ql::aes_256_encrypt_keep_size(string, key); break;
+			case ql::aes::mode::_128:
+				ql::aes_128_encrypt_keep_size(string, key);
+				break;
+			case ql::aes::mode::_192:
+				ql::aes_192_encrypt_keep_size(string, key);
+				break;
+			case ql::aes::mode::_256:
+				ql::aes_256_encrypt_keep_size(string, key);
+				break;
 		}
 	}
 
@@ -1399,9 +1413,15 @@ namespace ql
 	{
 		switch (mode)
 		{
-			case ql::aes::mode::_128: return ql::aes_128_encrypted_keep_size(string, key); break;
-			case ql::aes::mode::_192: return ql::aes_192_encrypted_keep_size(string, key); break;
-			case ql::aes::mode::_256: return ql::aes_256_encrypted_keep_size(string, key); break;
+			case ql::aes::mode::_128:
+				return ql::aes_128_encrypted_keep_size(string, key);
+				break;
+			case ql::aes::mode::_192:
+				return ql::aes_192_encrypted_keep_size(string, key);
+				break;
+			case ql::aes::mode::_256:
+				return ql::aes_256_encrypted_keep_size(string, key);
+				break;
 		}
 		return "";
 	}
@@ -1410,9 +1430,15 @@ namespace ql
 	{
 		switch (mode)
 		{
-			case ql::aes::mode::_128: ql::aes_128_decrypt_keep_size(string, key); break;
-			case ql::aes::mode::_192: ql::aes_192_decrypt_keep_size(string, key); break;
-			case ql::aes::mode::_256: ql::aes_256_decrypt_keep_size(string, key); break;
+			case ql::aes::mode::_128:
+				ql::aes_128_decrypt_keep_size(string, key);
+				break;
+			case ql::aes::mode::_192:
+				ql::aes_192_decrypt_keep_size(string, key);
+				break;
+			case ql::aes::mode::_256:
+				ql::aes_256_decrypt_keep_size(string, key);
+				break;
 		}
 	}
 
@@ -1420,9 +1446,15 @@ namespace ql
 	{
 		switch (mode)
 		{
-			case ql::aes::mode::_128: return ql::aes_128_decrypted_keep_size(string, key); break;
-			case ql::aes::mode::_192: return ql::aes_192_decrypted_keep_size(string, key); break;
-			case ql::aes::mode::_256: return ql::aes_256_decrypted_keep_size(string, key); break;
+			case ql::aes::mode::_128:
+				return ql::aes_128_decrypted_keep_size(string, key);
+				break;
+			case ql::aes::mode::_192:
+				return ql::aes_192_decrypted_keep_size(string, key);
+				break;
+			case ql::aes::mode::_256:
+				return ql::aes_256_decrypted_keep_size(string, key);
+				break;
 		}
 		return "";
 	}
@@ -1844,10 +1876,12 @@ namespace ql
 		return this->encrypt_single_hex(em);
 	}
 
-	bool ql::RSA::verify_RSASSA_PSS(const std::string& message,
-																	const std::string_view& signature,
-																	ql::hash_type hash_object,
-																	ql::size salt_length) const
+	bool ql::RSA::verify_RSASSA_PSS(
+			const std::string& message,
+			const std::string_view& signature,
+			ql::hash_type hash_object,
+			ql::size salt_length
+	) const
 	{
 		if (salt_length == ql::size_max)
 		{
@@ -1913,10 +1947,12 @@ namespace ql
 		return rsa.sign_RSASSA_PSS(signature, hash_object);
 	}
 
-	bool ql::RSASSA_PSS_verify(const std::string& message,
-														 const std::string_view& signature,
-														 const RSA_key_pair& public_key,
-														 ql::hash_type hash_object)
+	bool ql::RSASSA_PSS_verify(
+			const std::string& message,
+			const std::string_view& signature,
+			const RSA_key_pair& public_key,
+			ql::hash_type hash_object
+	)
 	{
 		ql::RSA rsa;
 		rsa.set_decryption_key(public_key);
@@ -1962,10 +1998,12 @@ namespace ql
 		this->cipher_key.set(mod, key);
 	}
 
-	std::optional<std::string> ql::RSASSA_PSS_OAEP::add_signature_and_encrypt(const std::string_view& message,
-																																						const std::string_view& signature,
-																																						std::string label,
-																																						ql::hash_type hash_object) const
+	std::optional<std::string> ql::RSASSA_PSS_OAEP::add_signature_and_encrypt(
+			const std::string_view& message,
+			const std::string_view& signature,
+			std::string label,
+			ql::hash_type hash_object
+	) const
 	{
 		if (this->empty())
 		{
@@ -1983,10 +2021,12 @@ namespace ql
 		return result;
 	}
 
-	std::optional<std::string> ql::RSASSA_PSS_OAEP::verify_and_decrypt(const std::string& message,
-																																		 const std::string_view& signature,
-																																		 std::string label,
-																																		 ql::hash_type hash_object) const
+	std::optional<std::string> ql::RSASSA_PSS_OAEP::verify_and_decrypt(
+			const std::string& message,
+			const std::string_view& signature,
+			std::string label,
+			ql::hash_type hash_object
+	) const
 	{
 		if (this->empty())
 		{

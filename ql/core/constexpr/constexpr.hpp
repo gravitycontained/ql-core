@@ -1,5 +1,5 @@
 #pragma once
- 
+
 #include <ql/core/constexpr/apply.hpp>
 #include <ql/core/constexpr/iterate.hpp>
 #include <ql/core/constexpr/chain.hpp>

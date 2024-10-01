@@ -576,7 +576,6 @@ namespace ql
 		}
 	};
 
-	
 	template <typename T = ql::f32>
 	using matrix2 = ql::matrixN<T, 2>;
 	using matrix2f = ql::matrix2<ql::f32>;
@@ -650,7 +649,7 @@ namespace ql
 		return matrixN<T, N>::filled(value) / mat;
 	}
 
-}
+}	 // namespace ql
 
 namespace std
 {

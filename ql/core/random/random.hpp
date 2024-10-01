@@ -17,20 +17,21 @@ namespace ql
 {
 	// 2^19937-1
 
-	template <typename Ty,
-						ql::u64 W,
-						ql::u64 N,
-						ql::u64 M,
-						ql::u64 R,
-						Ty P,
-						ql::u64 U,
-						Ty D,
-						ql::u64 S,
-						Ty B,
-						ql::u64 T,
-						Ty C,
-						ql::u64 L,
-						Ty F>
+	template <
+			typename Ty,
+			ql::u64 W,
+			ql::u64 N,
+			ql::u64 M,
+			ql::u64 R,
+			Ty P,
+			ql::u64 U,
+			Ty D,
+			ql::u64 S,
+			Ty B,
+			ql::u64 T,
+			Ty C,
+			ql::u64 L,
+			Ty F>
 	class mersenne_twister
 	{
 	 public:
@@ -217,34 +218,36 @@ namespace ql
 		static constexpr Ty LMSK = ~HMSK & WMSK;
 	};
 
-	using mt19937_32 = ql::mersenne_twister<ql::u32,
-																					 ql::bits_in_type<ql::u32>(),
-																					 624,
-																					 397,
-																					 31,
-																					 0x9908b0df,
-																					 11,
-																					 0xffffffff,
-																					 7,
-																					 0x9d2c5680,
-																					 15,
-																					 0xefc60000,
-																					 18,
-																					 1812433253>;
-	using mt19937_64 = ql::mersenne_twister<ql::u64,
-																					 ql::bits_in_type<ql::u64>(),
-																					 312,
-																					 156,
-																					 31,
-																					 0xb5026f5aa96619e9ULL,
-																					 29,
-																					 0x5555555555555555ULL,
-																					 17,
-																					 0x71d67fffeda60000ULL,
-																					 37,
-																					 0xfff7eee000000000ULL,
-																					 43,
-																					 6364136223846793005ULL>;
+	using mt19937_32 = ql::mersenne_twister<
+			ql::u32,
+			ql::bits_in_type<ql::u32>(),
+			624,
+			397,
+			31,
+			0x9908b0df,
+			11,
+			0xffffffff,
+			7,
+			0x9d2c5680,
+			15,
+			0xefc60000,
+			18,
+			1812433253>;
+	using mt19937_64 = ql::mersenne_twister<
+			ql::u64,
+			ql::bits_in_type<ql::u64>(),
+			312,
+			156,
+			31,
+			0xb5026f5aa96619e9ULL,
+			29,
+			0x5555555555555555ULL,
+			17,
+			0x71d67fffeda60000ULL,
+			37,
+			0xfff7eee000000000ULL,
+			43,
+			6364136223846793005ULL>;
 
 	template <ql::u32 bits>
 	class random_engine;
@@ -261,10 +264,11 @@ namespace ql
 		{
 		}
 
-		using type = typename ql::conditional<ql::if_true<ql::is_integer<T>()>,
-																					 std::uniform_int_distribution<T>,
-																					 ql::if_true<ql::is_floating_point<T>()>,
-																					 std::uniform_real_distribution<T>>;
+		using type = typename ql::conditional<
+				ql::if_true<ql::is_integer<T>()>,
+				std::uniform_int_distribution<T>,
+				ql::if_true<ql::is_floating_point<T>()>,
+				std::uniform_real_distribution<T>>;
 
 		void set_range(T min, T max)
 		{
@@ -312,8 +316,7 @@ namespace ql
 	class random_engine
 	{
 	 public:
-		using type =
-				typename ql::conditional<ql::if_true<bits == 32u>, ql::mt19937_32, ql::if_true<bits == 64u>, ql::mt19937_64>;
+		using type = typename ql::conditional<ql::if_true<bits == 32u>, ql::mt19937_32, ql::if_true<bits == 64u>, ql::mt19937_64>;
 
 		void seed(ql::u64 value)
 		{

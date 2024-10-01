@@ -311,8 +311,10 @@ namespace ql
 	template <typename T>
 	constexpr T bit_rotate_left(T val, ql::size rotation)
 	{
-		return (rotation >= ql::bits_in_type<T>() ? ql::bit_rotate_left(val, rotation % ql::bits_in_type<T>())
-																							: ((val >> (ql::bits_in_type<T>() - rotation)) | (val << rotation)));
+		return (
+				rotation >= ql::bits_in_type<T>() ? ql::bit_rotate_left(val, rotation % ql::bits_in_type<T>())
+																					: ((val >> (ql::bits_in_type<T>() - rotation)) | (val << rotation))
+		);
 	}
 
 	template <typename T>
@@ -321,4 +323,4 @@ namespace ql
 		return (rotation >= ql::bits_in_type<T>()) ? ql::bit_rotate_right(val, rotation % ql::bits_in_type<T>())
 																							 : ((val >> rotation) | (val << (ql::bits_in_type<T>() - rotation)));
 	}
-}
+}	 // namespace ql

@@ -47,4 +47,4 @@ namespace ql
 		}
 		return string.substr(string.size() - ending.size()) == ending;
 	}
-}
+}	 // namespace ql

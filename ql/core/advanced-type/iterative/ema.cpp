@@ -24,4 +24,4 @@ namespace ql
 	{
 		return this->last_ma;
 	}
-}
+}	 // namespace ql

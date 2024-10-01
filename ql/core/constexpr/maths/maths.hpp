@@ -24,12 +24,11 @@ namespace ql
 	{
 		using f_type = ql::conditional<ql::if_true<ql::is_floating_point<T>()>, T, ql::f64>;
 		return x >= 0 && x < std::numeric_limits<double>::infinity()
-							 ? ql::type_cast<T>(
-										 ql::detail::sqrt_helper<f_type>(ql::type_cast<f_type>(x), ql::type_cast<f_type>(x), f_type{0.0}))
+							 ? ql::type_cast<T>(ql::detail::sqrt_helper<f_type>(ql::type_cast<f_type>(x), ql::type_cast<f_type>(x), f_type{0.0})
+								 )
 							 : std::numeric_limits<double>::quiet_NaN();
 	}
 
-	
 	template <typename T, typename U>
 	constexpr auto div_mod(T a, U b)
 	{
@@ -38,7 +37,6 @@ namespace ql
 		return std::make_pair(div, mod);
 	}
 
-	
 	template <typename T>
 	requires (ql::is_integer<T>())
 	constexpr T approximate_multiple_down(T value, T multiple)

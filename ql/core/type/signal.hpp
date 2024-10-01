@@ -21,7 +21,8 @@ namespace ql
 		{
 			return std::false_type{};
 		}
-	}
+	}	 // namespace detail
+
 	template <typename T>
 	constexpr bool is_signal()
 	{
@@ -33,4 +34,4 @@ namespace ql
 	{
 		return ql::is_signal<T>();
 	}
-}
+}	 // namespace ql

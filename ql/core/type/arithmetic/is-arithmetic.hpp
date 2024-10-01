@@ -7,7 +7,7 @@
 
 namespace ql
 {
-	
+
 	template <typename T>
 	concept has_relevant_arithmetic_operators_c = requires(T a, T b) {
 		{ a* b };
@@ -69,8 +69,7 @@ namespace ql
 	};
 
 	template <ql::size exponent_bits, ql::size mantissa_bits>
-	struct is_ql_floating_point_impl<
-			ql::floating_point<exponent_bits, mantissa_bits>> : std::true_type
+	struct is_ql_floating_point_impl<ql::floating_point<exponent_bits, mantissa_bits>> : std::true_type
 	{
 	};
 
@@ -94,8 +93,7 @@ namespace ql
 	};
 
 	template <ql::u32 base, bool sign>
-	struct is_ql_dynamic_integer_impl<ql::dynamic_integer<base, sign>>
-			: std::true_type
+	struct is_ql_dynamic_integer_impl<ql::dynamic_integer<base, sign>> : std::true_type
 	{
 	};
 
@@ -108,8 +106,7 @@ namespace ql
 	template <typename T>
 	constexpr bool is_ql_arithmetic()
 	{
-		return is_ql_dynamic_integer<T>() || is_ql_integer<T>() ||
-					 is_ql_floating_point<T>();
+		return is_ql_dynamic_integer<T>() || is_ql_integer<T>() || is_ql_floating_point<T>();
 	}
 
 #ifdef ql_USE_INTRINSICS
@@ -139,8 +136,7 @@ namespace ql
 	};
 
 	template <ql::size bits>
-	struct is_ql_x64_integer_signed_impl<ql::x64_integer<bits, true>>
-			: std::true_type
+	struct is_ql_x64_integer_signed_impl<ql::x64_integer<bits, true>> : std::true_type
 	{
 	};
 
@@ -160,39 +156,32 @@ namespace ql
 	template <typename T>
 	constexpr bool is_arithmetic()
 	{
-		return std::is_arithmetic_v<T> || is_ql_integer<T>() ||
-					 is_ql_floating_point<T>() || is_ql_x64_integer<T>();
+		return std::is_arithmetic_v<T> || is_ql_integer<T>() || is_ql_floating_point<T>() || is_ql_x64_integer<T>();
 	}
 
 	template <typename T>
 	constexpr bool is_integer()
 	{
-		return std::numeric_limits<T>::is_integer || ql::is_ql_integer<T>() ||
-					 is_ql_x64_integer<T>();
+		return std::numeric_limits<T>::is_integer || ql::is_ql_integer<T>() || is_ql_x64_integer<T>();
 	}
 
 	template <typename T>
 	constexpr bool is_unsigned()
 	{
-		return !std::numeric_limits<T>::is_signed || !is_ql_integer_signed<T>() ||
-					 !is_ql_x64_integer_signed<T>();
+		return !std::numeric_limits<T>::is_signed || !is_ql_integer_signed<T>() || !is_ql_x64_integer_signed<T>();
 	}
 
 	template <typename T>
 	constexpr bool is_signed()
 	{
-		return std::numeric_limits<T>::is_signed || is_ql_integer_signed<T>() ||
-					 is_ql_x64_integer_signed<T>();
+		return std::numeric_limits<T>::is_signed || is_ql_integer_signed<T>() || is_ql_x64_integer_signed<T>();
 	}
 #else
-
-
 
 	template <typename T>
 	constexpr bool is_arithmetic()
 	{
-		return std::is_arithmetic_v<T> || ql::is_ql_integer<T>() ||
-					 ql::is_ql_floating_point<T>();
+		return std::is_arithmetic_v<T> || ql::is_ql_integer<T>() || ql::is_ql_floating_point<T>();
 	}
 
 	template <typename T>
@@ -242,53 +231,57 @@ namespace ql
 	template <typename T>
 	using signed_type = ql::conditional<
 			ql::if_true<ql::is_arithmetic<ql::decay<T>>()>,
-			ql::conditional<ql::if_true<ql::bits_in_type<T>() == std::size_t{8}>,
-											ql::i8,
-											ql::if_true<ql::bits_in_type<T>() == std::size_t{16}>,
-											ql::i16,
-											ql::if_true<ql::bits_in_type<T>() == std::size_t{32}>,
-											ql::i32,
-											ql::if_true<ql::bits_in_type<T>() == std::size_t{64}>,
-											ql::i64,
-											ql::default_error>,
+			ql::conditional<
+					ql::if_true<ql::bits_in_type<T>() == std::size_t{8}>,
+					ql::i8,
+					ql::if_true<ql::bits_in_type<T>() == std::size_t{16}>,
+					ql::i16,
+					ql::if_true<ql::bits_in_type<T>() == std::size_t{32}>,
+					ql::i32,
+					ql::if_true<ql::bits_in_type<T>() == std::size_t{64}>,
+					ql::i64,
+					ql::default_error>,
 			ql::default_error>;
 
 	template <typename T>
 	using unsigned_type = ql::conditional<
 			ql::if_true<ql::is_arithmetic<ql::decay_t<T>>()>,
-			ql::conditional<ql::if_true<ql::bits_in_type<T>() == std::size_t{8}>,
-											ql::u8,
-											ql::if_true<ql::bits_in_type<T>() == std::size_t{16}>,
-											ql::u16,
-											ql::if_true<ql::bits_in_type<T>() == std::size_t{32}>,
-											ql::u32,
-											ql::if_true<ql::bits_in_type<T>() == std::size_t{64}>,
-											ql::u64,
-											ql::default_error>,
+			ql::conditional<
+					ql::if_true<ql::bits_in_type<T>() == std::size_t{8}>,
+					ql::u8,
+					ql::if_true<ql::bits_in_type<T>() == std::size_t{16}>,
+					ql::u16,
+					ql::if_true<ql::bits_in_type<T>() == std::size_t{32}>,
+					ql::u32,
+					ql::if_true<ql::bits_in_type<T>() == std::size_t{64}>,
+					ql::u64,
+					ql::default_error>,
 			ql::default_error>;
 
 	template <typename T>
 	using int_type = ql::conditional<
 			ql::if_true<ql::is_arithmetic<ql::decay<T>>()>,
-			ql::conditional<ql::if_true<ql::is_integer<T>()>,
-											T,
-											ql::if_true<ql::bits_in_type<T>() == std::size_t{32}>,
-											ql::i32,
-											ql::if_true<ql::bits_in_type<T>() == std::size_t{64}>,
-											ql::i64,
-											ql::default_error>,
+			ql::conditional<
+					ql::if_true<ql::is_integer<T>()>,
+					T,
+					ql::if_true<ql::bits_in_type<T>() == std::size_t{32}>,
+					ql::i32,
+					ql::if_true<ql::bits_in_type<T>() == std::size_t{64}>,
+					ql::i64,
+					ql::default_error>,
 			ql::default_error>;
 
 	template <typename T>
 	using float_type = ql::conditional<
 			ql::if_true<ql::is_arithmetic<ql::decay<T>>()>,
-			ql::conditional<ql::if_true<ql::is_floating_point<T>()>,
-											T,
-											ql::if_true<ql::bits_in_type<T>() <= std::size_t{32}>,
-											ql::f32,
-											ql::if_true<ql::bits_in_type<T>() == std::size_t{64}>,
-											ql::f64,
-											ql::default_error>,
+			ql::conditional<
+					ql::if_true<ql::is_floating_point<T>()>,
+					T,
+					ql::if_true<ql::bits_in_type<T>() <= std::size_t{32}>,
+					ql::f32,
+					ql::if_true<ql::bits_in_type<T>() == std::size_t{64}>,
+					ql::f64,
+					ql::default_error>,
 			ql::default_error>;
 
 	constexpr bool char_is_signed()
@@ -311,10 +304,7 @@ namespace ql
 		return (WCHAR_MIN == 0);
 	}
 
-	using char_type = ql::conditional<ql::if_true<ql::char_is_signed()>,
-																		ql::i8,
-																		ql::if_true<ql::char_is_unsigned()>,
-																		ql::u8>;
+	using char_type = ql::conditional<ql::if_true<ql::char_is_signed()>, ql::i8, ql::if_true<ql::char_is_unsigned()>, ql::u8>;
 
 	using wchar_type = wchar_t;
 

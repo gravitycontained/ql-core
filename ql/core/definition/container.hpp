@@ -13,4 +13,4 @@ namespace ql
 #endif
 
 	}	 // namespace detail
-}
+}	 // namespace ql

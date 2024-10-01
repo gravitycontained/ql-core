@@ -17,4 +17,4 @@ namespace ql
 	{
 		return ql::linear_interpolation(ql::linear_interpolation(xx, xy, fx), ql::linear_interpolation(yx, yy, fx), fy);
 	}
-}
+}	 // namespace ql

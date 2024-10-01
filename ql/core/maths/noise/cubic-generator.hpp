@@ -22,6 +22,7 @@ namespace ql
 		T m_a, m_b, m_c, m_d;
 		T m_min, m_max;
 		ql::f64 m_speed;
+
 	 public:
 		cubic_generator_t(T min = 0, T max = 1)
 		{
@@ -338,4 +339,4 @@ namespace ql
 	using cubic_generator_vec3 = cubic_generator_vector3<ql::f32>;
 	using cubic_generator_vec3d = cubic_generator_vector3<ql::f64>;
 
-}
+}	 // namespace ql

@@ -46,33 +46,49 @@ namespace ql
 	constexpr auto bright_white = ql::print_color::bright_white;
 	constexpr auto bright_gray = ql::print_color::bright_gray;
 
-
 	constexpr auto reset = ql::print_color::reset;
 
 	constexpr auto to_termcolor(ql::print_color color)
 	{
 		switch (color)
 		{
-			case ql::print_color::blue: return termcolor::blue<char>;
-			case ql::print_color::green: return termcolor::green<char>;
-			case ql::print_color::aqua: return termcolor::cyan<char>;
-			case ql::print_color::red: return termcolor::red<char>;
-			case ql::print_color::purple: return termcolor::magenta<char>;
-			case ql::print_color::yellow: return termcolor::yellow<char>;
-			case ql::print_color::white: return termcolor::white<char>;
-			case ql::print_color::gray: return termcolor::grey<char>;
+			case ql::print_color::blue:
+				return termcolor::blue<char>;
+			case ql::print_color::green:
+				return termcolor::green<char>;
+			case ql::print_color::aqua:
+				return termcolor::cyan<char>;
+			case ql::print_color::red:
+				return termcolor::red<char>;
+			case ql::print_color::purple:
+				return termcolor::magenta<char>;
+			case ql::print_color::yellow:
+				return termcolor::yellow<char>;
+			case ql::print_color::white:
+				return termcolor::white<char>;
+			case ql::print_color::gray:
+				return termcolor::grey<char>;
 
-			case ql::print_color::bright_blue: return termcolor::bright_blue<char>;
-			case ql::print_color::bright_green: return termcolor::bright_green<char>;
-			case ql::print_color::bright_aqua: return termcolor::bright_cyan<char>;
-			case ql::print_color::bright_red: return termcolor::bright_red<char>;
-			case ql::print_color::bright_purple: return termcolor::bright_magenta<char>;
-			case ql::print_color::bright_yellow: return termcolor::bright_yellow<char>;
-			case ql::print_color::bright_white: return termcolor::bright_white<char>;
-			case ql::print_color::bright_gray: return termcolor::bright_grey<char>;
+			case ql::print_color::bright_blue:
+				return termcolor::bright_blue<char>;
+			case ql::print_color::bright_green:
+				return termcolor::bright_green<char>;
+			case ql::print_color::bright_aqua:
+				return termcolor::bright_cyan<char>;
+			case ql::print_color::bright_red:
+				return termcolor::bright_red<char>;
+			case ql::print_color::bright_purple:
+				return termcolor::bright_magenta<char>;
+			case ql::print_color::bright_yellow:
+				return termcolor::bright_yellow<char>;
+			case ql::print_color::bright_white:
+				return termcolor::bright_white<char>;
+			case ql::print_color::bright_gray:
+				return termcolor::bright_grey<char>;
 
-			case ql::print_color::reset: return termcolor::reset<char>;
+			case ql::print_color::reset:
+				return termcolor::reset<char>;
 		}
 		return termcolor::reset<char>;
 	}
-}
+}	 // namespace ql

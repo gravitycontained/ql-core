@@ -2,7 +2,6 @@
 
 #include <ql/core/string/compare.hpp>
 
-
 namespace ql
 {
 
@@ -448,8 +447,9 @@ namespace ql
 					break;
 				}
 			}
-			auto result = std::string_view(this->m_string.data() + std::distance(this->m_string.cbegin(), it),
-																		 std::distance(it, this->m_string.cend()));
+			auto result = std::string_view(
+					this->m_string.data() + std::distance(this->m_string.cbegin(), it), std::distance(it, this->m_string.cend())
+			);
 			return result;
 		}
 
@@ -486,8 +486,9 @@ namespace ql
 					break;
 				}
 			}
-			return std::string_view(this->m_string.data() + std::distance(this->m_string.cbegin(), it),
-															std::distance(it, this->m_string.cend()));
+			return std::string_view(
+					this->m_string.data() + std::distance(this->m_string.cbegin(), it), std::distance(it, this->m_string.cend())
+			);
 		}
 
 		std::string_view ql::filesys::path::get_file_name_view() const
@@ -533,8 +534,9 @@ namespace ql
 					break;
 				}
 			}
-			return std::string_view(this->m_string.data() + std::distance(this->m_string.cbegin(), it),
-															std::distance(it, this->m_string.cend() - end_slash));
+			return std::string_view(
+					this->m_string.data() + std::distance(this->m_string.cbegin(), it), std::distance(it, this->m_string.cend() - end_slash)
+			);
 		}
 
 		ql::filesys::path ql::filesys::path::with_file_name(std::string file_name) const
@@ -881,13 +883,17 @@ namespace ql
 				{
 					path_destination.create();
 				}
-				std::filesystem::copy(this->string(), path_destination.string(),
-															std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+				std::filesystem::copy(
+						this->string(), path_destination.string(),
+						std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive
+				);
 			}
 			else
 			{
-				std::filesystem::copy(this->string(), path_destination.string(),
-															std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+				std::filesystem::copy(
+						this->string(), path_destination.string(),
+						std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive
+				);
 			}
 		}
 
@@ -2115,8 +2121,7 @@ namespace ql
 			return result;
 		}
 
-		ql::filesys::paths
-		ql::filesys::path::search_recursively_where_extension_doesnt_equal(const std::string_view& extension) const
+		ql::filesys::paths ql::filesys::path::search_recursively_where_extension_doesnt_equal(const std::string_view& extension) const
 		{
 			ql::filesys::paths result;
 			auto directory = this->is_directory() ? this->string() : this->get_parent_branch().string();
@@ -2484,8 +2489,10 @@ namespace ql
 
 			for (auto& i : this->m_paths)
 			{
-				std::filesystem::copy(i.string(), destination.string(),
-															std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+				std::filesystem::copy(
+						i.string(), destination.string(),
+						std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive
+				);
 			}
 		}
 
@@ -2501,8 +2508,10 @@ namespace ql
 
 			for (auto& i : this->m_paths)
 			{
-				std::filesystem::copy(i.string(), destination.string(),
-															std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+				std::filesystem::copy(
+						i.string(), destination.string(),
+						std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive
+				);
 				i.remove();
 			}
 		}
@@ -2560,8 +2569,10 @@ namespace ql
 			{
 				if (i.is_file())
 				{
-					std::filesystem::copy(i.string(), destination.string(),
-																std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+					std::filesystem::copy(
+							i.string(), destination.string(),
+							std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive
+					);
 				}
 			}
 		}
@@ -2580,8 +2591,10 @@ namespace ql
 			{
 				if (i.is_file())
 				{
-					std::filesystem::copy(i.string(), destination.string(),
-																std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+					std::filesystem::copy(
+							i.string(), destination.string(),
+							std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive
+					);
 					i.remove();
 				}
 			}
@@ -2703,8 +2716,10 @@ namespace ql
 				}
 				else if (i.is_file())
 				{
-					std::filesystem::copy(i.string(), tree_destination.string(),
-																std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+					std::filesystem::copy(
+							i.string(), tree_destination.string(),
+							std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive
+					);
 				}
 			}
 		}
@@ -2744,8 +2759,10 @@ namespace ql
 				}
 				else if (i.is_file())
 				{
-					std::filesystem::copy(i.string(), tree_destination.string(),
-																std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+					std::filesystem::copy(
+							i.string(), tree_destination.string(),
+							std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive
+					);
 					i.remove();
 				}
 			}
@@ -3050,8 +3067,10 @@ namespace ql
 			this->m_paths.insert(this->m_paths.end(), list.m_paths.begin(), list.m_paths.end());
 		}
 
-		void ql::filesys::paths::list_recursively_add_where_extension_equals(const ql::filesys::path& directory,
-																																					const std::string_view& extension)
+		void ql::filesys::paths::list_recursively_add_where_extension_equals(
+				const ql::filesys::path& directory,
+				const std::string_view& extension
+		)
 		{
 			auto list = directory.search_recursively_where_extension_equals(extension);
 			this->m_paths.insert(this->m_paths.end(), list.m_paths.begin(), list.m_paths.end());
@@ -3076,8 +3095,10 @@ namespace ql
 			this->m_paths.insert(this->m_paths.end(), list.m_paths.begin(), list.m_paths.end());
 		}
 
-		void ql::filesys::paths::list_recursively_add_where_extension_contains(const ql::filesys::path& directory,
-																																						const std::string_view& str)
+		void ql::filesys::paths::list_recursively_add_where_extension_contains(
+				const ql::filesys::path& directory,
+				const std::string_view& str
+		)
 		{
 			auto list = directory.search_recursively_where_extension_contains(str);
 			this->m_paths.insert(this->m_paths.end(), list.m_paths.begin(), list.m_paths.end());
@@ -3128,8 +3149,8 @@ namespace ql
 			this->m_paths.insert(this->m_paths.end(), list.m_paths.begin(), list.m_paths.end());
 		}
 
-		void ql::filesys::paths::list_recursively_add_where_name_contains(const ql::filesys::path& directory,
-																																			 const std::string_view& str)
+		void
+		ql::filesys::paths::list_recursively_add_where_name_contains(const ql::filesys::path& directory, const std::string_view& str)
 		{
 			auto list = directory.search_recursively_where_name_contains(str);
 			this->m_paths.insert(this->m_paths.end(), list.m_paths.begin(), list.m_paths.end());
@@ -3155,8 +3176,10 @@ namespace ql
 			this->m_paths.insert(this->m_paths.end(), list.m_paths.begin(), list.m_paths.end());
 		}
 
-		void ql::filesys::paths::list_recursively_add_where_file_name_equals(const ql::filesys::path& directory,
-																																					const std::string_view& file_name)
+		void ql::filesys::paths::list_recursively_add_where_file_name_equals(
+				const ql::filesys::path& directory,
+				const std::string_view& file_name
+		)
 		{
 			auto list = directory.search_recursively_where_file_name_equals(file_name);
 			this->m_paths.insert(this->m_paths.end(), list.m_paths.begin(), list.m_paths.end());
@@ -3181,8 +3204,10 @@ namespace ql
 			this->m_paths.insert(this->m_paths.end(), list.m_paths.begin(), list.m_paths.end());
 		}
 
-		void ql::filesys::paths::list_recursively_add_where_file_name_contains(const ql::filesys::path& directory,
-																																						const std::string_view& str)
+		void ql::filesys::paths::list_recursively_add_where_file_name_contains(
+				const ql::filesys::path& directory,
+				const std::string_view& str
+		)
 		{
 			auto list = directory.search_recursively_where_file_name_contains(str);
 			this->m_paths.insert(this->m_paths.end(), list.m_paths.begin(), list.m_paths.end());
@@ -3201,15 +3226,19 @@ namespace ql
 			}
 		}
 
-		void ql::filesys::paths::list_add_where_extension_doesnt_equal(const ql::filesys::path& directory,
-																																		const std::string_view& extension)
+		void ql::filesys::paths::list_add_where_extension_doesnt_equal(
+				const ql::filesys::path& directory,
+				const std::string_view& extension
+		)
 		{
 			auto list = directory.search_where_extension_doesnt_equal(extension);
 			this->m_paths.insert(this->m_paths.end(), list.m_paths.begin(), list.m_paths.end());
 		}
 
-		void ql::filesys::paths::list_recursively_add_where_extension_doesnt_equal(const ql::filesys::path& directory,
-																																								const std::string_view& extension)
+		void ql::filesys::paths::list_recursively_add_where_extension_doesnt_equal(
+				const ql::filesys::path& directory,
+				const std::string_view& extension
+		)
 		{
 			auto list = directory.search_recursively_where_extension_doesnt_equal(extension);
 			this->m_paths.insert(this->m_paths.end(), list.m_paths.begin(), list.m_paths.end());
@@ -3235,8 +3264,10 @@ namespace ql
 			this->m_paths.insert(this->m_paths.end(), list.m_paths.begin(), list.m_paths.end());
 		}
 
-		void ql::filesys::paths::list_recursively_add_where_extension_doesnt_contain(const ql::filesys::path& directory,
-																																									const std::string_view& str)
+		void ql::filesys::paths::list_recursively_add_where_extension_doesnt_contain(
+				const ql::filesys::path& directory,
+				const std::string_view& str
+		)
 		{
 			auto list = directory.search_recursively_where_extension_doesnt_contain(str);
 			this->m_paths.insert(this->m_paths.end(), list.m_paths.begin(), list.m_paths.end());
@@ -3261,8 +3292,10 @@ namespace ql
 			this->m_paths.insert(this->m_paths.end(), list.m_paths.begin(), list.m_paths.end());
 		}
 
-		void ql::filesys::paths::list_recursively_add_where_name_doesnt_equal(const ql::filesys::path& directory,
-																																					 const std::string_view& name)
+		void ql::filesys::paths::list_recursively_add_where_name_doesnt_equal(
+				const ql::filesys::path& directory,
+				const std::string_view& name
+		)
 		{
 			auto list = directory.search_recursively_where_name_doesnt_equal(name);
 			this->m_paths.insert(this->m_paths.end(), list.m_paths.begin(), list.m_paths.end());
@@ -3287,8 +3320,10 @@ namespace ql
 			this->m_paths.insert(this->m_paths.end(), list.m_paths.begin(), list.m_paths.end());
 		}
 
-		void ql::filesys::paths::list_recursively_add_where_name_doesnt_contain(const ql::filesys::path& directory,
-																																						 const std::string_view& str)
+		void ql::filesys::paths::list_recursively_add_where_name_doesnt_contain(
+				const ql::filesys::path& directory,
+				const std::string_view& str
+		)
 		{
 			auto list = directory.search_recursively_where_name_doesnt_contain(str);
 			this->m_paths.insert(this->m_paths.end(), list.m_paths.begin(), list.m_paths.end());
@@ -3307,15 +3342,19 @@ namespace ql
 			}
 		}
 
-		void ql::filesys::paths::list_add_where_file_name_doesnt_equal(const ql::filesys::path& directory,
-																																		const std::string_view& file_name)
+		void ql::filesys::paths::list_add_where_file_name_doesnt_equal(
+				const ql::filesys::path& directory,
+				const std::string_view& file_name
+		)
 		{
 			auto list = directory.search_where_file_name_doesnt_equal(file_name);
 			this->m_paths.insert(this->m_paths.end(), list.m_paths.begin(), list.m_paths.end());
 		}
 
-		void ql::filesys::paths::list_recursively_add_where_file_name_doesnt_equal(const ql::filesys::path& directory,
-																																								const std::string_view& file_name)
+		void ql::filesys::paths::list_recursively_add_where_file_name_doesnt_equal(
+				const ql::filesys::path& directory,
+				const std::string_view& file_name
+		)
 		{
 			auto list = directory.search_recursively_where_file_name_doesnt_equal(file_name);
 			this->m_paths.insert(this->m_paths.end(), list.m_paths.begin(), list.m_paths.end());
@@ -3341,8 +3380,10 @@ namespace ql
 			this->m_paths.insert(this->m_paths.end(), list.m_paths.begin(), list.m_paths.end());
 		}
 
-		void ql::filesys::paths::list_recursively_add_where_file_name_doesnt_contain(const ql::filesys::path& directory,
-																																									const std::string_view& str)
+		void ql::filesys::paths::list_recursively_add_where_file_name_doesnt_contain(
+				const ql::filesys::path& directory,
+				const std::string_view& str
+		)
 		{
 			auto list = directory.search_recursively_where_file_name_doesnt_contain(str);
 			this->m_paths.insert(this->m_paths.end(), list.m_paths.begin(), list.m_paths.end());
@@ -3425,7 +3466,8 @@ namespace ql
 			for (ql::u32 i = 0u; i < splits; ++i)
 			{
 				auto file_name = ql::to_string(
-						path.string(), ".PART", ql::string_prepended(i, '0', ql::size_cast(std::log(splits) / std::log(10) + 1)));
+						path.string(), ".PART", ql::string_prepended(i, '0', ql::size_cast(std::log(splits) / std::log(10) + 1))
+				);
 				std::ofstream file(file_name.c_str(), std::ios::binary);
 				if (!file.good())
 				{
@@ -3792,8 +3834,7 @@ namespace ql
 			return directory.search_where_extension_equals(extension);
 		}
 
-		ql::filesys::paths
-		ql::filesys::search_where_extension_contains(const ql::filesys::path& directory, const std::string& regex)
+		ql::filesys::paths ql::filesys::search_where_extension_contains(const ql::filesys::path& directory, const std::string& regex)
 		{
 			return directory.search_where_extension_contains(regex);
 		}
@@ -3825,8 +3866,7 @@ namespace ql
 			return directory.search_where_name_doesnt_equal(name);
 		}
 
-		ql::filesys::paths
-		ql::filesys::search_where_name_doesnt_contain(const ql::filesys::path& directory, const std::string& regex)
+		ql::filesys::paths ql::filesys::search_where_name_doesnt_contain(const ql::filesys::path& directory, const std::string& regex)
 		{
 			return directory.search_where_name_doesnt_contain(regex);
 		}
@@ -4030,10 +4070,12 @@ namespace ql
 			return ql::encrypted_keep_size(ql::filesys::read_file(path), key, mode);
 		}
 
-		void ql::filesys::file_encrypt_to(const std::string& source_path,
-																			 const std::string& dest_path,
-																			 const std::string& key,
-																			 ql::aes::mode mode)
+		void ql::filesys::file_encrypt_to(
+				const std::string& source_path,
+				const std::string& dest_path,
+				const std::string& key,
+				ql::aes::mode mode
+		)
 		{
 			auto content = ql::filesys::file_encrypt(source_path, key, mode);
 			ql::filesys::write_data_file(content, dest_path);
@@ -4044,10 +4086,12 @@ namespace ql
 			return ql::decrypted_keep_size(ql::filesys::read_file(path), key, mode);
 		}
 
-		void ql::filesys::file_decrypt_to(const std::string& source_path,
-																			 const std::string& dest_path,
-																			 const std::string& key,
-																			 ql::aes::mode mode)
+		void ql::filesys::file_decrypt_to(
+				const std::string& source_path,
+				const std::string& dest_path,
+				const std::string& key,
+				ql::aes::mode mode
+		)
 		{
 			auto content = ql::filesys::file_decrypt(source_path, key, mode);
 			ql::filesys::write_data_file(content, dest_path);
@@ -4058,6 +4102,7 @@ namespace ql
 	{
 		return ql::filesys::read_file(path);
 	}
+
 	void ql::write_to_file(const std::string& text, const std::string& path)
 	{
 		return ql::filesys::write_to_file(text, path);
@@ -4139,11 +4184,13 @@ namespace ql
 		}
 	}
 
-	ql::filesys::paths ql::file_encrypter::encrypt(const std::string& key,
-																									 std::string output_name,
-																									 ql::aes::mode mode,
-																									 ql::filesys::path destination_path,
-																									 ql::size split_size)
+	ql::filesys::paths ql::file_encrypter::encrypt(
+			const std::string& key,
+			std::string output_name,
+			ql::aes::mode mode,
+			ql::filesys::path destination_path,
+			ql::size split_size
+	)
 	{
 		switch (mode)
 		{
@@ -4165,9 +4212,15 @@ namespace ql
 	{
 		switch (mode)
 		{
-			case ql::aes::mode::_128: return this->decrypt(key, ql::aes_128_decrypted_keep_size, destination_path); break;
-			case ql::aes::mode::_192: return this->decrypt(key, ql::aes_192_decrypted_keep_size, destination_path); break;
-			case ql::aes::mode::_256: return this->decrypt(key, ql::aes_256_decrypted_keep_size, destination_path); break;
+			case ql::aes::mode::_128:
+				return this->decrypt(key, ql::aes_128_decrypted_keep_size, destination_path);
+				break;
+			case ql::aes::mode::_192:
+				return this->decrypt(key, ql::aes_192_decrypted_keep_size, destination_path);
+				break;
+			case ql::aes::mode::_256:
+				return this->decrypt(key, ql::aes_256_decrypted_keep_size, destination_path);
+				break;
 		}
 		return {};
 	}

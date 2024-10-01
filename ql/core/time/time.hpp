@@ -120,62 +120,79 @@ namespace ql
 		get_string_pair_segments(bool short_string = true, bool weeks = true) const;
 		QL_SOURCE std::vector<std::string> get_string_segments(bool short_string = true, bool weeks = true) const;
 		QL_SOURCE std::vector<std::string> get_full_string_segments(bool short_string = true, bool weeks = true) const;
-		QL_SOURCE std::vector<std::string> get_string_active_segments(ql::size stop_at_segment,
-																															 bool short_string = true,
-																															 bool weeks = true,
-																															 ql::size precision = ql::size_max) const;
+		QL_SOURCE std::vector<std::string> get_string_active_segments(
+				ql::size stop_at_segment,
+				bool short_string = true,
+				bool weeks = true,
+				ql::size precision = ql::size_max
+		) const;
 
-		QL_SOURCE std::string string_full(std::string_view parantheses = "[]",
-																	 std::string_view seperation = " : ",
-																	 bool short_string = true,
-																	 bool weeks = true) const;
-		QL_SOURCE std::string string_until_segment(ql::size stop_at_segment,
-																						std::string_view parantheses = "[]",
-																						std::string_view seperation = " : ",
-																						bool short_string = true,
-																						bool weeks = true,
-																						ql::size precision = ql::size_max,
-																						bool use_and = true) const;
+		QL_SOURCE std::string string_full(
+				std::string_view parantheses = "[]",
+				std::string_view seperation = " : ",
+				bool short_string = true,
+				bool weeks = true
+		) const;
+		QL_SOURCE std::string string_until_segment(
+				ql::size stop_at_segment,
+				std::string_view parantheses = "[]",
+				std::string_view seperation = " : ",
+				bool short_string = true,
+				bool weeks = true,
+				ql::size precision = ql::size_max,
+				bool use_and = true
+		) const;
 
-		QL_SOURCE std::string string(std::string_view parantheses = "[]",
-															std::string_view seperation = " : ",
-															bool short_string = true,
-															bool weeks = true,
-															ql::size precision = ql::size_max) const;
-		QL_SOURCE std::string string_until_hour(std::string_view parantheses = "[]",
-																				 std::string_view seperation = " : ",
-																				 bool short_string = true,
-																				 bool weeks = true,
-																				 ql::size precision = ql::size_max) const;
-		QL_SOURCE std::string string_until_min(std::string_view parantheses = "[]",
-																				std::string_view seperation = " : ",
-																				bool short_string = true,
-																				bool weeks = true,
-																				ql::size precision = ql::size_max) const;
-		QL_SOURCE std::string string_until_sec(std::string_view parantheses = "[]",
-																				std::string_view seperation = " : ",
-																				bool short_string = true,
-																				bool weeks = true,
-																				ql::size precision = ql::size_max) const;
-		QL_SOURCE std::string string_until_ms(std::string_view parantheses = "[]",
-																			 std::string_view seperation = " : ",
-																			 bool short_string = true,
-																			 bool weeks = true,
-																			 ql::size precision = ql::size_max) const;
+		QL_SOURCE std::string string(
+				std::string_view parantheses = "[]",
+				std::string_view seperation = " : ",
+				bool short_string = true,
+				bool weeks = true,
+				ql::size precision = ql::size_max
+		) const;
+		QL_SOURCE std::string string_until_hour(
+				std::string_view parantheses = "[]",
+				std::string_view seperation = " : ",
+				bool short_string = true,
+				bool weeks = true,
+				ql::size precision = ql::size_max
+		) const;
+		QL_SOURCE std::string string_until_min(
+				std::string_view parantheses = "[]",
+				std::string_view seperation = " : ",
+				bool short_string = true,
+				bool weeks = true,
+				ql::size precision = ql::size_max
+		) const;
+		QL_SOURCE std::string string_until_sec(
+				std::string_view parantheses = "[]",
+				std::string_view seperation = " : ",
+				bool short_string = true,
+				bool weeks = true,
+				ql::size precision = ql::size_max
+		) const;
+		QL_SOURCE std::string string_until_ms(
+				std::string_view parantheses = "[]",
+				std::string_view seperation = " : ",
+				bool short_string = true,
+				bool weeks = true,
+				ql::size precision = ql::size_max
+		) const;
 
 		QL_SOURCE std::string
 		descriptive_string(ql::size precision = ql::size_max, bool weeks = true, ql::size stop_at_segment = ql::size_max) const;
-		QL_SOURCE std::string descriptive_string_no_and(ql::size precision = ql::size_max,
-																								 bool weeks = true,
-																								 ql::size stop_at_segment = ql::size_max) const;
+		QL_SOURCE std::string
+		descriptive_string_no_and(ql::size precision = ql::size_max, bool weeks = true, ql::size stop_at_segment = ql::size_max) const;
 		QL_SOURCE std::string
 		compact_string(ql::size precision = ql::size_max, bool weeks = true, ql::size stop_at_segment = ql::size_max) const;
 
-		QL_SOURCE std::string small_string(ql::size precision = 2u,
-																		bool weeks = true,
-																		bool short_string = true,
-																		std::string_view parantheses = "[]",
-																		std::string_view seperation = " : ") const;
+		QL_SOURCE std::string small_string(
+				ql::size precision = 2u,
+				bool weeks = true,
+				bool short_string = true,
+				std::string_view parantheses = "[]",
+				std::string_view seperation = " : "
+		) const;
 		QL_SOURCE std::string small_descriptive_string(ql::size precision = 2u, bool weeks = true) const;
 		QL_SOURCE std::string small_descriptive_string_no_and(ql::size precision = 2u, bool weeks = true) const;
 		QL_SOURCE std::string small_compact_string(ql::size precision = 2u, bool weeks = true) const;
@@ -613,8 +630,8 @@ namespace ql
 		QL_SOURCE bool has_progress() const;
 		QL_SOURCE void set_progress(ql::f64 progress, bool backwards = false);
 		QL_SOURCE ql::f64 get_progress() const;
-		//QL_SOURCE ql::f64 get_curve_progress(ql::f64 curve = 1.5) const;
-		//QL_SOURCE ql::f64 get_double_curve_progress(ql::f64 curve = 1.5) const;
+		// QL_SOURCE ql::f64 get_curve_progress(ql::f64 curve = 1.5) const;
+		// QL_SOURCE ql::f64 get_double_curve_progress(ql::f64 curve = 1.5) const;
 	};
 
 	template <typename T>

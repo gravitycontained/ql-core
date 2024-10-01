@@ -124,14 +124,15 @@ namespace ql
 		};
 
 		template <typename T, ql::size N>
-		using conditional_rgb = ql::conditional<ql::if_true<N == 1>,
-																						ql::detail::r_impl<T>,
-																						ql::if_true<N == 2>,
-																						ql::detail::rg_impl<T>,
-																						ql::if_true<N == 3>,
-																						ql::detail::rgb_impl<T>,
-																						ql::if_true<N == 4>,
-																						ql::detail::rgba_impl<T>>;
+		using conditional_rgb = ql::conditional<
+				ql::if_true<N == 1>,
+				ql::detail::r_impl<T>,
+				ql::if_true<N == 2>,
+				ql::detail::rg_impl<T>,
+				ql::if_true<N == 3>,
+				ql::detail::rgb_impl<T>,
+				ql::if_true<N == 4>,
+				ql::detail::rgba_impl<T>>;
 	}	 // namespace detail
 
 	template <typename T, ql::size N>
@@ -359,19 +360,23 @@ namespace ql
 			}
 			else if constexpr (N == 2)
 			{
-				return sf::Color(static_cast<sf::Uint8>(std::round(this->r * delta)), static_cast<sf::Uint8>(std::round(this->g * delta)),
-												 0);
+				return sf::Color(
+						static_cast<sf::Uint8>(std::round(this->r * delta)), static_cast<sf::Uint8>(std::round(this->g * delta)), 0
+				);
 			}
 			else if constexpr (N == 3)
 			{
-				return sf::Color(static_cast<sf::Uint8>(std::round(this->r * delta)), static_cast<sf::Uint8>(std::round(this->g * delta)),
-												 static_cast<sf::Uint8>(std::round(this->b * delta)));
+				return sf::Color(
+						static_cast<sf::Uint8>(std::round(this->r * delta)), static_cast<sf::Uint8>(std::round(this->g * delta)),
+						static_cast<sf::Uint8>(std::round(this->b * delta))
+				);
 			}
 			else
 			{
-				return sf::Color(static_cast<sf::Uint8>(std::round(this->r * delta)), static_cast<sf::Uint8>(std::round(this->g * delta)),
-												 static_cast<sf::Uint8>(std::round(this->b * delta)),
-												 static_cast<sf::Uint8>(std::round(this->a * delta)));
+				return sf::Color(
+						static_cast<sf::Uint8>(std::round(this->r * delta)), static_cast<sf::Uint8>(std::round(this->g * delta)),
+						static_cast<sf::Uint8>(std::round(this->b * delta)), static_cast<sf::Uint8>(std::round(this->a * delta))
+				);
 			}
 		}
 #endif

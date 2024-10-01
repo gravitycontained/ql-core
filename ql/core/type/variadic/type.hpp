@@ -14,4 +14,4 @@ namespace ql
 
 	template <typename... Ts>
 	using variadic_type_back = ql::tuple_type_back<std::tuple<Ts...>>;
-}
+}	 // namespace ql

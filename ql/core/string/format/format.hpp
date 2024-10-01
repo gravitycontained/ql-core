@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <ql/core/definition/definition.hpp>
 
 #include <ql/core/string/format/options.hpp>
@@ -25,7 +24,7 @@ namespace ql
 		QL_SOURCE std::string string_appended(const std::string_view& string, const std::string_view& append, ql::size length);
 	}	 // namespace detail
 
-	template<typename T>
+	template <typename T>
 	requires (ql::is_printable<T>())
 	std::string string_prepended(const T& value, auto prepend, ql::size length)
 	{
@@ -84,7 +83,7 @@ namespace ql
 		return stream.str();
 	}
 
-		// format is like (a, b)
+	// format is like (a, b)
 	template <typename... Args>
 	requires (ql::is_printable<Args...>())
 	std::string to_string_format(std::string_view format, Args&&... args)

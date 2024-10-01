@@ -440,7 +440,8 @@ namespace ql
 			list_recursively_add_where_extension_equals(const ql::filesys::path& directory, const std::string_view& extension);
 			QL_SOURCE void list_remove_where_extension_contains(const std::string_view& str);
 			QL_SOURCE void list_add_where_extension_contains(const ql::filesys::path& directory, const std::string_view& str);
-			QL_SOURCE void list_recursively_add_where_extension_contains(const ql::filesys::path& directory, const std::string_view& str);
+			QL_SOURCE void
+			list_recursively_add_where_extension_contains(const ql::filesys::path& directory, const std::string_view& str);
 
 			QL_SOURCE void list_remove_where_name_equals(const std::string_view& name);
 			QL_SOURCE void list_add_where_name_equals(const ql::filesys::path& directory, const std::string_view& name);
@@ -455,7 +456,8 @@ namespace ql
 			list_recursively_add_where_file_name_equals(const ql::filesys::path& directory, const std::string_view& file_name);
 			QL_SOURCE void list_remove_where_file_name_contains(const std::string_view& file_name);
 			QL_SOURCE void list_add_where_file_name_contains(const ql::filesys::path& directory, const std::string_view& str);
-			QL_SOURCE void list_recursively_add_where_file_name_contains(const ql::filesys::path& directory, const std::string_view& str);
+			QL_SOURCE void
+			list_recursively_add_where_file_name_contains(const ql::filesys::path& directory, const std::string_view& str);
 
 			QL_SOURCE void list_keep_where_extension_equals(const std::string_view& extension);
 			QL_SOURCE void list_add_where_extension_doesnt_equal(const ql::filesys::path& directory, const std::string_view& extension);
@@ -468,7 +470,8 @@ namespace ql
 
 			QL_SOURCE void list_keep_where_name_equals(const std::string_view& name);
 			QL_SOURCE void list_add_where_name_doesnt_equal(const ql::filesys::path& directory, const std::string_view& name);
-			QL_SOURCE void list_recursively_add_where_name_doesnt_equal(const ql::filesys::path& directory, const std::string_view& name);
+			QL_SOURCE void
+			list_recursively_add_where_name_doesnt_equal(const ql::filesys::path& directory, const std::string_view& name);
 			QL_SOURCE void list_keep_where_name_contains(const std::string_view& name);
 			QL_SOURCE void list_add_where_name_doesnt_contain(const ql::filesys::path& directory, const std::string_view& str);
 			QL_SOURCE void
@@ -643,15 +646,19 @@ namespace ql
 		}
 
 		QL_SOURCE std::string file_encrypt(const std::string& path, const std::string& key, ql::aes::mode mode = ql::aes::mode::_256);
-		QL_SOURCE void file_encrypt_to(const std::string& source_path,
-																const std::string& dest_path,
-																const std::string& key,
-																ql::aes::mode mode = ql::aes::mode::_256);
+		QL_SOURCE void file_encrypt_to(
+				const std::string& source_path,
+				const std::string& dest_path,
+				const std::string& key,
+				ql::aes::mode mode = ql::aes::mode::_256
+		);
 		QL_SOURCE std::string file_decrypt(const std::string& path, const std::string& key, ql::aes::mode mode = ql::aes::mode::_256);
-		QL_SOURCE void file_decrypt_to(const std::string& source_path,
-																const std::string& dest_path,
-																const std::string& key,
-																ql::aes::mode mode = ql::aes::mode::_256);
+		QL_SOURCE void file_decrypt_to(
+				const std::string& source_path,
+				const std::string& dest_path,
+				const std::string& key,
+				ql::aes::mode mode = ql::aes::mode::_256
+		);
 	}	 // namespace filesys
 
 	QL_SOURCE std::string read_file(const std::string& path);
@@ -706,11 +713,13 @@ namespace ql
 		}
 
 		template <typename F>
-		ql::filesys::paths encrypt(const std::string& key,
-																std::string output_name,
-																F&& encryption_function,
-																ql::filesys::path destination_path,
-																ql::size split_size = ql::size_max)
+		ql::filesys::paths encrypt(
+				const std::string& key,
+				std::string output_name,
+				F&& encryption_function,
+				ql::filesys::path destination_path,
+				ql::size split_size = ql::size_max
+		)
 		{
 			if (!destination_path.empty() && destination_path.string().back() != '/')
 			{
@@ -733,8 +742,8 @@ namespace ql
 				auto log = std::log10(splits.size() - 1) + 1;
 				for (ql::size i = 0u; i < splits.size(); ++i)
 				{
-					auto part_string = ql::to_string(".", this->keyword_string_part,
-																						ql::string_prepended(ql::to_string(i), '0', ql::size_cast(log)));
+					auto part_string =
+							ql::to_string(".", this->keyword_string_part, ql::string_prepended(ql::to_string(i), '0', ql::size_cast(log)));
 
 					auto path = encrypted_path;
 					path.append(part_string);
@@ -758,11 +767,13 @@ namespace ql
 			return this->paths;
 		}
 
-		ql::filesys::paths encrypt(const std::string& key,
-																std::string output_name,
-																ql::aes::mode mode,
-																ql::filesys::path destination_path = "",
-																ql::size split_size = ql::size_max);
+		ql::filesys::paths encrypt(
+				const std::string& key,
+				std::string output_name,
+				ql::aes::mode mode,
+				ql::filesys::path destination_path = "",
+				ql::size split_size = ql::size_max
+		);
 
 		template <typename F>
 		ql::filesys::paths decrypt(const std::string& key, F decryption_function, ql::filesys::path destination_path = "") const
@@ -807,11 +818,13 @@ namespace ql
 		bool adding_parts = false;
 
 		template <typename F>
-		void internal_decrypt(const std::string& string,
-													const std::string& key,
-													F decryption_function,
-													ql::filesys::path destination_path,
-													ql::filesys::paths& tree) const
+		void internal_decrypt(
+				const std::string& string,
+				const std::string& key,
+				F decryption_function,
+				ql::filesys::path destination_path,
+				ql::filesys::paths& tree
+		) const
 		{
 			auto str = decryption_function(string, key);
 

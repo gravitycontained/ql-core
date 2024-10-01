@@ -35,6 +35,7 @@ namespace ql
 		}
 		return result;
 	}
+
 	std::vector<std::string> ql::string_split_every(const std::string& string, ql::size n)
 	{
 		if (string.empty())
@@ -63,4 +64,4 @@ namespace ql
 		return result;
 	}
 
-}
+}	 // namespace ql

@@ -16,4 +16,4 @@ namespace ql
 			std::swap(container[i], container[engine.get(ql::size_cast(0ull), i)]);
 		}
 	}
-}
+}	 // namespace ql

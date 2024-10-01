@@ -451,22 +451,23 @@ namespace ql
 		concept vectorN_castable = requires(T a, U b) { a = b; };
 
 		template <typename T, ql::size N>
-		using vector_impl_conditional = ql::conditional<ql::if_true<N == 0>,
-																										ql::error_type,
-																										ql::if_true<N == 1>,
-																										impl::vector_impl_1<T, vectorN<T, N>>,
-																										ql::if_true<N == 2>,
-																										impl::vector_impl_2<T, vectorN<T, N>>,
-																										ql::if_true<N == 3>,
-																										impl::vector_impl_3<T, vectorN<T, N>>,
-																										ql::if_true<N == 4>,
-																										impl::vector_impl_4<T, vectorN<T, N>>,
-																										ql::if_true<N == 5>,
-																										impl::vector_impl_5<T, vectorN<T, N>>,
-																										ql::if_true<N == 6>,
-																										impl::vector_impl_6<T, vectorN<T, N>>,
-																										ql::default_type,
-																										impl::vector_impl_N<T, N>>;
+		using vector_impl_conditional = ql::conditional<
+				ql::if_true<N == 0>,
+				ql::error_type,
+				ql::if_true<N == 1>,
+				impl::vector_impl_1<T, vectorN<T, N>>,
+				ql::if_true<N == 2>,
+				impl::vector_impl_2<T, vectorN<T, N>>,
+				ql::if_true<N == 3>,
+				impl::vector_impl_3<T, vectorN<T, N>>,
+				ql::if_true<N == 4>,
+				impl::vector_impl_4<T, vectorN<T, N>>,
+				ql::if_true<N == 5>,
+				impl::vector_impl_5<T, vectorN<T, N>>,
+				ql::if_true<N == 6>,
+				impl::vector_impl_6<T, vectorN<T, N>>,
+				ql::default_type,
+				impl::vector_impl_N<T, N>>;
 	}	 // namespace detail
 
 	template <typename T, ql::size N>
@@ -1862,7 +1863,9 @@ namespace ql
 	}
 
 	constexpr auto vec_square4 = std::array{ql::vec(0, 0), ql::vec(1, 0), ql::vec(1, 1), ql::vec(0, 1)};
-	constexpr auto vec_diagonals4 = std::array{std::array{ql::vec(-1, -1), ql::vec(1, -1), ql::vec(1, 1), ql::vec(-1, 1)}};
+	constexpr auto vec_diagonals4 = std::array{
+			std::array{ql::vec(-1, -1), ql::vec(1, -1), ql::vec(1, 1), ql::vec(-1, 1)}
+	};
 	constexpr auto vec_cross4 = std::array{ql::vec(1, 0), ql::vec(0, 1), ql::vec(-1, 0), ql::vec(0, -1)};
 	constexpr auto vec_cross9 = std::array{ql::vec(-1, 0),	ql::vec(1, 0),	ql::vec(0, -1), ql::vec(0, 1),
 																				 ql::vec(-1, -1), ql::vec(1, -1), ql::vec(1, 1),	ql::vec(-1, 1)};

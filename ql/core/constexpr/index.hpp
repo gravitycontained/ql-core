@@ -5,15 +5,15 @@
 namespace ql
 {
 
-  template <ql::size Index, ql::size Size>
-  struct constexpr_index
-  {
-    constexpr operator ql::size()
-    {
-      return Index;
-    }
+	template <ql::size Index, ql::size Size>
+	struct constexpr_index
+	{
+		constexpr operator ql::size()
+		{
+			return Index;
+		}
 
-    constexpr static ql::size size = Size;
-    constexpr static ql::size i = Index;
-  };
-}
+		constexpr static ql::size size = Size;
+		constexpr static ql::size i = Index;
+	};
+}	 // namespace ql

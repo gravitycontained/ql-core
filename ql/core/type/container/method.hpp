@@ -17,7 +17,7 @@ namespace ql
 
 	template <typename T>
 	concept has_data_c = requires(T x) {
-		{ x.data() } -> std::same_as<ql::container_subtype<T> *>;
+		{ x.data() } -> std::same_as<ql::container_subtype<T>*>;
 	};
 
 	template <typename T>
@@ -27,7 +27,7 @@ namespace ql
 	}
 
 	template <typename T>
-	concept has_resize_c = requires(T &x) {
+	concept has_resize_c = requires(T& x) {
 		x.resize(ql::size{});
 		x.size();
 	};
@@ -39,7 +39,7 @@ namespace ql
 	};
 
 	template <typename T>
-	concept has_reserve_c = requires(T &x) { x.reserve(ql::size{}); };
+	concept has_reserve_c = requires(T& x) { x.reserve(ql::size{}); };
 
 	template <typename T>
 	constexpr bool has_reserve()
@@ -48,9 +48,7 @@ namespace ql
 	};
 
 	template <typename T>
-	concept has_push_back_c = requires(T &x) {
-		x.push_back(ql::declval<ql::container_subtype<T>>());
-	};
+	concept has_push_back_c = requires(T& x) { x.push_back(ql::declval<ql::container_subtype<T>>()); };
 
 	template <typename T>
 	constexpr bool has_push_back()
@@ -59,9 +57,7 @@ namespace ql
 	}
 
 	template <typename T>
-	concept has_emplace_back_c = requires(T &x) {
-		x.emplace_back(std::move(ql::declval<ql::container_subtype<T>>()));
-	};
+	concept has_emplace_back_c = requires(T& x) { x.emplace_back(std::move(ql::declval<ql::container_subtype<T>>())); };
 
 	template <typename T>
 	constexpr bool has_emplace_back()
@@ -70,7 +66,7 @@ namespace ql
 	}
 
 	template <typename T>
-	concept has_pop_back_c = requires(T &x) { x.pop_back(); };
+	concept has_pop_back_c = requires(T& x) { x.pop_back(); };
 
 	template <typename T>
 	constexpr bool has_pop_back()
@@ -79,8 +75,7 @@ namespace ql
 	}
 
 	template <typename T>
-	concept has_push_front_c =
-			requires(T &x) { x.push_front(ql::container_subtype<T>{}); };
+	concept has_push_front_c = requires(T& x) { x.push_front(ql::container_subtype<T>{}); };
 
 	template <typename T>
 	constexpr bool has_push_front()
@@ -89,7 +84,7 @@ namespace ql
 	}
 
 	template <typename T>
-	concept has_pop_front_c = requires(T &x) { x.pop_front(); };
+	concept has_pop_front_c = requires(T& x) { x.pop_front(); };
 
 	template <typename T>
 	constexpr bool has_pop_front()
@@ -98,8 +93,7 @@ namespace ql
 	}
 
 	template <typename T>
-	concept has_insert_c =
-			requires(T &x) { x.insert(ql::container_subtype<T>{}); };
+	concept has_insert_c = requires(T& x) { x.insert(ql::container_subtype<T>{}); };
 
 	template <typename T>
 	constexpr bool has_insert()
@@ -117,8 +111,7 @@ namespace ql
 	}
 
 	template <typename T>
-	concept has_erase_c =
-			requires(T &x) { x.erase(ql::container_subtype<T>{}); };
+	concept has_erase_c = requires(T& x) { x.erase(ql::container_subtype<T>{}); };
 
 	template <typename T>
 	constexpr bool has_erase()
@@ -257,4 +250,4 @@ namespace ql
 	{
 		return is_greater_equal_comparable_c<T, U>;
 	};
-}
+}	 // namespace ql

@@ -212,7 +212,7 @@ namespace ql
 		 public:
 			static const bool value = sizeof(test<Derived>(0)) == sizeof(yes);
 		};
-	}
+	}	 // namespace detail
 
 	template <typename F>
 	constexpr bool is_callable()

@@ -123,4 +123,4 @@ namespace ql
 		return sum;
 	}
 
-}
+}	 // namespace ql

@@ -19,4 +19,4 @@ namespace ql
 		QL_SOURCE void add(ql::f64 value);
 		QL_SOURCE ql::f64 get_average() const;
 	};
-}
+}	 // namespace ql

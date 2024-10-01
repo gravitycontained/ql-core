@@ -71,6 +71,7 @@ namespace ql
 				{
 					using type = ql::tuple_type<i, T>;
 					return ql::is_same<type, ql::true_type>() || ql::tuple_value<i>(tuple);
-				});
+				}
+		);
 	}
 }	 // namespace ql

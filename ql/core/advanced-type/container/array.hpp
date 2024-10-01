@@ -20,8 +20,9 @@ namespace ql
 			if (index >= this->size())
 			{
 				std::ostringstream stream;
-				stream << ql::to_string("ql::array<", ql::type_name<T>(), ", ", N, ">", at ? ".at()" : "::operator[]", " : index is ",
-																 index);
+				stream << ql::to_string(
+						"ql::array<", ql::type_name<T>(), ", ", N, ">", at ? ".at()" : "::operator[]", " : index is ", index
+				);
 				ql::i32 convert = ql::i32_cast(index);
 				if (convert < 0)
 				{
@@ -74,4 +75,4 @@ namespace ql
 			return std::array<T, N>::at(index);
 		}
 	};
-}
+}	 // namespace ql
