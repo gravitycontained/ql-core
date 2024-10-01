@@ -11,6 +11,7 @@ namespace ql
 		std::string string;
 
 		exception(const ql::exception& other) = default;
+		exception(ql::exception&& other) = default;
 
 		template <typename... Args>
 		exception(Args&&... args)
