@@ -12,7 +12,7 @@
 #include <set>
 #include <functional>
 
-#ifdef ql_INTERN_SFML_USE
+#ifdef QL_SFML
 namespace qsf
 {
 	struct event_info;
@@ -616,7 +616,7 @@ namespace ql
 		QL_SOURCE void reset_and_start_reverse();
 		QL_SOURCE void set_duration(ql::f64 duration);
 		QL_SOURCE void update(ql::f64 frame_time);
-#ifdef ql_INTERN_SFML_USE
+#ifdef QL_SFML
 		QL_SOURCE void update(const qsf::event_info& event);
 #endif
 		QL_SOURCE bool is_running() const;
@@ -630,8 +630,8 @@ namespace ql
 		QL_SOURCE bool has_progress() const;
 		QL_SOURCE void set_progress(ql::f64 progress, bool backwards = false);
 		QL_SOURCE ql::f64 get_progress() const;
-		// QL_SOURCE ql::f64 get_curve_progress(ql::f64 curve = 1.5) const;
-		// QL_SOURCE ql::f64 get_double_curve_progress(ql::f64 curve = 1.5) const;
+		QL_SOURCE ql::f64 get_curve_progress(ql::f64 curve = 1.5) const;
+		QL_SOURCE ql::f64 get_double_curve_progress(ql::f64 curve = 1.5) const;
 	};
 
 	template <typename T>

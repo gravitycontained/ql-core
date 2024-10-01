@@ -532,7 +532,7 @@ namespace ql
 			return result;
 		}
 
-#if defined ql_INTERN_GLM_USE
+#if defined QL_GLM
 		template <typename U>
 		operator glm::mat<N, N, U>() const
 		{

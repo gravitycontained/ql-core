@@ -18,11 +18,11 @@
 #include <iomanip>
 #include <numeric>
 
-#if defined QL_INTERN_SFML_USE
+#if defined QL_SFML
 #include <SFML/Graphics.hpp>
 #endif
 
-#if defined QL_INTERN_GLM_USE
+#if defined QL_GLM
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
@@ -524,7 +524,7 @@ namespace ql
 			*this = value;
 		}
 
-#if defined ql_INTERN_SFML_USE
+#if defined QL_SFML
 		template <typename U>
 		constexpr vectorN(const sf::Vector2<U>& other) : impl_type()
 		{
@@ -562,7 +562,7 @@ namespace ql
 		}
 #endif
 
-#if defined ql_INTERN_GLM_USE
+#if defined QL_GLM
 		template <glm::length_t L, typename T, glm::qualifier Q = glm::defaultp>
 		constexpr vectorN(const glm::vec<L, T, Q>& other) : impl_type()
 		{

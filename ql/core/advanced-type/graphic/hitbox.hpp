@@ -1,7 +1,7 @@
 #pragma once
 
 #include <ql/core/advanced-type/fundamental/vector.hpp>
-#include <ql/core/advanced-type/graphics/straight-line.hpp>
+#include <ql/core/advanced-type/graphic/straight-line.hpp>
 
 namespace ql
 {

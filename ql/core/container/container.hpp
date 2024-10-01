@@ -3,6 +3,8 @@
 #include <ql/core/definition/definition.hpp>
 #include <ql/core/type/type.hpp>
 
+#include <algorithm>
+
 namespace ql
 {
 
@@ -122,5 +124,121 @@ namespace ql
 		}
 		return sum;
 	}
+
+	template <typename C, typename T>
+	requires (ql::is_container<C>())
+	constexpr auto lower_bound(const C& container, T&& value)
+	{
+		return std::lower_bound(ql::cbegin(container), ql::cend(container), value);
+	}
+
+	template <typename C, typename T>
+	requires (ql::is_container<C>())
+	constexpr auto upper_bound(const C& container, T&& value)
+	{
+		return std::upper_bound(ql::cbegin(container), ql::cend(container), value);
+	}
+
+	template <typename C, typename T>
+	requires (ql::is_container<C>())
+	constexpr ql::size find_lower_index_sorted(const C& container, T&& value)
+	{
+		auto it = ql::lower_bound(container, value);
+		if (*it == value)
+		{
+			return std::distance(ql::cbegin(container), it);
+		}
+		else
+		{
+			return ql::size_max;
+		}
+	}
+
+	template <typename C, typename T>
+	requires (ql::is_container<C>())
+	constexpr ql::size find_upper_index_sorted(const C& container, T&& value)
+	{
+		auto it = ql::upper_bound(container, value);
+		--it;
+		if (*it == value)
+		{
+			return std::distance(ql::cbegin(container), it);
+		}
+		else
+		{
+			return ql::size_max;
+		}
+	}
+
+	template <typename C, typename T>
+	requires (ql::is_container<C>())
+	constexpr ql::size find_upper_index(const C& container, T&& value)
+	{
+		if constexpr (ql::is_sorted_container<C>())
+		{
+			return ql::find_upper_index_sorted(container, value);
+		}
+		else
+		{
+			bool found = false;
+			ql::size index = 0u;
+			for (auto& i : container)
+			{
+				if (!found && i == value)
+				{
+					found = true;
+				}
+				else if (found && i != value)
+				{
+					return index;
+				}
+				++index;
+			}
+			return ql::size_max;
+		}
+	}
+
+	template <typename C, typename T>
+	requires (ql::is_container<C>() && ql::is_equal_comparable<ql::container_subtype<C>, T>())
+	constexpr ql::size count_sorted(const C& container, T&& value)
+	{
+		auto lower_index = ql::find_lower_index_sorted(container, value);
+		auto upper_index = ql::find_upper_index_sorted(container, value);
+		if (lower_index == ql::size_max)
+		{
+			return 0u;
+		}
+		return (upper_index - lower_index) + 1;
+	}
+
+	template <typename C, typename T>
+	requires (ql::is_container<C>() && ql::is_equal_comparable<ql::container_subtype<C>, T>())
+	constexpr ql::size count(const C& container, T&& value)
+	{
+		if constexpr (ql::is_sorted_container<C>())
+		{
+			return ql::count_sorted(container, value);
+		}
+		else
+		{
+			ql::size sum = 0u;
+			for (auto& i : container)
+			{
+				if (i == value)
+				{
+					++sum;
+				}
+			}
+			return sum;
+		}
+	}
+
+	template <typename C>
+	std::pair<ql::container_subtype<C>, ql::container_subtype<C>> min_max(const C& data)
+	{
+		auto v = std::minmax_element(data.cbegin(), data.cend());
+		return {*(v.first), *(v.second)};
+	}
+
 
 }	 // namespace ql

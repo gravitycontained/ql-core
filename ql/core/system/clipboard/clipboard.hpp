@@ -1,7 +1,7 @@
 #pragma once
 
 #include <ql/core/definition/definition.hpp>
-#ifdef QL_INTERN_SFML_USE
+#ifdef QL_SFML
 
 #include <SFML/Graphics.hpp>
 

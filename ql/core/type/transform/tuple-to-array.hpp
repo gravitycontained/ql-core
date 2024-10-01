@@ -3,6 +3,7 @@
 #include <ql/core/constexpr/constexpr.hpp>
 #include <ql/core/type/tuple/is-tuple.hpp>
 #include <ql/core/type/tuple/value.hpp>
+#include <ql/core/transform/cast/cast.hpp>
 
 #include <array>
 
@@ -14,7 +15,9 @@ namespace ql
 	{
 		std::array<ql::tuple_type_front<T>, ql::tuple_size<T>()> result{};
 
-		ql::constexpr_iterate<ql::tuple_size<T>()>([&](auto i) { result[i] = ql::tuple_value<i>(tuple); });
+		ql::constexpr_iterate<ql::tuple_size<T>()>([&](auto i)
+																							 { result[i] = ql::type_cast<ql::tuple_type_front<T>>(ql::tuple_value<i>(tuple)); }
+		);
 
 		return result;
 	}

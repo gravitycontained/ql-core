@@ -4,7 +4,7 @@
 
 namespace ql
 {
-	std::vector<std::string> ql::string_split(const std::string_view& string, char by_what)
+	std::vector<std::string> string_split(const std::string_view& string, char by_what)
 	{
 		std::vector<std::string> result;
 
@@ -36,7 +36,39 @@ namespace ql
 		return result;
 	}
 
-	std::vector<std::string> ql::string_split_every(const std::string& string, ql::size n)
+	std::vector<std::string> string_split_allow_empty(const std::string_view& string, char by_what)
+	{
+		std::vector<std::string> result;
+
+		ql::size before = 0;
+		for (ql::size i = 0u; i < string.length();)
+		{
+			if (string[i] == by_what)
+			{
+				if (i - before)
+				{
+					result.emplace_back(std::string{string.substr(before, i - before)});
+				}
+				++i;
+				while (i < string.length() && string[i] == by_what)
+				{
+					result.push_back("");
+					++i;
+				}
+				before = i;
+			}
+			else
+			{
+				++i;
+			}
+		}
+		if (before != string.length())
+		{
+			result.emplace_back(std::string{string.substr(before)});
+		}
+		return result;
+	}
+	std::vector<std::string> string_split_every(const std::string& string, ql::size n)
 	{
 		if (string.empty())
 		{

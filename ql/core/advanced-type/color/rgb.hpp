@@ -323,7 +323,7 @@ namespace ql
 			return *this;
 		}
 
-#if defined ql_INTERN_SFML_USE
+#if defined QL_SFML
 		constexpr rgbN(sf::Color color)
 		{
 			*this = color;
