@@ -5,6 +5,7 @@
 #include <ql/core/type/compare/compare.hpp>
 #include <ql/core/type/tuple/tuple.hpp>
 #include <functional>
+#include <type_traits>
 
 namespace ql
 {
@@ -181,13 +182,42 @@ namespace ql
 		return std::is_member_function_pointer_v<F>;
 	}
 
-	template <typename F>
-	concept is_callable_c = requires(F f) { std::function{f}; };
+	namespace detail
+	{
+		template <typename T>
+		struct is_callable
+		{
+		 private:
+			typedef char (&yes)[1];
+			typedef char (&no)[2];
+
+			struct Fallback
+			{
+				void operator()();
+			};
+
+			struct Derived : T, Fallback
+			{
+			};
+
+			template <typename U, U>
+			struct Check;
+
+			template <typename>
+			static yes test(...);
+
+			template <typename C>
+			static no test(Check<void (Fallback::*)(), &C::operator()>*);
+
+		 public:
+			static const bool value = sizeof(test<Derived>(0)) == sizeof(yes);
+		};
+	}
 
 	template <typename F>
 	constexpr bool is_callable()
 	{
-		return is_callable_c<F>;
+		return ql::detail::is_callable<F>::value;
 	}
 
 	template <typename... Args>
@@ -279,5 +309,12 @@ namespace ql
 	constexpr ql::size function_size()
 	{
 		return ql::tuple_size<ql::function_type<F>>();
+	}
+
+	template <typename F, typename T>
+	requires (ql::is_callable<F>())
+	constexpr bool is_invocable_with()
+	{
+		return std::is_invocable_v<F, T>;
 	}
 }	 // namespace ql

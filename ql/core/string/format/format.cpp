@@ -1,4 +1,4 @@
-#include <ql/core/string/format.hpp>
+#include <ql/core/string/format/format.hpp>
 #include <sstream>
 
 namespace ql

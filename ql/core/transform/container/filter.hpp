@@ -5,7 +5,8 @@
 namespace ql
 {
 	template <typename C, typename F>
-	requires (ql::is_container<C>() && std::is_invocable_v<F, ql::container_subtype<C>> && ql::return_size<F>() == 1 && ql::is_same<ql::return_type<F>, bool>())
+	requires (ql::is_container<C>() && ql::is_invocable_with<F, ql::container_subtype<C>>() && ql::return_size<F>() == 1 &&
+						ql::is_same<ql::return_type<F>, bool>())
 	constexpr auto filter(C container, F&& func)
 	{
 		C result;
@@ -22,7 +23,7 @@ namespace ql
 }	 // namespace ql
 
 template <typename C, typename F>
-requires (ql::is_container<C>() && std::is_invocable_v<F, ql::container_subtype<C>> && ql::return_size<F>() == 1 &&
+requires (ql::is_container<C>() && ql::is_invocable_with<F, ql::container_subtype<C>>() && ql::return_size<F>() == 1 &&
 					ql::is_same<ql::return_type<F>, bool>())
 constexpr void operator<<(C container, F&& func)
 {

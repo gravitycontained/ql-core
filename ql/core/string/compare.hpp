@@ -38,4 +38,13 @@ namespace ql
 		}
 		return true;
 	}
+
+	constexpr bool string_ends_with(const std::string_view& string, const std::string_view& ending)
+	{
+		if (string.size() < ending.size())
+		{
+			return false;
+		}
+		return string.substr(string.size() - ending.size()) == ending;
+	}
 }

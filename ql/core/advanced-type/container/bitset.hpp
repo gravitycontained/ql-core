@@ -4,7 +4,7 @@
 
 #include <ql/core/advanced-type/container/array.hpp>
 
-#include <ql/core/string/base.hpp>
+#include <ql/core/string/base/base.hpp>
 
 #include <ql/core/type/type.hpp>
 

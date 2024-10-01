@@ -1,4 +1,4 @@
-#include <ql/core/string/base.hpp>
+#include <ql/core/string/base/base.hpp>
 
 #include <ql/core/transform/bit/bit.hpp>
 

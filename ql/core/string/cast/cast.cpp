@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ql/core/string/cast.hpp>
+#include <ql/core/string/cast/cast.hpp>
 #include <ql/core/transform/cast/cast.hpp>
 
 namespace ql

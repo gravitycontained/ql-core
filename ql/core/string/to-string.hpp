@@ -5,11 +5,12 @@
 #include <ql/core/type/tuple/tuple.hpp>
 #include <ql/core/type/variadic/type.hpp>
 #include <ql/core/type/variadic/value.hpp>
+#include <ql/core/string/format/options.hpp>
 
 namespace ql
 {
 	template <typename... Args>
-	//requires (ql::is_printable<Args>() && ...)
+	requires (ql::is_printable<Args>() && ...)
 	std::string to_string(Args&&... args)
 	{
 		if constexpr (sizeof...(Args) == 1u && ql::is_same<ql::variadic_type<0u, Args...>, std::string>())
@@ -18,6 +19,7 @@ namespace ql
 		}
 
 		std::ostringstream stream;
+
 		auto add_to_stream = [&]<typename T>(T value)
 		{
 			if constexpr (ql::has_to_string<T>())
@@ -45,7 +47,7 @@ namespace ql
 				if constexpr (ql::tuple_size<T>() > 1)
 				{
 					auto unpack = [&]<ql::size... Ints>(std::index_sequence<Ints...>)
-					{ ((stream << ql::to_string(std::get<Ints>(value)) << ", "), ...); };
+					{ ((stream << ql::to_string(ql::tuple_value<Ints>(value)) << ", "), ...); };
 					unpack(std::make_index_sequence<ql::tuple_size<T>() - 1>());
 				}
 				stream << ql::to_string(ql::tuple_value_back(value)) << '}';

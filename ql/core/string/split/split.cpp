@@ -1,4 +1,4 @@
-#include <ql/core/string/split.hpp>
+#include <ql/core/string/split/split.hpp>
 
 #include <ql/core/transform/limit.hpp>
 

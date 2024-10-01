@@ -3,6 +3,8 @@
 
 #include <ql/core/definition/definition.hpp>
 
+#include <ql/core/string/format/options.hpp>
+
 #include <ql/core/type/type.hpp>
 
 #include <ql/core/string/to-string.hpp>

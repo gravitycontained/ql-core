@@ -44,6 +44,7 @@ namespace ql
 	constexpr auto bright_purple = ql::print_color::bright_purple;
 	constexpr auto bright_aqua = ql::print_color::bright_aqua;
 	constexpr auto bright_white = ql::print_color::bright_white;
+	constexpr auto bright_gray = ql::print_color::bright_gray;
 
 
 	constexpr auto reset = ql::print_color::reset;

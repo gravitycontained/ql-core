@@ -11,6 +11,8 @@
 #include <ql/core/type/container/container.hpp>
 #include <ql/core/type/functional/functional.hpp>
 #include <ql/core/type/reference.hpp>
+#include <ql/core/type/signal.hpp>
 #include <ql/core/type/string/string.hpp>
 #include <ql/core/type/transform/transform.hpp>
 #include <ql/core/type/tuple/tuple.hpp>
+#include <ql/core/type/variadic/variadic.hpp>

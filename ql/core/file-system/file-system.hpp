@@ -10,7 +10,7 @@
 #include <ql/core/advanced-type/memory/save-state.hpp>
 
 #include <ql/core/transform/sort.hpp>
-#include <ql/core/string/format.hpp>
+#include <ql/core/string/format/format.hpp>
 #include <string>
 
 #include <filesystem>

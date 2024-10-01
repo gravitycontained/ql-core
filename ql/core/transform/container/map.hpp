@@ -5,8 +5,8 @@
 namespace ql
 {
 	template <typename C, typename F>
-	requires (ql::is_container<C>() && std::is_invocable_v < F,
-						ql::reference<ql::container_subtype<C>>> && ql::return_size<F>() == 0)
+	requires (ql::is_container<C>() && ql::is_invocable_with<F, ql::reference<ql::container_subtype<C>>>() &&
+						ql::return_size<F>() == 0)
 	constexpr void map(C& container, F&& func)
 	{
 		for (auto& i : container)
@@ -16,7 +16,10 @@ namespace ql
 	}
 
 	template <typename C, typename F>
-	requires (ql::is_container<C>() && std::is_invocable_v<F, ql::container_subtype<C>> && ql::return_size<F>() == 1)
+	requires (ql::is_container<C>() &&
+		ql::is_invocable_with<F, ql::container_subtype<C>>() && ql::return_size<F>() == 1 &&
+		std::convertible_to<ql::return_type<F>, ql::container_subtype<C>>
+	)
 	constexpr auto map(C container, F&& func)
 	{
 		for (auto& i : container)
@@ -29,7 +32,7 @@ namespace ql
 }	 // namespace ql
 
 template <typename C, typename F>
-requires (ql::is_container<C>() && std::is_invocable_v<F, ql::reference<ql::container_subtype<C>>> &&
+requires (ql::is_container<C>() && ql::is_invocable_with<F, ql::reference<ql::container_subtype<C>>>() &&
 					ql::return_size<F>() == 0)
 constexpr void operator>>(C& container, F&& func)
 {
@@ -37,7 +40,7 @@ constexpr void operator>>(C& container, F&& func)
 }
 
 template <typename C, typename F>
-requires (ql::is_container<C>() && std::is_invocable_v<F, ql::container_subtype<C>> && ql::return_size<F>() == 1)
+requires (ql::is_container<C>() && ql::is_invocable_with<F, ql::container_subtype<C>>() && ql::return_size<F>() == 1)
 constexpr C operator>>(C container, F&& func)
 {
 	return ql::map(container, std::forward<F>(func));

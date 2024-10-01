@@ -10,10 +10,8 @@ namespace ql
 	{
 		std::string string;
 
-		exception(const ql::exception& other) = default;
-		exception(ql::exception&& other) = default;
-
 		template <typename... Args>
+		requires (!ql::is_any_type_decayed_equal_to<ql::exception, Args...>())
 		exception(Args&&... args)
 		{
 			this->string = ql::to_string(args...);

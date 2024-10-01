@@ -8,7 +8,7 @@
 
 #include <ql/core/maths/arithmetic/arithmetic.hpp>
 
-#include <ql/core/string/format.hpp>
+#include <ql/core/string/format/format.hpp>
 
 namespace ql
 {
