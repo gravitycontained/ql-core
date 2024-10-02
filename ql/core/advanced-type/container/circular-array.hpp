@@ -487,4 +487,4 @@ namespace ql
 		bool rotation_finished = false;
 	};
 
-}
+}	 // namespace ql

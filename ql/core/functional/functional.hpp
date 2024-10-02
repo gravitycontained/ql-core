@@ -1,3 +1,3 @@
 #pragma once
 
-#include <ql/core/functional/iterate/iterate.hpp>
+#include <ql/core/functional/recursive-iterate.hpp>

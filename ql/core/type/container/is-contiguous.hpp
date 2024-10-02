@@ -21,11 +21,12 @@ namespace ql
 			constexpr static bool value = true;
 			using type = typename T::iterator::iterator_concept;
 		};
-	}
+	}	 // namespace detail
+
 	template <typename T>
 	constexpr bool is_contiguous_container()
 	{
 		return ql::is_same_decayed<typename ql::detail::has_iterator_concept_type<T>::type, std::contiguous_iterator_tag>() &&
 					 ql::has_data<T>();
 	}
-}
+}	 // namespace ql

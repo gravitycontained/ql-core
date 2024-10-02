@@ -2,6 +2,7 @@
 
 #include <ql/core/definition/definition.hpp>
 #include <ql/core/type/tuple/is-tuple.hpp>
+#include <ql/core/type/compare/compare.hpp>
 
 namespace ql
 {
@@ -9,7 +10,7 @@ namespace ql
 	requires (ql::is_tuple<T>())
 	constexpr ql::size tuple_size()
 	{
-		return std::tuple_size_v<T>;
+		return std::tuple_size_v<ql::full_decay<T>>;
 	}
 
 	template <typename T>

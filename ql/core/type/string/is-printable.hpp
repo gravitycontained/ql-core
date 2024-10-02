@@ -5,7 +5,9 @@
 #include <ql/core/type/container/subtype.hpp>
 #include <ql/core/type/compare/compare.hpp>
 #include <ql/core/type/tuple/is-tuple.hpp>
+#include <ql/core/type/tuple/size.hpp>
 #include <ql/core/type/string/has-to-string.hpp>
+#include <ql/core/type/functional/functional.hpp>
 
 #include <ql/core/advanced-type/color/print-color.hpp>
 
@@ -34,60 +36,21 @@ namespace ql
 		concept is_u32_printable_c = requires(const T t, std::basic_ostringstream<char32_t> stream) { stream << t; };
 
 		template <typename T>
-		concept is_std_printable_c = is_cout_printable_c<T> || is_wcout_printable_c<T> || is_u32_printable_c<T>;
+		concept is_any_printable_c = is_cout_printable_c<T> || is_wcout_printable_c<T> || is_u32_printable_c<T>;
 
 		template <typename T>
-		constexpr bool is_std_printable()
+		constexpr bool is_any_printable()
 		{
-			return is_std_printable_c<T>;
-		}
-
-		template <typename T>
-		constexpr bool is_printable()
-		{
-			if constexpr (ql::has_to_string<T>())
-			{
-				return true;
-			}
-			if constexpr (ql::is_same_decayed<T, ql::print_color>())
-			{
-				return true;
-			}
-			else if constexpr (ql::is_container<T>())
-			{
-				return ql::detail::is_printable<ql::container_subtype<T>>();
-			}
-			else if constexpr (ql::is_tuple<T>())
-			{
-				constexpr auto size = ql::tuple_size<T>();
-				return ql::constexpr_and_chain<size>([&](auto i) { return ql::detail::is_printable<ql::tuple_type<i, T>>(); });
-			}
-			else if constexpr (ql::is_pair<T>())
-			{
-				auto check = [&]<typename... Ts>(std::pair<Ts...>)
-				{
-					constexpr auto b = (ql::detail::is_printable<Ts>() && ...);
-					if constexpr (b)
-					{
-						return std::true_type{};
-					}
-					else
-					{
-						return std::false_type{};
-					}
-				};
-				return decltype(check(ql::declval<T>()))::value;
-			}
-			else
-			{
-				return (static_cast<bool>(ql::detail::is_std_printable_c<T>));
-			}
+			return is_any_printable_c<T>;
 		}
 	}	 // namespace detail
 
 	template <typename... Args>
 	constexpr bool is_printable()
 	{
-		return ((ql::detail::is_printable<Args>()) && ...);
+		return ql::recursive_type_check<std::tuple<Args...>>(
+				[]<typename T>()
+				{ return ql::has_to_string<T>() || ql::detail::is_any_printable<T>() || ql::is_same_decayed<T, ql::print_color>(); }
+		);
 	}
 }	 // namespace ql

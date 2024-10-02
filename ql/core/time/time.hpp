@@ -13,7 +13,7 @@
 #include <functional>
 
 #ifdef QL_SFML
-namespace qsf
+namespace ql
 {
 	struct event_info;
 }
@@ -617,7 +617,7 @@ namespace ql
 		QL_SOURCE void set_duration(ql::f64 duration);
 		QL_SOURCE void update(ql::f64 frame_time);
 #ifdef QL_SFML
-		QL_SOURCE void update(const qsf::event_info& event);
+		QL_SOURCE void update(const ql::event_info& event);
 #endif
 		QL_SOURCE bool is_running() const;
 		QL_SOURCE bool is_reversed() const;

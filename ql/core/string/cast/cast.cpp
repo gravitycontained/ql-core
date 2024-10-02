@@ -43,7 +43,6 @@ namespace ql
 		return result;
 	}
 
-	
 	std::string wstring_to_string(const std::wstring& string)
 	{
 		return ql::to_basic_string<char>(string);

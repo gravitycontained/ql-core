@@ -49,7 +49,8 @@ namespace ql
 			else if constexpr (ql::is_pair<T>())
 			{
 				result += ql::to_basic_string<char_type>('{') + ql::to_basic_string<char_type>(value.first) +
-									ql::to_basic_string<char_type>(", ") + ql::to_basic_string<char_type>(value.second) + ql::to_basic_string<char_type>('}');
+									ql::to_basic_string<char_type>(", ") + ql::to_basic_string<char_type>(value.second) +
+									ql::to_basic_string<char_type>('}');
 			}
 			else if constexpr (ql::is_char_type<T>())
 			{
@@ -82,5 +83,133 @@ namespace ql
 
 	QL_SOURCE std::string wstring_to_string(const std::wstring& string);
 	QL_SOURCE std::wstring string_to_wstring(const std::string& string);
+
+	template <typename T>
+	T string_cast(const std::string_view& string)
+	{
+		if constexpr (ql::is_ql_integer<T>() || ql::is_ql_floating_point<T>())
+		{
+			return T(string);
+		}
+		else
+		{
+			T value;
+			std::from_chars(string.data(), string.data() + string.size(), value);
+
+			return value;
+		}
+	}
+
+	template <typename T>
+	T string_cast(const char* str)
+	{
+		return ql::string_cast<T>(std::string_view{str});
+	}
+
+	template <typename T>
+	T string_cast(const std::string& string)
+	{
+		if constexpr (ql::is_same_decayed<T, ql::f64>())
+		{
+			return std::stod(string);
+		}
+		else if constexpr (ql::is_same_decayed<T, ql::f32>())
+		{
+			return std::stof(string);
+		}
+		else if constexpr (ql::is_same_decayed<T, ql::i8>())
+		{
+			return static_cast<ql::i8>(std::stoi(string));
+		}
+		else if constexpr (ql::is_same_decayed<T, ql::u8>())
+		{
+			return static_cast<ql::u8>(std::stoul(string));
+		}
+		else if constexpr (ql::is_same_decayed<T, ql::i16>())
+		{
+			return static_cast<ql::i16>(std::stoi(string));
+		}
+		else if constexpr (ql::is_same_decayed<T, ql::u16>())
+		{
+			return static_cast<ql::u16>(std::stoul(string));
+		}
+		else if constexpr (ql::is_same_decayed<T, ql::i32>())
+		{
+			return std::stoi(string);
+		}
+		else if constexpr (ql::is_same_decayed<T, ql::u32>())
+		{
+			return static_cast<ql::u32>(std::stoul(string));
+		}
+		else if constexpr (ql::is_same_decayed<T, ql::i64>())
+		{
+			return std::stoll(string);
+		}
+		else if constexpr (ql::is_same_decayed<T, ql::u64>())
+		{
+			return std::stoull(string);
+		}
+		else if constexpr (ql::is_same_decayed<T, std::wstring>())
+		{
+			return ql::string_to_wstring(string);
+		}
+		else if constexpr (ql::is_same_decayed<T, std::string>())
+		{
+			return string;
+		}
+	}
+
+	template <typename T>
+	T string_cast(const std::wstring& string)
+	{
+		if constexpr (ql::is_same_decayed<T, ql::f64>())
+		{
+			return std::wcstod(string.data(), nullptr);
+		}
+		else if constexpr (ql::is_same_decayed<T, ql::f32>())
+		{
+			return std::wcstof(string.data(), nullptr);
+		}
+		else if constexpr (ql::is_same_decayed<T, ql::i8>())
+		{
+			return static_cast<ql::i8>(std::wcstol(string.data(), nullptr, 10));
+		}
+		else if constexpr (ql::is_same_decayed<T, ql::u8>())
+		{
+			return static_cast<ql::u8>(std::wcstoul(string.data(), nullptr, 10));
+		}
+		else if constexpr (ql::is_same_decayed<T, ql::i16>())
+		{
+			return static_cast<ql::i16>(std::wcstol(string.data(), nullptr, 10));
+		}
+		else if constexpr (ql::is_same_decayed<T, ql::u16>())
+		{
+			return static_cast<ql::u16>(std::wcstoul(string.data(), nullptr, 10));
+		}
+		else if constexpr (ql::is_same_decayed<T, ql::i32>())
+		{
+			return static_cast<ql::i32>(std::wcstol(string.data(), nullptr, 10));
+		}
+		else if constexpr (ql::is_same_decayed<T, ql::u32>())
+		{
+			return static_cast<ql::u32>(std::wcstoul(string.data(), nullptr, 10));
+		}
+		else if constexpr (ql::is_same_decayed<T, ql::i64>())
+		{
+			return std::wcstoll(string.data(), nullptr, 10);
+		}
+		else if constexpr (ql::is_same_decayed<T, ql::u64>())
+		{
+			return std::wcstoull(string.data(), nullptr, 10);
+		}
+		else if constexpr (ql::is_same_decayed<T, std::wstring>())
+		{
+			return string;
+		}
+		else if constexpr (ql::is_same_decayed<T, std::string>())
+		{
+			return ql::wstring_to_string(string);
+		}
+	}
 
 }	 // namespace ql

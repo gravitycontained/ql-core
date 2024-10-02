@@ -1,6 +1,12 @@
 #pragma once
 
 #include <ql/core/definition/definition.hpp>
+
+#include <ql/core/type/container/is-container.hpp>
+#include <ql/core/type/container/subtype.hpp>
+
+#include <ql/core/constexpr/chain.hpp>
+
 #include <ql/core/type/declval.hpp>
 #include <ql/core/type/compare/compare.hpp>
 #include <ql/core/type/tuple/tuple.hpp>
@@ -316,5 +322,29 @@ namespace ql
 	constexpr bool is_invocable_with()
 	{
 		return std::is_invocable_v<F, T>;
+	}
+
+	template <typename T, typename F>
+	constexpr bool recursive_type_check(F&& function)
+	{
+		if constexpr (ql::is_container<T>())
+		{
+			return ql::recursive_type_check<ql::container_subtype<T>>(std::forward<F>(function));
+		}
+		else if constexpr (ql::is_tuple<T>())
+		{
+			constexpr auto size = ql::tuple_size<T>();
+			return ql::constexpr_and_chain<size>([&](auto i)
+																					 { return ql::recursive_type_check<ql::tuple_type<i, T>>(std::forward<F>(function)); });
+		}
+		else if constexpr (ql::is_pair<T>())
+		{
+			return ql::constexpr_and_chain<2>([&](auto i)
+																				{ return ql::recursive_type_check<ql::tuple_type<i, T>>(std::forward<F>(function)); });
+		}
+		else
+		{
+			return std::forward<F>(function).template operator()<T>();
+		}
 	}
 }	 // namespace ql

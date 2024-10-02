@@ -498,7 +498,7 @@ namespace ql
 		}
 
 		template <typename U>
-		requires (!ql::is_vectorN<U>())
+		requires (!ql::is_vectorN<U>() && !ql::is_tuple<U>())
 		constexpr vectorN(const std::initializer_list<U>& list) : impl_type()
 		{
 			*this = list;
@@ -511,7 +511,7 @@ namespace ql
 		}
 
 		template <typename... Args>
-		requires (sizeof...(Args) > 1)
+		requires (ql::variadic_size<Args...>() > 1)
 		constexpr vectorN(Args&&... list) : impl_type()
 		{
 			*this = ql::tuple_to_array(std::make_tuple(std::forward<Args>(list)...));
@@ -522,6 +522,13 @@ namespace ql
 		constexpr vectorN(U value) : impl_type()
 		{
 			*this = value;
+		}
+
+		template <typename T>
+		requires (ql::is_tuple<T>())
+		constexpr vectorN(const T& tuple) : impl_type()
+		{
+			*this = tuple;
 		}
 
 #if defined QL_SFML
@@ -626,8 +633,16 @@ namespace ql
 			return *this;
 		}
 
+		template <typename T>
+		requires (ql::is_tuple<T>())
+		constexpr vectorN& operator=(const T& tuple)
+		{
+			this->data = ql::tuple_to_array(tuple);
+			return *this;
+		}
+
 		template <typename U>
-		requires (!ql::is_vectorN<U>())
+		requires (!ql::is_vectorN<U>() && !ql::is_tuple<U>())
 		constexpr vectorN& operator=(const std::initializer_list<U>& list)
 		{
 			if (list.size() == 0)

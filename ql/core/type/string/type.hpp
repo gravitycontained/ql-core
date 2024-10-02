@@ -98,19 +98,19 @@ namespace ql
 	template <typename T>
 	constexpr bool is_string_type(T value)
 	{
-		return is_string_type<T>();
+		return ql::is_string_type<T>();
 	}
 
 	template <typename T>
 	constexpr bool is_standard_string_type(T value)
 	{
-		return is_standard_string_type<T>();
+		return ql::is_standard_string_type<T>();
 	}
 
 	template <typename T>
 	constexpr bool is_wstring_type(T value)
 	{
-		return is_wstring_type<T>();
+		return ql::is_wstring_type<T>();
 	}
 
 	template <typename T>
@@ -127,5 +127,23 @@ namespace ql
 				std::remove_const_t<T>, char*, char[], const char*, const char[], wchar_t*, wchar_t[], const wchar_t*, const wchar_t[],
 				char8_t*, char8_t[], const char8_t*, const char8_t[], char16_t*, char16_t[], const char16_t*, const char16_t[], char32_t*,
 				char32_t[], const char32_t*, const char32_t[]>();
+	}
+
+	template <typename... Args>
+	constexpr bool is_any_string(Args&&... args)
+	{
+		return (ql::is_string_type<Args>() || ...);
+	}
+
+	template <typename... Args>
+	constexpr bool is_any_standard_string(Args&&... args)
+	{
+		return (ql::is_standard_string_type<Args>() || ...);
+	}
+
+	template <typename... Args>
+	constexpr bool is_any_wstring(Args&&... args)
+	{
+		return (ql::is_wstring_type<Args>() || ...);
 	}
 }	 // namespace ql
