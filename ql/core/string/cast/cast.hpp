@@ -49,8 +49,7 @@ namespace ql
 			else if constexpr (ql::is_pair<T>())
 			{
 				result += ql::to_basic_string<char_type>('{') + ql::to_basic_string<char_type>(value.first) +
-									ql::to_basic_string<char_type>(", ");
-				+ql::to_basic_string<char_type>(value.second) + ql::to_basic_string<char_type>('}');
+									ql::to_basic_string<char_type>(", ") + ql::to_basic_string<char_type>(value.second) + ql::to_basic_string<char_type>('}');
 			}
 			else if constexpr (ql::is_char_type<T>())
 			{
@@ -80,4 +79,8 @@ namespace ql
 	{
 		return ql::to_basic_string<ql::u32>(args...);
 	}
+
+	QL_SOURCE std::string wstring_to_string(const std::wstring& string);
+	QL_SOURCE std::wstring string_to_wstring(const std::string& string);
+
 }	 // namespace ql

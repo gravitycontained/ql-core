@@ -3,7 +3,10 @@
 #if defined QL_SFML
 
 #include <ql/core/definition/definition.hpp>
-#include <ql/system.hpp>
+#include <ql/core/system/system.hpp>
+#include <ql/core/transform/interpolate/interpolate.hpp>
+#include <ql/core/transform/cast/cast.hpp>
+#include <ql/graphic/resources.hpp>
 
 namespace ql
 {
@@ -12,22 +15,22 @@ namespace ql
 		ql::button ql::detail::button;
 	}
 
-	ql : vec2 ql::vbutton::get_position() const
+	ql::vec2 ql::vbutton::get_position() const
 	{
 		return this->background.position;
 	}
 
-	void ql::vbutton::set_dimension(ql : vec2 dimension)
+	void ql::vbutton::set_dimension(ql::vec2 dimension)
 	{
 		this->background.dimension = dimension;
 	}
 
-	void ql::vbutton::set_position(ql : vec2 position)
+	void ql::vbutton::set_position(ql::vec2 position)
 	{
 		this->background.position = position;
 	}
 
-	void ql::vbutton::set_center(ql : vec2 center)
+	void ql::vbutton::set_center(ql::vec2 center)
 	{
 		this->background.set_center(center);
 	}
@@ -177,17 +180,17 @@ namespace ql
 		return *this;
 	}
 
-	void ql::button::set_dimension(ql : vec2 dimension)
+	void ql::button::set_dimension(ql::vec2 dimension)
 	{
 		this->background.set_dimension(dimension);
 	}
 
-	void ql::button::set_position(ql : vec2 position)
+	void ql::button::set_position(ql::vec2 position)
 	{
 		this->background.set_position(position);
 	}
 
-	void ql::button::set_center(ql : vec2 center)
+	void ql::button::set_center(ql::vec2 center)
 	{
 		this->background.set_center(center);
 	}
@@ -234,17 +237,17 @@ namespace ql
 		this->text.set_string(text);
 	}
 
-	ql : vec2 ql::button::get_dimension() const
+	ql::vec2 ql::button::get_dimension() const
 	{
 		return this->background.get_dimension();
 	}
 
-	ql : vec2 ql::button::get_position() const
+	ql::vec2 ql::button::get_position() const
 	{
 		return this->background.get_position();
 	}
 
-	ql : vec2 ql::button::get_center() const
+	ql::vec2 ql::button::get_center() const
 	{
 		return this->background.get_center();
 	}
@@ -358,7 +361,7 @@ namespace ql
 		this->simple_hitbox = false;
 	}
 
-	void ql::smooth_button::set_hitbox_increase(ql : vec2 delta)
+	void ql::smooth_button::set_hitbox_increase(ql::vec2 delta)
 	{
 		this->hitbox_increase = delta;
 	}
@@ -375,13 +378,13 @@ namespace ql
 		this->rectangle.polygon.set_color(color);
 	}
 
-	void ql::smooth_button::set_dimension(ql : vec2 dimension)
+	void ql::smooth_button::set_dimension(ql::vec2 dimension)
 	{
 		this->smooth_layout.set_dimension(dimension);
 		this->layout_changed = true;
 	}
 
-	void ql::smooth_button::set_position(ql : vec2 position)
+	void ql::smooth_button::set_position(ql::vec2 position)
 	{
 		this->smooth_layout.set_position(position);
 		this->layout_changed = true;
@@ -393,7 +396,7 @@ namespace ql
 		this->layout_changed = true;
 	}
 
-	void ql::smooth_button::set_center(ql : vec2 center)
+	void ql::smooth_button::set_center(ql::vec2 center)
 	{
 		this->smooth_layout.set_center(center);
 		this->layout_changed = true;
@@ -427,7 +430,7 @@ namespace ql
 		this->layout_changed = true;
 	}
 
-	void ql::smooth_button::set_background_slope_dimension(ql : vec2 dimension)
+	void ql::smooth_button::set_background_slope_dimension(ql::vec2 dimension)
 	{
 		this->smooth_layout.set_slope_dimension(dimension);
 		this->layout_changed = true;
@@ -485,12 +488,12 @@ namespace ql
 		this->text.set_letter_spacing(spacing);
 	}
 
-	void ql::smooth_button::set_text_position(ql : vec2 position)
+	void ql::smooth_button::set_text_position(ql::vec2 position)
 	{
 		this->text.set_position(position);
 	}
 
-	void ql::smooth_button::set_text_center(ql : vec2 position)
+	void ql::smooth_button::set_text_center(ql::vec2 position)
 	{
 		this->text.set_center(position);
 	}
@@ -510,22 +513,22 @@ namespace ql
 		this->text.set_center(this->smooth_layout.get_center());
 	}
 
-	ql : vec2 ql::smooth_button::get_hitbox_increase() const
+	ql::vec2 ql::smooth_button::get_hitbox_increase() const
 	{
 		return this->hitbox_increase;
 	}
 
-	ql : vec2 ql::smooth_button::get_dimension() const
+	ql::vec2 ql::smooth_button::get_dimension() const
 	{
 		return this->smooth_layout.get_dimension();
 	}
 
-	ql : vec2 ql::smooth_button::get_position() const
+	ql::vec2 ql::smooth_button::get_position() const
 	{
 		return this->smooth_layout.get_position();
 	}
 
-	ql : vec2 ql::smooth_button::get_center() const
+	ql::vec2 ql::smooth_button::get_center() const
 	{
 		return this->smooth_layout.get_center();
 	}
@@ -555,7 +558,7 @@ namespace ql
 		return this->smooth_layout.get_outline_color();
 	}
 
-	ql : vec2 ql::smooth_button::get_slope_dimension() const
+	ql::vec2 ql::smooth_button::get_slope_dimension() const
 	{
 		return this->smooth_layout.get_slope_dimension();
 	}
@@ -600,12 +603,12 @@ namespace ql
 		return this->text.get_letter_spacing();
 	}
 
-	ql : vec2 ql::smooth_button::get_text_position() const
+	ql::vec2 ql::smooth_button::get_text_position() const
 	{
 		return this->text.get_visible_hitbox().position;
 	}
 
-	ql : vec2 ql::smooth_button::get_text_center() const
+	ql::vec2 ql::smooth_button::get_text_center() const
 	{
 		return this->text.get_visible_hitbox().get_center();
 	}
@@ -778,7 +781,7 @@ namespace ql
 		this->line_mouse_hitbox.dimension = (back.position + back.dimension) - front.position;
 	}
 
-	void ql::text_field::line::move(ql : vec2 delta)
+	void ql::text_field::line::move(ql::vec2 delta)
 	{
 		this->text.move(delta);
 		this->line_hitbox.move(delta);
@@ -927,7 +930,7 @@ namespace ql
 		return this->background.get_hitbox();
 	}
 
-	void ql::text_field::set_background_increase(ql : vec2 increase)
+	void ql::text_field::set_background_increase(ql::vec2 increase)
 	{
 		this->background_increase = increase;
 	}
@@ -967,12 +970,12 @@ namespace ql
 		this->background.set_color(color);
 	}
 
-	ql : vec2 ql::text_field::get_background_increase() const
+	ql::vec2 ql::text_field::get_background_increase() const
 	{
 		return this->background_increase;
 	}
 
-	void ql::text_field::set_minimum_dimension(ql : vec2 dimension)
+	void ql::text_field::set_minimum_dimension(ql::vec2 dimension)
 	{
 		this->minimum_dimension = dimension;
 		this->update_required = true;
@@ -990,7 +993,7 @@ namespace ql
 		this->update_required = true;
 	}
 
-	void ql::text_field::set_maximum_dimension(ql : vec2 dimension)
+	void ql::text_field::set_maximum_dimension(ql::vec2 dimension)
 	{
 		this->maximum_dimension = dimension;
 		this->update_required = true;
@@ -1008,7 +1011,7 @@ namespace ql
 		this->update_required = true;
 	}
 
-	void ql::text_field::set_fixed_dimension(ql : vec2 dimension)
+	void ql::text_field::set_fixed_dimension(ql::vec2 dimension)
 	{
 		this->minimum_dimension = this->maximum_dimension = dimension;
 		this->update_required = true;
@@ -1026,13 +1029,13 @@ namespace ql
 		this->update_required = true;
 	}
 
-	void ql::text_field::set_position(ql : vec2 position)
+	void ql::text_field::set_position(ql::vec2 position)
 	{
 		auto delta = position - this->hitbox.position;
 		this->move(delta);
 	}
 
-	void ql::text_field::set_dimension(ql : vec2 dimension)
+	void ql::text_field::set_dimension(ql::vec2 dimension)
 	{
 		this->hitbox.set_dimension(dimension);
 		this->update_required = true;
@@ -3325,7 +3328,7 @@ namespace ql
 		if (this->background_hover_animation.is_running())
 		{
 			auto p = this->background_hover_animation.get_progress();
-			auto curve = ql::smooth_slope(p);
+			auto curve = ql::smooth_curve(p, 1.5);
 			this->background.set_color(this->background_color.interpolated(this->background_color_hover, curve));
 		}
 	}
@@ -3384,7 +3387,6 @@ namespace ql
 
 	void ql::console::print()
 	{
-		ql::use_default_print_functions();
 		ql::println("string: ", this->string.string());
 		ql::println("input string: ", this->input_string.string());
 		ql::println("string and input: ", this->string_and_input.string());
@@ -3430,9 +3432,6 @@ namespace ql
 		ql::println("allow text dragging: ", this->allow_text_dragging);
 		ql::println("allow going up with cursor: ", this->allow_going_up_with_cursor);
 		ql::println("border texture set: ", this->border_texture_set);
-
-		ql::use_custom_print_functions();
-	}
 
 	void ql::console::press_enter_to_continue_mode()
 	{
@@ -4382,7 +4381,8 @@ namespace ql
 		if (this->scroll_transition_animation.is_running())
 		{
 			auto p = this->scroll_transition_animation.get_progress();
-			auto curve = ql::smooth_slope(p);
+			//auto curve = ql::smooth_slope(p);
+			auto curve = ql::smooth_curve(p, 1.5);
 			this->view.position.y =
 					ql::f32_cast(ql::linear_interpolation(this->scroll_transition_start, this->scroll_transition_end, curve));
 

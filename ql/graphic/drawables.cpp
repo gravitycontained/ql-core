@@ -8024,7 +8024,8 @@ namespace ql
 				if (in_range && element.outline_thickness != 0)
 				{
 					sf::Glyph glyph;
-					if (this->unicode_font && ql::unicode_character_length(c) == 2u)
+					//if (this->unicode_font && ql::unicode_character_length(c) == 2u)
+					if (this->unicode_font)
 					{
 						glyph = this->get_unicode_glyph(c, this->character_size, is_bold, element.outline_thickness);
 						if (in_range)

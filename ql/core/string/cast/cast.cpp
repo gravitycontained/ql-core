@@ -42,4 +42,15 @@ namespace ql
 		}
 		return result;
 	}
+
+	
+	std::string wstring_to_string(const std::wstring& string)
+	{
+		return ql::to_basic_string<char>(string);
+	}
+
+	std::wstring string_to_wstring(const std::string& string)
+	{
+		return ql::to_basic_string<wchar_t>(string);
+	}
 }	 // namespace ql
