@@ -57,7 +57,7 @@ namespace ql
 		template <typename F>
 		constexpr auto return_type(F)
 		{
-			return return_type(std::function{ql::declval<F>()});
+			return ql::detail::return_type(std::function{ql::declval<F>()});
 		}
 
 		template <typename C, typename R, typename... A>
@@ -277,7 +277,7 @@ namespace ql
 	template <typename F>
 	constexpr ql::size return_size(F)
 	{
-		return ql::tuple_size<ql::return_type<F>>();
+		return ql::return_size<F>();
 	}
 
 	template <typename F>
@@ -287,9 +287,13 @@ namespace ql
 		{
 			return 0ull;
 		}
-		else
+		else if constexpr (ql::is_tuple<ql::return_type<F>>())
 		{
 			return ql::tuple_size<ql::return_type<F>>();
+		}
+		else
+		{
+			return 1ull;
 		}
 	}
 

@@ -6,19 +6,11 @@
 
 namespace ql
 {
-
-	struct iterate_info
-	{
-		bool first;
-		bool last;
-		ql::size depth;
-	};
-
 	namespace detail
 	{
 		template <typename F, typename... Args>
 		requires (ql::is_callable<F>())
-		constexpr void recursive_value_apply(F&& function, ql::size depth, bool first, bool last, Args&&... args)
+		constexpr void recursive_value_apply(F&& function, Args&&... args)
 		{
 			auto apply = [&]<typename T>(T&& value)
 			{
@@ -31,7 +23,7 @@ namespace ql
 					{
 						auto last = index == std::forward<T>(value).size() - 1;
 
-						ql::detail::recursive_value_apply(std::forward<F>(function), depth + 1, first, last, i);
+						ql::detail::recursive_value_apply(std::forward<F>(function), i);
 
 						first = false;
 						++index;
@@ -39,24 +31,17 @@ namespace ql
 				}
 				else if constexpr (ql::is_tuple<T>())
 				{
-					auto unpack = [&]<ql::size... Ints>(std::index_sequence<Ints...>)
-					{
-						((ql::detail::recursive_value_apply(
-								 std::forward<F>(function), depth + 1, Ints == 0, Ints == ql::tuple_size<T>() - 1,
-								 ql::tuple_value<Ints>(std::forward<T>(value))
-						 )),
-						 ...);
-					};
-					unpack(std::make_index_sequence<ql::tuple_size<T>()>());
-				}
-				else if constexpr (ql::is_pair<T>())
-				{
-					ql::detail::recursive_value_apply(std::forward<F>(function), depth + 1, true, false, std::forward<T>(value).first);
-					ql::detail::recursive_value_apply(std::forward<F>(function), depth + 1, false, true, std::forward<T>(value).second);
+					ql::constexpr_iterate<ql::tuple_size<T>()>(
+						[&](auto index)
+						{
+							auto&& i = ql::tuple_value<index>(std::forward<T>(value));
+							ql::detail::recursive_value_apply(std::forward<F>(function), i);
+						}
+					);
 				}
 				else
 				{
-					std::forward<F>(function)(std::forward<T>(value), ql::iterate_info{first, last, depth});
+					std::forward<F>(function)(std::forward<T>(value));
 				}
 			};
 
@@ -64,10 +49,24 @@ namespace ql
 		}
 	}	 // namespace detail
 
+
+
+
+	/*
+	example:
+
+	constexpr auto tuple = ql::to_tuple(1, std::array{5, 6, 7}, 3, ql::to_tuple(4, 5, "test"), std::make_pair(4, "ok"));
+
+	ql::recursive_value_apply(
+			[](auto value)
+			{ ql::println(", value: ", value); },
+			tuple
+	);
+	*/
 	template <typename F, typename... Args>
 	requires (ql::is_callable<F>())
 	constexpr void recursive_value_apply(F&& function, Args&&... args)
 	{
-		ql::detail::recursive_value_apply(std::forward<F>(function), 0, true, true, std::forward<Args>(args)...);
+		ql::detail::recursive_value_apply(std::forward<F>(function), std::forward<Args>(args)...);
 	}
 }	 // namespace ql
