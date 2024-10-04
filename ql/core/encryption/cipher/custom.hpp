@@ -12,6 +12,8 @@
 #include <ql/core/transform/memory/memory.hpp>
 #include <ql/core/system/print/print.hpp>
 
+#include <ql/core/constexpr/constexpr.hpp>
+
 #include <ql/core/advanced-type/container/bitset.hpp>
 
 #include <ql/core/string/base/base.hpp>
@@ -4886,7 +4888,8 @@ namespace ql
 		{
 			constexpr auto N = ql::size_cast(ql::sqrt(MS));
 
-			return ql::all_true(ql::constexpr_apply<N - 2>([&](auto... i) { return (check_if_mds<i + 2>(M) && ...); }));
+			return ql::all_tuple_true(ql::constexpr_apply<N - 2>([&](auto... i) { return (ql::detail::check_if_mds<i + 2>(M) && ...); })
+			);
 		}
 
 		template <ql::size N, typename T>

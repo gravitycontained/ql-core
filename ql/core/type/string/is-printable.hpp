@@ -7,7 +7,7 @@
 #include <ql/core/type/tuple/is-tuple.hpp>
 #include <ql/core/type/tuple/size.hpp>
 #include <ql/core/type/string/has-to-string.hpp>
-#include <ql/core/type/functional/functional.hpp>
+#include <ql/core/type/recursive/recursive.hpp>
 
 #include <ql/core/advanced-type/color/print-color.hpp>
 
@@ -45,10 +45,10 @@ namespace ql
 		}
 	}	 // namespace detail
 
-	template <typename... Args>
+	template <typename... Ts>
 	constexpr bool is_printable()
 	{
-		return ql::recursive_type_check<std::tuple<Args...>>(
+		return ql::recursive_type_and_chain<std::tuple<Ts...>>(
 				[]<typename T>()
 				{ return ql::has_to_string<T>() || ql::detail::is_any_printable<T>() || ql::is_same_decayed<T, ql::print_color>(); }
 		);

@@ -15,7 +15,7 @@
 namespace ql
 {
 
-	template <ql::operation op, ql::size N, typename F>
+	template <ql::size N, ql::operation op, typename F>
 	constexpr auto constexpr_chain(F&& function)
 	{
 		auto unpack = [&]<ql::size... Ints>(std::index_sequence<Ints...>)
@@ -53,20 +53,33 @@ namespace ql
 	template <ql::size N, typename F>
 	constexpr auto constexpr_and_chain(F&& function)
 	{
-		return constexpr_chain<ql::operation::and_, N>(std::forward<F>(function));
+		return ql::constexpr_chain<N, ql::operation::and_>(std::forward<F>(function));
 	}
 
 	template <ql::size N, typename F>
 	constexpr auto constexpr_or_chain(F&& function)
 	{
-		return constexpr_chain<ql::operation::or_, N>(std::forward<F>(function));
+		return ql::constexpr_chain<N, ql::operation::or_>(std::forward<F>(function));
 	}
 
 	template <typename T>
 	requires (ql::is_tuple<T>())
-	constexpr bool all_true(const T& tuple)
+	constexpr bool all_tuple_true(const T& tuple)
 	{
 		return ql::constexpr_and_chain<ql::tuple_size<T>()>(
+				[&](auto i)
+				{
+					using type = ql::tuple_type<i, T>;
+					return ql::is_same<type, ql::true_type>() || ql::tuple_value<i>(tuple);
+				}
+		);
+	}
+
+	template <typename T>
+	requires (ql::is_tuple<T>())
+	constexpr bool any_tuple_true(const T& tuple)
+	{
+		return ql::constexpr_or_chain<ql::tuple_size<T>()>(
 				[&](auto i)
 				{
 					using type = ql::tuple_type<i, T>;
