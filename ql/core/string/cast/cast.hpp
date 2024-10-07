@@ -6,6 +6,10 @@
 #include <string>
 #include <string_view>
 
+#include <locale>
+#include <stdexcept>
+#include <codecvt>	// Still needed for std::wstring_convert for UTF-8 to wide char
+
 namespace ql
 {
 	QL_SOURCE std::string wchar_to_utf8(wchar_t wc);
@@ -13,6 +17,129 @@ namespace ql
 
 	QL_SOURCE wchar_t utf8_to_wchar(const std::string& string);
 	QL_SOURCE std::wstring utf8_to_wstring(const std::string& str);
+
+	template <typename Target, typename Source>
+	Target string_cast(const Source& src);
+
+	// Specialization: std::string -> std::wstring
+	template <>
+	std::wstring string_cast(const std::string& src)
+	{
+		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+		return converter.from_bytes(src);
+	}
+
+	// Specialization: std::wstring -> std::string
+	template <>
+	std::string string_cast(const std::wstring& src)
+	{
+		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+		return converter.to_bytes(src);
+	}
+
+	// Specialization: std::string -> std::u32string
+	template <>
+	std::u32string string_cast(const std::string& src)
+	{
+		std::u32string result;
+		char32_t ch32;
+		size_t i = 0;
+
+		while (i < src.size())
+		{
+			unsigned char ch = static_cast<unsigned char>(src[i]);
+			if (ch < 0x80)
+			{
+				ch32 = ch;
+				++i;
+			}
+			else if (ch < 0xE0)
+			{
+				if (i + 1 >= src.size())
+					throw std::runtime_error("Invalid UTF-8 sequence");
+				ch32 = ((ch & 0x1F) << 6) | (static_cast<unsigned char>(src[i + 1]) & 0x3F);
+				i += 2;
+			}
+			else if (ch < 0xF0)
+			{
+				if (i + 2 >= src.size())
+					throw std::runtime_error("Invalid UTF-8 sequence");
+				ch32 = ((ch & 0x0F) << 12) | ((static_cast<unsigned char>(src[i + 1]) & 0x3F) << 6) |
+							 (static_cast<unsigned char>(src[i + 2]) & 0x3F);
+				i += 3;
+			}
+			else
+			{
+				if (i + 3 >= src.size())
+					throw std::runtime_error("Invalid UTF-8 sequence");
+				ch32 = ((ch & 0x07) << 18) | ((static_cast<unsigned char>(src[i + 1]) & 0x3F) << 12) |
+							 ((static_cast<unsigned char>(src[i + 2]) & 0x3F) << 6) | (static_cast<unsigned char>(src[i + 3]) & 0x3F);
+				i += 4;
+			}
+			result.push_back(ch32);
+		}
+		return result;
+	}
+
+	// Specialization: std::u32string -> std::string
+	template <>
+	std::string string_cast(const std::u32string& src)
+	{
+		std::string result;
+		for (char32_t ch : src)
+		{
+			if (ch < 0x80)
+			{
+				result.push_back(static_cast<char>(ch));
+			}
+			else if (ch < 0x800)
+			{
+				result.push_back(static_cast<char>((ch >> 6) | 0xC0));
+				result.push_back(static_cast<char>((ch & 0x3F) | 0x80));
+			}
+			else if (ch < 0x10000)
+			{
+				result.push_back(static_cast<char>((ch >> 12) | 0xE0));
+				result.push_back(static_cast<char>(((ch >> 6) & 0x3F) | 0x80));
+				result.push_back(static_cast<char>((ch & 0x3F) | 0x80));
+			}
+			else
+			{
+				result.push_back(static_cast<char>((ch >> 18) | 0xF0));
+				result.push_back(static_cast<char>(((ch >> 12) & 0x3F) | 0x80));
+				result.push_back(static_cast<char>(((ch >> 6) & 0x3F) | 0x80));
+				result.push_back(static_cast<char>((ch & 0x3F) | 0x80));
+			}
+		}
+		return result;
+	}
+
+	// Specialization: std::wstring -> std::u32string
+	template <>
+	std::u32string string_cast(const std::wstring& src)
+	{
+		std::u32string result;
+		for (wchar_t ch : src)
+		{
+			result.push_back(static_cast<char32_t>(ch));
+		}
+		return result;
+	}
+
+	// Specialization: std::u32string -> std::wstring
+	template <>
+	std::wstring string_cast(const std::u32string& src)
+	{
+		std::wstring result;
+		for (char32_t ch : src)
+		{
+			if (ch > 0xFFFF)
+				throw std::runtime_error("Cannot convert char32_t to wchar_t: out of range");
+			result.push_back(static_cast<wchar_t>(ch));
+		}
+		return result;
+	}
+
 
 
 	template <typename char_type, typename... Ts>
