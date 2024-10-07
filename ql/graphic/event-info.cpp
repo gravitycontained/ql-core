@@ -628,7 +628,7 @@ namespace ql
 		return this->m_text_entered;
 	}
 
-	ql::u32_string ql::event_info::u32_text_entered() const
+	std::u32string ql::event_info::u32_text_entered() const
 	{
 		return this->m_u32_text_entered;
 	}

@@ -7863,13 +7863,13 @@ namespace ql
 		}
 	}
 
-	void ql::colored_text::create(const ql::styled_string<ql::u32_string>& string, ql::f32 visible_y_min, ql::f32 visible_y_max)
+	void ql::colored_text::create(const ql::styled_string<std::u32string>& string, ql::f32 visible_y_min, ql::f32 visible_y_max)
 	{
 		this->clear();
 		this->add(string, visible_y_min, visible_y_max);
 	}
 
-	void ql::colored_text::add(const ql::styled_string<ql::u32_string>& string, ql::f32 visible_y_min, ql::f32 visible_y_max)
+	void ql::colored_text::add(const ql::styled_string<std::u32string>& string, ql::f32 visible_y_min, ql::f32 visible_y_max)
 	{
 		if (!this->font)
 		{

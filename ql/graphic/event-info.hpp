@@ -108,7 +108,7 @@ namespace ql
 
 		QL_SOURCE bool is_text_entered() const;
 		QL_SOURCE std::wstring text_entered() const;
-		QL_SOURCE ql::u32_string u32_text_entered() const;
+		QL_SOURCE std::u32string u32_text_entered() const;
 		QL_SOURCE std::string text_entered_str() const;
 		QL_SOURCE std::wstring all_text_entered() const;
 		QL_SOURCE std::string all_text_entered_str() const;
@@ -185,7 +185,7 @@ namespace ql
 		bool m_middle_mouse_fast_click = false;
 
 		std::wstring m_text_entered;
-		ql::u32_string m_u32_text_entered;
+		std::u32string m_u32_text_entered;
 		std::wstring m_text_entered_total;
 
 		ql::vector2i m_resized_size;

@@ -1521,9 +1521,9 @@ namespace ql
 	struct console
 	{
 		ql::colored_text colored_text;
-		ql::styled_string<ql::u32_string> string;
-		ql::styled_string<ql::u32_string> input_string;
-		ql::styled_string<ql::u32_string> string_and_input;
+		ql::styled_string<std::u32string> string;
+		ql::styled_string<std::u32string> input_string;
+		ql::styled_string<std::u32string> string_and_input;
 		std::vector<std::wstring> input_string_split;
 		std::vector<std::wstring> string_split;
 		std::vector<std::wstring> string_and_input_split;
@@ -1608,7 +1608,7 @@ namespace ql
 		QL_SOURCE void update_input_string_split();
 		QL_SOURCE void update_cursor_position(bool reset_timer = false);
 		QL_SOURCE void update_input_text_graphics();
-		QL_SOURCE void add_text_input(const ql::u32_string& string, bool at_end = false);
+		QL_SOURCE void add_text_input(const std::u32string& string, bool at_end = false);
 		QL_SOURCE void pop_character_at_cursor();
 		QL_SOURCE void update_cursor_dimension();
 		QL_SOURCE void update_text_range();
@@ -1628,17 +1628,17 @@ namespace ql
 		QL_SOURCE void process_text();
 
 		template <typename T>
-		requires (!ql::is_same<ql::styled_string<ql::u32_string>, T>())
+		requires (!ql::is_same<ql::styled_string<std::u32string>, T>())
 		void add(const T& value)
 		{
-			ql::styled_string<ql::u32_string> string;
+			ql::styled_string<std::u32string> string;
 			string.clear_copy_style(this->colored_text.last_element);
 			string.add(value);
 			this->add(string);
 		}
 
-		QL_SOURCE void add(const ql::styled_string<ql::u32_string>& string);
-		QL_SOURCE void create(const ql::styled_string<ql::u32_string>& string);
+		QL_SOURCE void add(const ql::styled_string<std::u32string>& string);
+		QL_SOURCE void create(const ql::styled_string<std::u32string>& string);
 		QL_SOURCE void paste_from_clipboard();
 		QL_SOURCE void update_key_input(const ql::event_info& event);
 		QL_SOURCE void update_selection_rectangle(const ql::event_info& event);

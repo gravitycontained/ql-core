@@ -172,8 +172,6 @@ namespace ql
 	using f32 = float;
 	using f64 = double;
 
-	using u32_string = std::basic_string<ql::u32>;
-
 #ifndef ql_NO_FLOATS
 	using ff32 = ql::floating_point<32u, 32u>;
 	using ff64 = ql::floating_point<32u, 64u>;

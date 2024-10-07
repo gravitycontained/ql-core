@@ -4,11 +4,8 @@
 #include <ql/core/type/type.hpp>
 
 #include <string>
+#include <codecvt>
 #include <string_view>
-
-#include <locale>
-#include <stdexcept>
-#include <codecvt>	// Still needed for std::wstring_convert for UTF-8 to wide char
 
 namespace ql
 {
@@ -19,128 +16,123 @@ namespace ql
 	QL_SOURCE std::wstring utf8_to_wstring(const std::string& str);
 
 	template <typename Target, typename Source>
-	Target string_cast(const Source& src);
-
-	// Specialization: std::string -> std::wstring
-	template <>
-	std::wstring string_cast(const std::string& src)
+	Target string_cast(const Source& src)
 	{
-		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-		return converter.from_bytes(src);
-	}
-
-	// Specialization: std::wstring -> std::string
-	template <>
-	std::string string_cast(const std::wstring& src)
-	{
-		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-		return converter.to_bytes(src);
-	}
-
-	// Specialization: std::string -> std::u32string
-	template <>
-	std::u32string string_cast(const std::string& src)
-	{
-		std::u32string result;
-		char32_t ch32;
-		size_t i = 0;
-
-		while (i < src.size())
+		// Convert std::string -> std::wstring
+		if constexpr (std::is_same_v<Target, std::wstring> && std::is_same_v<Source, std::string>)
 		{
-			unsigned char ch = static_cast<unsigned char>(src[i]);
-			if (ch < 0x80)
-			{
-				ch32 = ch;
-				++i;
-			}
-			else if (ch < 0xE0)
-			{
-				if (i + 1 >= src.size())
-					throw std::runtime_error("Invalid UTF-8 sequence");
-				ch32 = ((ch & 0x1F) << 6) | (static_cast<unsigned char>(src[i + 1]) & 0x3F);
-				i += 2;
-			}
-			else if (ch < 0xF0)
-			{
-				if (i + 2 >= src.size())
-					throw std::runtime_error("Invalid UTF-8 sequence");
-				ch32 = ((ch & 0x0F) << 12) | ((static_cast<unsigned char>(src[i + 1]) & 0x3F) << 6) |
-							 (static_cast<unsigned char>(src[i + 2]) & 0x3F);
-				i += 3;
-			}
-			else
-			{
-				if (i + 3 >= src.size())
-					throw std::runtime_error("Invalid UTF-8 sequence");
-				ch32 = ((ch & 0x07) << 18) | ((static_cast<unsigned char>(src[i + 1]) & 0x3F) << 12) |
-							 ((static_cast<unsigned char>(src[i + 2]) & 0x3F) << 6) | (static_cast<unsigned char>(src[i + 3]) & 0x3F);
-				i += 4;
-			}
-			result.push_back(ch32);
+#pragma warning(push)
+#pragma warning(disable : 4996)
+			std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+			auto result = converter.from_bytes(src);
+			#pragma warning(pop)
+			return result;
 		}
-		return result;
-	}
-
-	// Specialization: std::u32string -> std::string
-	template <>
-	std::string string_cast(const std::u32string& src)
-	{
-		std::string result;
-		for (char32_t ch : src)
+		// Convert std::wstring -> std::string
+		else if constexpr (std::is_same_v<Target, std::string> && std::is_same_v<Source, std::wstring>)
 		{
-			if (ch < 0x80)
-			{
-				result.push_back(static_cast<char>(ch));
-			}
-			else if (ch < 0x800)
-			{
-				result.push_back(static_cast<char>((ch >> 6) | 0xC0));
-				result.push_back(static_cast<char>((ch & 0x3F) | 0x80));
-			}
-			else if (ch < 0x10000)
-			{
-				result.push_back(static_cast<char>((ch >> 12) | 0xE0));
-				result.push_back(static_cast<char>(((ch >> 6) & 0x3F) | 0x80));
-				result.push_back(static_cast<char>((ch & 0x3F) | 0x80));
-			}
-			else
-			{
-				result.push_back(static_cast<char>((ch >> 18) | 0xF0));
-				result.push_back(static_cast<char>(((ch >> 12) & 0x3F) | 0x80));
-				result.push_back(static_cast<char>(((ch >> 6) & 0x3F) | 0x80));
-				result.push_back(static_cast<char>((ch & 0x3F) | 0x80));
-			}
+#pragma warning(push)
+#pragma warning(disable : 4996)
+			std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+			auto result = converter.to_bytes(src);
+#pragma warning(pop)
+			return result;
 		}
-		return result;
-	}
-
-	// Specialization: std::wstring -> std::u32string
-	template <>
-	std::u32string string_cast(const std::wstring& src)
-	{
-		std::u32string result;
-		for (wchar_t ch : src)
+		// Convert std::string -> std::u32string (UTF-8 to UTF-32)
+		else if constexpr (std::is_same_v<Target, std::u32string> && std::is_same_v<Source, std::string>)
 		{
-			result.push_back(static_cast<char32_t>(ch));
-		}
-		return result;
-	}
+			std::u32string result;
+			char32_t ch32;
+			size_t i = 0;
 
-	// Specialization: std::u32string -> std::wstring
-	template <>
-	std::wstring string_cast(const std::u32string& src)
-	{
-		std::wstring result;
-		for (char32_t ch : src)
+			while (i < src.size())
+			{
+				unsigned char ch = static_cast<unsigned char>(src[i]);
+				if (ch < 0x80)
+				{
+					ch32 = ch;
+					++i;
+				}
+				else if (ch < 0xE0)
+				{
+					if (i + 1 >= src.size())
+						throw std::runtime_error("Invalid UTF-8 sequence");
+					ch32 = ((ch & 0x1F) << 6) | (static_cast<unsigned char>(src[i + 1]) & 0x3F);
+					i += 2;
+				}
+				else if (ch < 0xF0)
+				{
+					if (i + 2 >= src.size())
+						throw std::runtime_error("Invalid UTF-8 sequence");
+					ch32 = ((ch & 0x0F) << 12) | ((static_cast<unsigned char>(src[i + 1]) & 0x3F) << 6) |
+								 (static_cast<unsigned char>(src[i + 2]) & 0x3F);
+					i += 3;
+				}
+				else
+				{
+					if (i + 3 >= src.size())
+						throw std::runtime_error("Invalid UTF-8 sequence");
+					ch32 = ((ch & 0x07) << 18) | ((static_cast<unsigned char>(src[i + 1]) & 0x3F) << 12) |
+								 ((static_cast<unsigned char>(src[i + 2]) & 0x3F) << 6) | (static_cast<unsigned char>(src[i + 3]) & 0x3F);
+					i += 4;
+				}
+				result.push_back(ch32);
+			}
+			return result;
+		}
+		// Convert std::u32string -> std::string (UTF-32 to UTF-8)
+		else if constexpr (std::is_same_v<Target, std::string> && std::is_same_v<Source, std::u32string>)
 		{
-			if (ch > 0xFFFF)
-				throw std::runtime_error("Cannot convert char32_t to wchar_t: out of range");
-			result.push_back(static_cast<wchar_t>(ch));
+			std::string result;
+			for (char32_t ch : src)
+			{
+				if (ch < 0x80)
+				{
+					result.push_back(static_cast<char>(ch));
+				}
+				else if (ch < 0x800)
+				{
+					result.push_back(static_cast<char>((ch >> 6) | 0xC0));
+					result.push_back(static_cast<char>((ch & 0x3F) | 0x80));
+				}
+				else if (ch < 0x10000)
+				{
+					result.push_back(static_cast<char>((ch >> 12) | 0xE0));
+					result.push_back(static_cast<char>(((ch >> 6) & 0x3F) | 0x80));
+					result.push_back(static_cast<char>((ch & 0x3F) | 0x80));
+				}
+				else
+				{
+					result.push_back(static_cast<char>((ch >> 18) | 0xF0));
+					result.push_back(static_cast<char>(((ch >> 12) & 0x3F) | 0x80));
+					result.push_back(static_cast<char>(((ch >> 6) & 0x3F) | 0x80));
+					result.push_back(static_cast<char>((ch & 0x3F) | 0x80));
+				}
+			}
+			return result;
 		}
-		return result;
+		// Convert std::u32string -> std::wstring (via std::string)
+		else if constexpr (std::is_same_v<Target, std::wstring> && std::is_same_v<Source, std::u32string>)
+		{
+			std::string temp = string_cast<std::string>(src);	 // u32 -> string
+			return string_cast<std::wstring>(temp);						 // string -> wstring
+		}
+		// Convert std::wstring -> std::u32string (direct cast per character)
+		else if constexpr (std::is_same_v<Target, std::u32string> && std::is_same_v<Source, std::wstring>)
+		{
+			std::u32string result;
+			for (wchar_t ch : src)
+			{
+				result.push_back(static_cast<char32_t>(ch));
+			}
+			return result;
+		}
+		// Otherwise, if types are not supported, throw an error
+		else
+		{
+			throw std::runtime_error("Unsupported conversion between types");
+		}
 	}
-
-
 
 	template <typename char_type, typename... Ts>
 	requires (!ql::is_long_string_type<char_type>() && ql::is_printable<Ts...>())
@@ -180,7 +172,8 @@ namespace ql
 				stream << ql::to_basic_string<char_type>('{');
 				if constexpr (ql::tuple_size<T>() > 1)
 				{
-					ql::constexpr_iterate<ql::tuple_size<T>() - 1>([&](auto index)
+					ql::constexpr_iterate<ql::tuple_size<T>() - 1>(
+							[&](auto index)
 							{ stream << ql::to_basic_string<char_type>(ql::tuple_value<index>(value)) << ql::to_basic_string<char_type>(", "); }
 					);
 				}
@@ -201,18 +194,18 @@ namespace ql
 				string_type convert(value.begin(), value.end());
 				stream << convert;
 			}
-			else if constexpr (ql::is_same<T, std::wstring>() && ql::is_same<string_type, std::string>())
+			else if constexpr (ql::is_same<T, string_type>())
 			{
-				stream << ql::wstring_to_utf8(value);
+				stream << value;
 			}
-			else if constexpr (ql::is_same<T, std::string>() && ql::is_same<string_type, std::wstring>())
+			else if constexpr (ql::is_same<T, std::string>() || ql::is_same<T, std::wstring>() || ql::is_same<T, std::u32string>())
 			{
-				stream << ql::utf8_to_wstring(value);
+				stream << ql::string_cast<string_type>(value);
 			}
 			else
 			{
-				//static_assert(false, __FUNCTION__ "problem");
-				//assert(value);
+				// static_assert(false, __FUNCTION__ "problem");
+				// assert(value);
 				stream << value;
 			}
 		};
@@ -222,142 +215,7 @@ namespace ql
 		return stream.str();
 	}
 
-	template <typename... Ts>
-	requires (ql::is_printable<Ts...>())
-	auto to_u32_string(Ts&&... args)
-	{
-		return ql::to_basic_string<ql::u32>(args...);
-	}
-
 	QL_SOURCE std::string wstring_to_string(const std::wstring& string);
 	QL_SOURCE std::wstring string_to_wstring(const std::string& string);
-
-	template <typename T>
-	T string_cast(const std::string_view& string)
-	{
-		if constexpr (ql::is_ql_integer<T>() || ql::is_ql_floating_point<T>())
-		{
-			return T(string);
-		}
-		else
-		{
-			T value;
-			std::from_chars(string.data(), string.data() + string.size(), value);
-
-			return value;
-		}
-	}
-
-	template <typename T>
-	T string_cast(const char* str)
-	{
-		return ql::string_cast<T>(std::string_view{str});
-	}
-
-	template <typename T>
-	T string_cast(const std::string& string)
-	{
-		if constexpr (ql::is_same_decayed<T, ql::f64>())
-		{
-			return std::stod(string);
-		}
-		else if constexpr (ql::is_same_decayed<T, ql::f32>())
-		{
-			return std::stof(string);
-		}
-		else if constexpr (ql::is_same_decayed<T, ql::i8>())
-		{
-			return static_cast<ql::i8>(std::stoi(string));
-		}
-		else if constexpr (ql::is_same_decayed<T, ql::u8>())
-		{
-			return static_cast<ql::u8>(std::stoul(string));
-		}
-		else if constexpr (ql::is_same_decayed<T, ql::i16>())
-		{
-			return static_cast<ql::i16>(std::stoi(string));
-		}
-		else if constexpr (ql::is_same_decayed<T, ql::u16>())
-		{
-			return static_cast<ql::u16>(std::stoul(string));
-		}
-		else if constexpr (ql::is_same_decayed<T, ql::i32>())
-		{
-			return std::stoi(string);
-		}
-		else if constexpr (ql::is_same_decayed<T, ql::u32>())
-		{
-			return static_cast<ql::u32>(std::stoul(string));
-		}
-		else if constexpr (ql::is_same_decayed<T, ql::i64>())
-		{
-			return std::stoll(string);
-		}
-		else if constexpr (ql::is_same_decayed<T, ql::u64>())
-		{
-			return std::stoull(string);
-		}
-		else if constexpr (ql::is_same_decayed<T, std::wstring>())
-		{
-			return ql::string_to_wstring(string);
-		}
-		else if constexpr (ql::is_same_decayed<T, std::string>())
-		{
-			return string;
-		}
-	}
-
-	template <typename T>
-	T string_cast(const std::wstring& string)
-	{
-		if constexpr (ql::is_same_decayed<T, ql::f64>())
-		{
-			return std::wcstod(string.data(), nullptr);
-		}
-		else if constexpr (ql::is_same_decayed<T, ql::f32>())
-		{
-			return std::wcstof(string.data(), nullptr);
-		}
-		else if constexpr (ql::is_same_decayed<T, ql::i8>())
-		{
-			return static_cast<ql::i8>(std::wcstol(string.data(), nullptr, 10));
-		}
-		else if constexpr (ql::is_same_decayed<T, ql::u8>())
-		{
-			return static_cast<ql::u8>(std::wcstoul(string.data(), nullptr, 10));
-		}
-		else if constexpr (ql::is_same_decayed<T, ql::i16>())
-		{
-			return static_cast<ql::i16>(std::wcstol(string.data(), nullptr, 10));
-		}
-		else if constexpr (ql::is_same_decayed<T, ql::u16>())
-		{
-			return static_cast<ql::u16>(std::wcstoul(string.data(), nullptr, 10));
-		}
-		else if constexpr (ql::is_same_decayed<T, ql::i32>())
-		{
-			return static_cast<ql::i32>(std::wcstol(string.data(), nullptr, 10));
-		}
-		else if constexpr (ql::is_same_decayed<T, ql::u32>())
-		{
-			return static_cast<ql::u32>(std::wcstoul(string.data(), nullptr, 10));
-		}
-		else if constexpr (ql::is_same_decayed<T, ql::i64>())
-		{
-			return std::wcstoll(string.data(), nullptr, 10);
-		}
-		else if constexpr (ql::is_same_decayed<T, ql::u64>())
-		{
-			return std::wcstoull(string.data(), nullptr, 10);
-		}
-		else if constexpr (ql::is_same_decayed<T, std::wstring>())
-		{
-			return string;
-		}
-		else if constexpr (ql::is_same_decayed<T, std::string>())
-		{
-			return ql::wstring_to_string(string);
-		}
-	}
 
 }	 // namespace ql

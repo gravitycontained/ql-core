@@ -3621,7 +3621,7 @@ namespace ql
 		if (this->hidden_input)
 		{
 			auto element = this->input_string.elements.back();
-			element.text = ql::to_basic_string<ql::u32>(ql::to_string_repeat('*', element.text.length()));
+			element.text = ql::to_basic_string<char32_t>(ql::to_string_repeat('*', element.text.length()));
 			this->string_and_input << element.text;
 		}
 		else
@@ -3687,8 +3687,8 @@ namespace ql
 		if (this->hidden_input)
 		{
 			auto element = this->input_string.elements.back();
-			element.text = ql::to_basic_string<ql::u32>(ql::to_string_repeat('*', element.text.length()));
-			ql::styled_string<ql::u32_string> string;
+			element.text = ql::to_basic_string<char32_t>(ql::to_string_repeat('*', element.text.length()));
+			ql::styled_string<std::u32string> string;
 			string.add(element);
 			this->colored_text.add(string);
 		}
@@ -3700,7 +3700,7 @@ namespace ql
 		this->update_cursor_position(false);
 	}
 
-	void ql::console::add_text_input(const ql::u32_string& string, bool at_end)
+	void ql::console::add_text_input(const std::u32string& string, bool at_end)
 	{
 		auto size = this->string_split.size();
 		auto pos = this->cursor_position;
@@ -4032,14 +4032,14 @@ namespace ql
 		this->update_string_and_input_split();
 	}
 
-	void ql::console::add(const ql::styled_string<ql::u32_string>& string)
+	void ql::console::add(const ql::styled_string<std::u32string>& string)
 	{
 		this->colored_text.add(string);
 		this->string << string;
 		this->process_text();
 	}
 
-	void ql::console::create(const ql::styled_string<ql::u32_string>& string)
+	void ql::console::create(const ql::styled_string<std::u32string>& string)
 	{
 		this->colored_text.clear();
 		this->string.clear();
@@ -4050,7 +4050,7 @@ namespace ql
 	void ql::console::paste_from_clipboard()
 	{
 		this->clear_selection_rectangles_if_visible();
-		this->add_text_input(ql::to_u32_string(ql::copy_from_clipboard()));
+		this->add_text_input(ql::to_basic_string<char32_t>(ql::copy_from_clipboard()));
 		this->text_entered = true;
 		this->update_visible_rows_count();
 		this->clear_selection_rectangles_if_visible();
@@ -4152,7 +4152,7 @@ namespace ql
 						this->cursor_position.x = 0u;
 						const auto& history_text = this->input_history[this->input_history_index];
 
-						this->add_text_input(ql::to_u32_string(history_text));
+						this->add_text_input(ql::to_basic_string<char32_t>(history_text));
 						this->cursor_position.x = history_text.length();
 
 						this->update_input_text_graphics();
@@ -4186,7 +4186,7 @@ namespace ql
 						++this->input_history_index;
 						this->input_string.clear_last_line();
 						const auto& history_text = this->input_history[this->input_history_index];
-						this->add_text_input(ql::to_u32_string(history_text));
+						this->add_text_input(ql::to_basic_string<char32_t>(history_text));
 						this->cursor_position.x = history_text.length();
 						this->update_input_text_graphics();
 						this->update_input_string_split();
@@ -4214,7 +4214,7 @@ namespace ql
 		if (event.key_pressed(sf::Keyboard::Enter))
 		{
 			auto new_line = this->add_new_line_on_enter || event.key_holding(sf::Keyboard::LShift);
-			this->add_text_input(ql::to_u32_string('\n'), !new_line && !this->allow_going_up_with_cursor);
+			this->add_text_input(ql::to_basic_string<char32_t>('\n'), !new_line && !this->allow_going_up_with_cursor);
 
 			special_input = true;
 

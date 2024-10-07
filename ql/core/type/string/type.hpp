@@ -97,8 +97,8 @@ namespace ql
 	constexpr bool is_u32string_type()
 	{
 		return ql::is_any_type_decayed_equal_to<
-				T, char32_t, const char32_t*, char32_t*, const char32_t[], std::basic_string<std::uint32_t>,
-				std::basic_string_view<std::uint32_t>>();
+				T, char32_t, const char32_t*, char32_t*, const char32_t[], std::basic_string<char32_t>,
+				std::basic_string_view<char32_t>>();
 	}
 
 	template <typename T>
@@ -125,7 +125,7 @@ namespace ql
 	constexpr bool is_char_type()
 	{
 		return ql::is_any_type_decayed_equal_to<
-				T, char, wchar_t, char8_t, char16_t, char32_t, ql::u8, ql::i8, ql::u16, ql::i16, ql::u32, ql::i32>();
+				T, char, wchar_t, char8_t, char16_t, char32_t>();
 	}
 
 	template <typename T>

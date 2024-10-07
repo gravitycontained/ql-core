@@ -3424,10 +3424,10 @@ namespace ql
 
 		QL_SOURCE void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 		QL_SOURCE void
-		add(const ql::styled_string<ql::u32_string>& string, ql::f32 visible_y_min = ql::f32_min, ql::f32 visible_y_max = ql::f32_max
+		add(const ql::styled_string<std::u32string>& string, ql::f32 visible_y_min = ql::f32_min, ql::f32 visible_y_max = ql::f32_max
 		);
 		QL_SOURCE void create(
-				const ql::styled_string<ql::u32_string>& string,
+				const ql::styled_string<std::u32string>& string,
 				ql::f32 visible_y_min = ql::f32_min,
 				ql::f32 visible_y_max = ql::f32_max
 		);
@@ -3438,16 +3438,16 @@ namespace ql
 		template <typename T>
 		colored_text& operator<<(const T& value)
 		{
-			ql::styled_string<ql::u32_string> string;
+			ql::styled_string<std::u32string> string;
 			string.clear_copy_style(this->last_element);
-			string.elements[0u].text = ql::to_u32_string(value);
+			string.elements[0u].text = ql::to_basic_string<char32_t>(value);
 			this->add(string);
 			return *this;
 		}
 
 		const sf::Font* font = nullptr;
 		const sf::Font* unicode_font = nullptr;
-		ql::styled_string<ql::u32_string>::element last_element;
+		ql::styled_string<std::u32string>::element last_element;
 		ql::u32 character_size{30};
 		ql::f32 letter_spacing_factor{1.f};
 		ql::f32 line_spacing_factor{1.f};

@@ -333,11 +333,22 @@ namespace ql
 			}
 		}
 
-		template <typename T>
-		void add(const T& other)
+		template <typename S>
+		requires (ql::is_string_type<S>())
+		void add(const S& string)
 		{
-			static_assert(ql::is_string_type<T>(), "T must be a string type");
+			if (!this->always_keep_styles && !this->elements.back().is_default())
+			{
+				this->elements.push_back({});
+			}
+			this->elements.back().text += ql::to_basic_string<typename T::value_type>(string);
 		}
+
+		//template <typename T>
+		//void add(const T& other)
+		//{
+		//	static_assert(ql::is_string_type<T>(), "T must be a string type");
+		//}
 
 		void remove_character_at(ql::vec2s pos)
 		{
@@ -431,17 +442,6 @@ namespace ql
 
 				y = new_y;
 			}
-		}
-
-		template <typename S>
-		requires (ql::is_string_type<S>())
-		void add(const S& string)
-		{
-			if (!this->always_keep_styles && !this->elements.back().is_default())
-			{
-				this->elements.push_back({});
-			}
-			this->elements.back().text += ql::to_basic_string<typename T::value_type>(string);
 		}
 
 		void add(const styled_string& styled_string)
