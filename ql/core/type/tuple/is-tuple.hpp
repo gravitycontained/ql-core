@@ -5,7 +5,7 @@
 
 namespace ql
 {
-	namespace impl
+	namespace detail
 	{
 		template <typename... Ts>
 		constexpr auto tuple_signature(std::tuple<Ts...>)
@@ -30,29 +30,29 @@ namespace ql
 		{
 			return std::false_type{};
 		}
-	}	 // namespace impl
+	}	 // namespace detail
+
+	template <typename T>
+	constexpr bool is_pair()
+	{
+		return decltype(ql::detail::pair_signature(ql::declval<T>())){};
+	}
+
+	template <typename T>
+	constexpr bool is_pair(T tuple)
+	{
+		return ql::is_pair<T>();
+	}
 
 	template <typename T>
 	constexpr bool is_tuple()
 	{
-		return decltype(ql::impl::tuple_signature(ql::declval<T>())){};
+		return ql::is_pair<T>() || decltype(ql::detail::tuple_signature(ql::declval<T>())){};
 	}
 
 	template <typename T>
 	constexpr bool is_tuple(T tuple)
 	{
 		return ql::is_tuple<T>();
-	}
-
-	template <typename T>
-	constexpr bool is_pair()
-	{
-		return decltype(ql::impl::pair_signature(ql::declval<T>())){};
-	}
-
-	template <typename T>
-	constexpr bool is_is_pair(T tuple)
-	{
-		return ql::is_is_pair<T>();
 	}
 }	 // namespace ql

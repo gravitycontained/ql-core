@@ -48,35 +48,6 @@ namespace ql
 	}
 
 	template <typename T>
-	constexpr bool is_string_type()
-	{
-		return ql::is_std_basic_string<T>() || ql::is_std_basic_string_view<T>() ||
-					 ql::is_any_type_decayed_equal_to<
-							 T, char, const char*, char*, const char[], wchar_t, const wchar_t*, const wchar_t[], wchar_t*, char32_t>();
-	}
-
-	template <typename T>
-	constexpr bool is_standard_string_type()
-	{
-		return ql::is_any_type_decayed_equal_to<T, char, const char*, char*, const char[], std::string, std::string_view>();
-	}
-
-	template <typename T>
-	constexpr bool is_wstring_type()
-	{
-		return ql::is_any_type_decayed_equal_to<T, wchar_t, const wchar_t*, wchar_t*, const wchar_t[], std::wstring, std::wstring_view>(
-		);
-	}
-
-	template <typename T>
-	constexpr bool is_u32string_type()
-	{
-		return ql::is_any_type_decayed_equal_to<
-				T, char32_t, const char32_t*, char32_t*, const char32_t[], std::basic_string<std::uint32_t>,
-				std::basic_string_view<std::uint32_t>>();
-	}
-
-	template <typename T>
 	constexpr bool is_long_string_type()
 	{
 		return ql::is_std_basic_string<T>() || ql::is_std_basic_string_view<T>() ||
@@ -95,22 +66,59 @@ namespace ql
 		return ql::is_any_type_decayed_equal_to<T, const wchar_t*, wchar_t*, const wchar_t[], std::wstring, std::wstring_view>();
 	}
 
+
 	template <typename T>
-	constexpr bool is_string_type(T value)
+	constexpr bool is_standard_string_type()
 	{
-		return is_string_type<T>();
+		return ql::is_any_type_decayed_equal_to<T, char, const char*, char*, const char[], std::string, std::string_view>();
 	}
 
 	template <typename T>
 	constexpr bool is_standard_string_type(T value)
 	{
-		return is_standard_string_type<T>();
+		return ql::is_standard_string_type<T>();
+	}
+
+
+	template <typename T>
+	constexpr bool is_wstring_type()
+	{
+		return ql::is_any_type_decayed_equal_to<T, wchar_t, const wchar_t*, wchar_t*, const wchar_t[], std::wstring, std::wstring_view>(
+		);
 	}
 
 	template <typename T>
 	constexpr bool is_wstring_type(T value)
 	{
-		return is_wstring_type<T>();
+		return ql::is_wstring_type<T>();
+	}
+
+	template <typename T>
+	constexpr bool is_u32string_type()
+	{
+		return ql::is_any_type_decayed_equal_to<
+				T, char32_t, const char32_t*, char32_t*, const char32_t[], std::basic_string<std::uint32_t>,
+				std::basic_string_view<std::uint32_t>>();
+	}
+
+	template <typename T>
+	constexpr bool is_u32string_type(T value)
+	{
+		return ql::is_u32string_type<T>();
+	}
+
+	template <typename T>
+	constexpr bool is_string_type()
+	{
+		return ql::is_std_basic_string<T>() || ql::is_std_basic_string_view<T>() ||
+					 ql::is_any_type_decayed_equal_to<
+							 T, char, const char*, char*, const char[], wchar_t, const wchar_t*, const wchar_t[], wchar_t*, char32_t>();
+	}
+
+	template <typename T>
+	constexpr bool is_string_type(T value)
+	{
+		return ql::is_string_type<T>();
 	}
 
 	template <typename T>
@@ -128,4 +136,5 @@ namespace ql
 				char8_t*, char8_t[], const char8_t*, const char8_t[], char16_t*, char16_t[], const char16_t*, const char16_t[], char32_t*,
 				char32_t[], const char32_t*, const char32_t[]>();
 	}
+
 }	 // namespace ql

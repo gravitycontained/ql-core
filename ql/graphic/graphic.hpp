@@ -5,5 +5,5 @@
 #include <ql/graphic/framework.hpp>
 #include <ql/graphic/resources.hpp>
 #include <ql/graphic/socket.hpp>
-#include <ql/graphic/ui_controls.hpp>
+#include <ql/graphic/ui-controls.hpp>
 #include <ql/graphic/view-control.hpp>

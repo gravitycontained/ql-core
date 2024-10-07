@@ -2,6 +2,7 @@
 
 #include <ql/core/type/arithmetic/is-arithmetic.hpp>
 #include <ql/core/type/arithmetic/operation.hpp>
+#include <ql/core/type/arithmetic/bit-count-of-max-value.hpp>
 
 namespace ql
 {

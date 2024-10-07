@@ -1,6 +1,5 @@
 #include <ql/core/time/time.hpp>
 
-
 #include <chrono>
 #include <algorithm>
 #include <ctime>
@@ -13,6 +12,10 @@
 #include <ql/core/transform/interpolate/curve.hpp>
 
 #include <ql/core/system/system.hpp>
+
+#ifdef QL_SFML
+#include <ql/graphic/event-info.hpp>
+#endif
 
 namespace ql
 {
@@ -1696,10 +1699,10 @@ namespace ql
 		this->progress_before = this->progress;
 	}
 #ifdef QL_SFML
-	// void ql::animation::update(const qsf::event_info& event)
-	//{
-	//	this->update(event.frame_time_f());
-	// }
+	void ql::animation::update(const ql::event_info& event)
+	{
+		this->update(event.frame_time_f());
+	}
 #endif
 	void ql::animation::go_forwards()
 	{
@@ -1768,15 +1771,15 @@ namespace ql
 		return this->progress;
 	}
 
-	 ql::f64 ql::animation::get_curve_progress(ql::f64 curve) const
+	ql::f64 ql::animation::get_curve_progress(ql::f64 curve) const
 	{
 		return ql::curve_slope(this->progress, curve);
-	 }
-	
-	 ql::f64 ql::animation::get_double_curve_progress(ql::f64 curve) const
+	}
+
+	ql::f64 ql::animation::get_double_curve_progress(ql::f64 curve) const
 	{
 		return ql::double_curve_slope(this->progress, curve);
-	 }
+	}
 
 	void ql::timed_task::update()
 	{

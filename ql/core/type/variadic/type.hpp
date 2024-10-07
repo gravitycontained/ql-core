@@ -9,7 +9,7 @@ namespace ql
 	template <ql::size N, typename... Ts>
 	using variadic_type = ql::tuple_type<N, std::tuple<Ts...>>;
 
-	template <ql::size N, typename... Ts>
+	template <typename... Ts>
 	using variadic_type_front = ql::tuple_type_front<std::tuple<Ts...>>;
 
 	template <typename... Ts>

@@ -1,4 +1,4 @@
-#include <ql/graphic/ui_controls.hpp>
+#include <ql/graphic/ui-controls.hpp>
 
 #if defined QL_SFML
 
@@ -2272,7 +2272,7 @@ namespace ql
 
 	void ql::text_field::set_cursor_dimension() const
 	{
-	ql::		vec2 cursor_dim;
+		ql::vec2 cursor_dim;
 		cursor_dim.x = this->cursor_width_percentage * this->text_layout.character_size;
 		cursor_dim.y = this->lines.front().text.get_line_height() + this->lines.front().text.get_delta_underline();
 		this->cursor.set_dimension(cursor_dim);
@@ -2415,8 +2415,8 @@ namespace ql
 			offset_x = -(this->cursor_x_offset + this->cursor.get_dimension().x);
 		}
 
-	ql::		vec2 position = a.position;
-	ql::		vec2 dimension = b.position - a.position + offset_x;
+		ql::vec2 position = a.position;
+		ql::vec2 dimension = b.position - a.position + offset_x;
 
 		position.y = line.text.get_starting_line_position().y - line.text.get_delta_underline();
 		dimension.y = line.text.get_line_height() + line.text.get_delta_underline();
@@ -2541,7 +2541,7 @@ namespace ql
 
 		if (this->is_font_set())
 		{
-			this->input_field.set_string(this->color_result.string());
+			this->input_field.set_string(this->color_result.to_string());
 		}
 		this->color_changed = true;
 		this->internal_gradient_color_changed = true;
@@ -3014,7 +3014,7 @@ namespace ql
 
 		if (!this->dont_update_input_text && this->is_font_set())
 		{
-			this->input_field.set_string(this->color_result.string());
+			this->input_field.set_string(this->color_result.to_string());
 		}
 	}
 
@@ -3296,7 +3296,7 @@ namespace ql
 		if (this->hover_animation.is_running())
 		{
 			auto p = this->hover_animation.get_progress();
-			auto curve = ql::smooth_slope(p);
+			auto curve = ql::smooth_curve(p, 1.5);
 			this->knob.set_color(this->knob_color.interpolated(this->knob_color_hover, curve));
 		}
 	}
@@ -3324,7 +3324,7 @@ namespace ql
 		{
 			this->background_hover_animation.go_backwards();
 		}
-		this->background_hover_animation.update(event);
+		this->background_hover_animation.update(event.frame_time_f());
 		if (this->background_hover_animation.is_running())
 		{
 			auto p = this->background_hover_animation.get_progress();
@@ -3432,6 +3432,7 @@ namespace ql
 		ql::println("allow text dragging: ", this->allow_text_dragging);
 		ql::println("allow going up with cursor: ", this->allow_going_up_with_cursor);
 		ql::println("border texture set: ", this->border_texture_set);
+	}
 
 	void ql::console::press_enter_to_continue_mode()
 	{
@@ -3620,7 +3621,7 @@ namespace ql
 		if (this->hidden_input)
 		{
 			auto element = this->input_string.elements.back();
-			element.text = ql::to_basic_string<ql::u32>(ql::to_wstring_repeat(L'*', element.text.length()));
+			element.text = ql::to_basic_string<ql::u32>(ql::to_string_repeat('*', element.text.length()));
 			this->string_and_input << element.text;
 		}
 		else
@@ -3686,7 +3687,7 @@ namespace ql
 		if (this->hidden_input)
 		{
 			auto element = this->input_string.elements.back();
-			element.text = ql::to_basic_string<ql::u32>(ql::to_wstring_repeat(L'*', element.text.length()));
+			element.text = ql::to_basic_string<ql::u32>(ql::to_string_repeat('*', element.text.length()));
 			ql::styled_string<ql::u32_string> string;
 			string.add(element);
 			this->colored_text.add(string);
@@ -4381,7 +4382,7 @@ namespace ql
 		if (this->scroll_transition_animation.is_running())
 		{
 			auto p = this->scroll_transition_animation.get_progress();
-			//auto curve = ql::smooth_slope(p);
+			// auto curve = ql::smooth_slope(p);
 			auto curve = ql::smooth_curve(p, 1.5);
 			this->view.position.y =
 					ql::f32_cast(ql::linear_interpolation(this->scroll_transition_start, this->scroll_transition_end, curve));

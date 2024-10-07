@@ -9,7 +9,7 @@ namespace ql
 	template <typename... Args>
 	constexpr auto are_signals()
 	{
-		return ql::all_true(ql::constexpr_apply<ql::variadic_size<Args...>() - 1>(
+		return ql::all_tuple_true(ql::constexpr_apply<ql::variadic_size<Args...>() - 1>(
 				[&](auto i) { return ql::is_signal<ql::variadic_type<i, Args...>>(); }
 		));
 	}
@@ -17,7 +17,7 @@ namespace ql
 	template <typename... Args>
 	constexpr void effect(Args&&... objects)
 	requires (
-			are_signals<Args...>() && ql::is_callable<ql::variadic_type_back<Args...>>()
+			ql::are_signals<Args...>() && ql::is_callable<ql::variadic_type_back<Args...>>()
 
 			/*
 			* use this when the active error is no longer hallucinated:

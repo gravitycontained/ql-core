@@ -1,14 +1,20 @@
 #pragma once
 
 #include <ql/core/definition/definition.hpp>
+
+#include <ql/core/type/container/is-container.hpp>
+#include <ql/core/type/container/subtype.hpp>
+
 #include <ql/core/type/declval.hpp>
 #include <ql/core/type/compare/compare.hpp>
 #include <ql/core/type/tuple/tuple.hpp>
 #include <functional>
 #include <type_traits>
 
+
 namespace ql
 {
+
 	namespace detail
 	{
 
@@ -51,7 +57,7 @@ namespace ql
 		template <typename F>
 		constexpr auto return_type(F)
 		{
-			return return_type(std::function{ql::declval<F>()});
+			return ql::detail::return_type(std::function{ql::declval<F>()});
 		}
 
 		template <typename C, typename R, typename... A>
@@ -271,7 +277,7 @@ namespace ql
 	template <typename F>
 	constexpr ql::size return_size(F)
 	{
-		return ql::tuple_size<ql::return_type<F>>();
+		return ql::return_size<F>();
 	}
 
 	template <typename F>
@@ -317,4 +323,5 @@ namespace ql
 	{
 		return std::is_invocable_v<F, T>;
 	}
-}	 // namespace ql
+
+}

@@ -83,7 +83,7 @@ namespace ql
 			bool operator==(const element& other) const
 			{
 				return this->color == other.color && this->background_color == other.background_color && this->style == other.style &&
-							 this->outline_thickness == other.outline_thickness && this->get_position == other.get_position &&
+							 this->outline_thickness == other.outline_thickness &&
 							 ((this->outline_thickness == 0.0f && other.outline_thickness == 0.0f) ||
 								(this->outline_color == other.outline_color));
 			}
@@ -237,10 +237,6 @@ namespace ql
 		void prepare_next_style()
 		{
 			this->elements.push_back({});
-			if (!this->elements.back().get_position.name.empty())
-			{
-				return;
-			}
 			if (this->elements.back().keep || this->always_keep_styles)
 			{
 				this->elements.back().copy_style(this->elements[this->elements.size() - 2]);
@@ -335,6 +331,12 @@ namespace ql
 			{
 				this->elements.push_back(element);
 			}
+		}
+
+		template <typename T>
+		void add(const T& other)
+		{
+			static_assert(ql::is_string_type<T>(), "T must be a string type");
 		}
 
 		void remove_character_at(ql::vec2s pos)
@@ -476,7 +478,7 @@ namespace ql
 	template <typename T, typename... Args>
 	ql::styled_string<T> to_styled_string(Args... args)
 	{
-		styled_string<T> result;
+		ql::styled_string<T> result;
 		((result << args), ...);
 		return result;
 	}
@@ -484,7 +486,7 @@ namespace ql
 	template <typename T, typename... Args>
 	ql::styled_string<T> to_styled_stringln(Args... args)
 	{
-		return to_styled_string(args..., L'\n');
+		return ql::to_styled_string(args..., '\n');
 	}
 
 }	 // namespace ql

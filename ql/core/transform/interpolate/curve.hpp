@@ -23,6 +23,7 @@ namespace ql
 			return (ql::curve_slope((progress - F{0.5}) * 2, slope) / 2) + F{0.5};
 		}
 	}
+
 	template <typename F>
 	constexpr F smooth_slope_impl(F progress, F slope, F cutoff, F sub)
 	{
@@ -30,7 +31,6 @@ namespace ql
 		auto multiply = 1.0 / (1 - sub);
 		return (curve_slope(progress * stretch + cutoff, slope) - sub) * multiply;
 	}
-
 
 	template <typename F>
 	constexpr F smooth_curve(F progress, F slope)
@@ -76,4 +76,4 @@ namespace ql
 		}
 		return 0.5 - smooth_curve(1 - progress * 2.0, slope) / 2;
 	}
-}
+}	 // namespace ql

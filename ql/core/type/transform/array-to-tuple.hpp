@@ -14,5 +14,3 @@ namespace ql
 		return ql::constexpr_apply<N>([&](auto i) { return array[i]; });
 	}
 }	 // namespace ql
-
-constexpr auto test = ql::array_to_tuple(std::array{1, 2, 3});

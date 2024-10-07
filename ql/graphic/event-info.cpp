@@ -2,6 +2,8 @@
 
 #if defined QL_SFML
 
+#include <ql/core/string/cast/cast.hpp>
+
 namespace ql
 {
 	bool ql::event_info::key_single_pressed(sf::Keyboard::Key key) const

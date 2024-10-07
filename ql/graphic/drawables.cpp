@@ -3132,7 +3132,11 @@ namespace ql
 
 	ql::vec2 ql::line::normal() const
 	{
-		return ql::vec2{ this->vertices[0].position.y - this->vertices[1].position.y, this->vertices[1].position.x - this->vertices[0].position.x } / this->length();
+		return ql::vec2{
+							 this->vertices[0].position.y - this->vertices[1].position.y,
+							 this->vertices[1].position.x - this->vertices[0].position.x
+					 } /
+					 this->length();
 	}
 
 	ql::f32 ql::line::length() const
@@ -3375,7 +3379,12 @@ namespace ql
 
 	void ql::thick_line::extend_a(ql::f32 delta)
 	{
-		auto direction = ql::vec2{ this->vertices[2].position.y - this->vertices[0].position.y, this->vertices[2].position.x - this->vertices[0].position.x } / this->length();
+		auto direction =
+				ql::vec2{
+						this->vertices[2].position.y - this->vertices[0].position.y,
+						this->vertices[2].position.x - this->vertices[0].position.x
+				} /
+				this->length();
 		this->vertices[0].position -= sf::Vector2f(direction * delta);
 		this->vertices[1].position -= sf::Vector2f(direction * delta);
 	}
@@ -3393,7 +3402,12 @@ namespace ql
 
 	void ql::thick_line::extend_b(ql::f32 delta)
 	{
-		auto direction = ql::vec2{ this->vertices[2].position.y - this->vertices[0].position.y, this->vertices[2].position.x - this->vertices[0].position.x } / this->length();
+		auto direction =
+				ql::vec2{
+						this->vertices[2].position.y - this->vertices[0].position.y,
+						this->vertices[2].position.x - this->vertices[0].position.x
+				} /
+				this->length();
 		this->vertices[2].position += sf::Vector2f(direction * delta);
 		this->vertices[3].position += sf::Vector2f(direction * delta);
 	}
@@ -3455,7 +3469,11 @@ namespace ql
 
 	ql::vec2 ql::thick_line::normal() const
 	{
-		return ql::vec2{ this->vertices[0].position.y - this->vertices[2].position.y, this->vertices[2].position.x - this->vertices[0].position.x } / this->length();
+		return ql::vec2{
+							 this->vertices[0].position.y - this->vertices[2].position.y,
+							 this->vertices[2].position.x - this->vertices[0].position.x
+					 } /
+					 this->length();
 	}
 
 	ql::thick_line& ql::thick_line::operator=(const ql::vthick_line& line)
@@ -6400,7 +6418,7 @@ namespace ql
 		low = ql::f64_max;
 		high = ql::f64_min;
 
-		ql::size interpolation_steps;
+		ql::size interpolation_steps = ql::size{};
 		ql::vgraph::interpolation_type interpolation = ql::vgraph::interpolation_type::unset;
 
 		for (auto& g : this->info_graphs)
@@ -6423,7 +6441,7 @@ namespace ql
 			{
 				auto span = this->get_info_graph_span(g.first);
 
-				auto result = ql::cubic_vector_interpolation_min_max(
+				auto result = ql::cubic_container_interpolation_min_max(
 						span, interpolation_steps, 0, this->index_skip_size, ql::vgraph::data_point_info{ql::f64_max},
 						ql::vgraph::data_point_info{ql::f64_min}
 				);
@@ -6462,7 +6480,7 @@ namespace ql
 			{
 				auto span = this->get_standard_graph_span(g.first);
 
-				auto result = ql::cubic_vector_interpolation_min_max(
+				auto result = ql::cubic_container_interpolation_min_max(
 						span, interpolation_steps, 0, this->index_skip_size, ql::vgraph::data_point{ql::f64_max},
 						ql::vgraph::data_point{ql::f64_min}
 				);
@@ -6501,7 +6519,7 @@ namespace ql
 			{
 				auto span = this->get_simple_graph_span(g.first);
 
-				auto result = ql::cubic_vector_interpolation_min_max(
+				auto result = ql::cubic_container_interpolation_min_max(
 						span, interpolation_steps, 0, this->index_skip_size, ql::vgraph::data_point_simple{ql::f64_max},
 						ql::vgraph::data_point_simple{ql::f64_min}
 				);
@@ -6850,11 +6868,11 @@ namespace ql
 
 			if (interpolation == ql::vgraph::interpolation_type::cubic)
 			{
-				interpolated_data = ql::cubic_vector_interpolation(span, interpolation_steps, graph.index_skip_size);
+				interpolated_data = ql::cubic_container_interpolation(span, interpolation_steps, graph.index_skip_size);
 			}
 			else if (interpolation == ql::vgraph::interpolation_type::linear)
 			{
-				interpolated_data = ql::linear_vector_interpolation(span, interpolation_steps, graph.index_skip_size);
+				interpolated_data = ql::linear_container_interpolation(span, interpolation_steps, graph.index_skip_size);
 			}
 
 			bool use_interpolated_thickness = false;
@@ -6901,7 +6919,7 @@ namespace ql
 			this->lines[u].clear();
 			for (ql::u32 i = 0u; i < interpolated_data.size(); ++i)
 			{
-			ql::vec2 position;
+				ql::vec2 position;
 				position.x = ql::f32_cast(
 						graph.position.x +
 						(graph.dimension.x - graph.y_axis_text_space) * (i / static_cast<double>(interpolated_data.size() - 1)) +
@@ -6956,11 +6974,11 @@ namespace ql
 
 			if (interpolation == ql::vgraph::interpolation_type::cubic)
 			{
-				interpolated_data = ql::cubic_vector_interpolation(span, interpolation_steps, graph.index_skip_size);
+				interpolated_data = ql::cubic_container_interpolation(span, interpolation_steps, graph.index_skip_size);
 			}
 			else if (interpolation == ql::vgraph::interpolation_type::linear)
 			{
-				interpolated_data = ql::linear_vector_interpolation(span, interpolation_steps, graph.index_skip_size);
+				interpolated_data = ql::linear_container_interpolation(span, interpolation_steps, graph.index_skip_size);
 			}
 
 			bool use_interpolated_thickness = false;
@@ -7005,7 +7023,7 @@ namespace ql
 			this->lines[u].clear();
 			for (ql::u32 i = 0u; i < interpolated_data.size(); ++i)
 			{
-			ql::vec2 position;
+				ql::vec2 position;
 				position.x = ql::f32_cast(
 						graph.position.x +
 						(graph.dimension.x - graph.y_axis_text_space) * (i / static_cast<double>(interpolated_data.size() - 1)) +
@@ -7031,11 +7049,11 @@ namespace ql
 
 			if (interpolation == ql::vgraph::interpolation_type::cubic)
 			{
-				interpolated_data = ql::cubic_vector_interpolation(span, interpolation_steps, graph.index_skip_size);
+				interpolated_data = ql::cubic_container_interpolation(span, interpolation_steps, graph.index_skip_size);
 			}
 			else if (interpolation == ql::vgraph::interpolation_type::linear)
 			{
-				interpolated_data = ql::linear_vector_interpolation(span, interpolation_steps, graph.index_skip_size);
+				interpolated_data = ql::linear_container_interpolation(span, interpolation_steps, graph.index_skip_size);
 			}
 
 			ql::f64 using_thickness = g.second.thickness;
@@ -7060,7 +7078,7 @@ namespace ql
 
 			for (ql::u32 i = 0u; i < interpolated_data.size(); ++i)
 			{
-			ql::vec2 position;
+				ql::vec2 position;
 				position.x = ql::f32_cast(
 						graph.position.x +
 						(graph.dimension.x - graph.y_axis_text_space) * (i / static_cast<double>(interpolated_data.size() - 1)) +
@@ -7115,7 +7133,7 @@ namespace ql
 						auto y_progress = ((y_position)-low_padded) / (high_padded - low_padded);
 						y_progress = (1.0 - y_progress) * (1.0 - graph.height_delta) + (graph.height_delta) / 2;
 
-					ql::		vec2 position;
+						ql::vec2 position;
 						position.x = graph.position.x;
 						position.y = ql::f32_cast(graph.position.y + graph.true_graph_height() * y_progress + graph.x_axis_text_space);
 
@@ -7144,7 +7162,7 @@ namespace ql
 					auto y_position = y_start + y_delta * i;
 					auto y_progress = ((y_position)-low_padded) / (high_padded - low_padded);
 					y_progress = (1.0 - y_progress) * (1.0 - graph.height_delta) + (graph.height_delta) / 2;
-				ql::	vec2 position;
+					ql::vec2 position;
 					position.x = graph.position.x;
 					position.y = ql::f32_cast(graph.position.y + graph.true_graph_height() * y_progress + graph.x_axis_text_space);
 
@@ -7174,7 +7192,8 @@ namespace ql
 						else if (graph.y_axis_text_percent)
 						{
 							this->y_texts[i].set_string(
-									graph.y_axis_text.string + ql::string_precision(graph.y_axis_text_precision, y_position * 100) + "%"
+									graph.y_axis_text.string + ql::string_precision(graph.y_axis_text_precision, ql::size_cast(y_position * 100)) +
+									"%"
 							);
 						}
 						else if (graph.y_axis_text_integer)
@@ -7184,7 +7203,7 @@ namespace ql
 						else
 						{
 							this->y_texts[i].set_string(
-									graph.y_axis_text.string + ql::string_precision(graph.y_axis_text_precision, y_position)
+									graph.y_axis_text.string + ql::string_precision(graph.y_axis_text_precision, ql::size_cast(y_position))
 							);
 						}
 					}
@@ -7197,7 +7216,8 @@ namespace ql
 						else if (graph.y_axis_text_percent)
 						{
 							this->y_texts[i].set_string(
-									ql::string_precision(graph.y_axis_text_precision, y_position * 100) + "%" + graph.y_axis_text.string
+									ql::string_precision(graph.y_axis_text_precision, ql::size_cast(y_position * 100)) + "%" +
+									graph.y_axis_text.string
 							);
 						}
 						else if (graph.y_axis_text_integer)
@@ -7207,7 +7227,7 @@ namespace ql
 						else
 						{
 							this->y_texts[i].set_string(
-									ql::string_precision(graph.y_axis_text_precision, y_position) + graph.y_axis_text.string
+									ql::string_precision(graph.y_axis_text_precision, ql::size_cast(y_position)) + graph.y_axis_text.string
 							);
 						}
 					}
@@ -7547,7 +7567,8 @@ namespace ql
 		{
 			this->sprites[ctr].set_texture(*this->texture);
 			this->sprites[ctr].set_rotation(180.f);
-			this->sprites[ctr].set_position(pos + ql::vec2(this->texture_dimension.x * this->scale.x, this->texture_dimension.x * this->scale.y)
+			this->sprites[ctr].set_position(
+					pos + ql::vec2(this->texture_dimension.x * this->scale.x, this->texture_dimension.x * this->scale.y)
 			);
 			this->sprites[ctr].set_scale(this->scale);
 			this->sprites[ctr].set_color(this->color);
@@ -8024,7 +8045,7 @@ namespace ql
 				if (in_range && element.outline_thickness != 0)
 				{
 					sf::Glyph glyph;
-					//if (this->unicode_font && ql::unicode_character_length(c) == 2u)
+					// if (this->unicode_font && ql::unicode_character_length(c) == 2u)
 					if (this->unicode_font)
 					{
 						glyph = this->get_unicode_glyph(c, this->character_size, is_bold, element.outline_thickness);

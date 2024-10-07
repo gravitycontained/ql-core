@@ -2,8 +2,10 @@
 
 #include <ql/core/definition/definition.hpp>
 #include <ql/core/type/type.hpp>
+#include <ql/core/transform/limit.hpp>
 
 #include <algorithm>
+#include <span>
 
 namespace ql
 {
@@ -240,5 +242,21 @@ namespace ql
 		return {*(v.first), *(v.second)};
 	}
 
+	template <typename T, typename T2>
+	std::pair<std::decay_t<T>, std::decay_t<T>> min_max(const std::span<T>& data, T2 skip_size)
+	{
+		if (data.empty())
+		{
+			return std::make_pair(std::decay_t<T>{}, std::decay_t<T>{});
+		}
+		std::decay_t<T> min = data.front();
+		std::decay_t<T> max = data.front();
+		for (T2 i = 0; i < data.size(); i += skip_size)
+		{
+			min = ql::min(min, data[i]);
+			max = ql::min(max, data[i]);
+		}
+		return std::make_pair(min, max);
+	}
 
 }	 // namespace ql

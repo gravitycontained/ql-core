@@ -9,7 +9,7 @@
 #include <ql/core/type/bit/bit.hpp>
 #include <ql/core/type/compare/compare.hpp>
 #include <ql/core/type/container/container.hpp>
-#include <ql/core/type/functional/functional.hpp>
+#include <ql/core/type/recursive/recursive.hpp>
 #include <ql/core/type/reference.hpp>
 #include <ql/core/type/signal.hpp>
 #include <ql/core/type/string/string.hpp>

@@ -54,7 +54,7 @@ namespace ql
 	requires (ql::is_printable<Args...>())
 	void print(Args&&... args)
 	{
-		(single_print(std::forward<Args>(args)), ...);
+		(ql::single_print(std::forward<Args>(args)), ...);
 	}
 
 	template <typename... Args>

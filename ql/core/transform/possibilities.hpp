@@ -8,7 +8,7 @@
 
 namespace ql
 {
-	namespace impl
+	namespace detail
 	{
 		template <typename T, ql::size N>
 		struct possibilities_iterator
@@ -297,41 +297,42 @@ namespace ql
 				return this->crend();
 			}
 		};
-	}	 // namespace impl
+	}	 // namespace detail
 
 	template <typename... Ts>
+	requires (ql::variadic_size<Ts...>() > 1)
 	constexpr auto list_possibilities(Ts... values)
 	{
-		return ql::list_possibilities(ql::tuple_to_array(values...));
+		return ql::detail::possibilities(ql::tuple_to_array(values...));
 	}
 
 	template <typename T, ql::size N>
 	constexpr auto list_possibilities(const std::array<T, N>& start)
 	{
-		return ql::list_possibilities(start);
+		return ql::detail::possibilities(start);
 	}
 
 	template <typename T, ql::size N>
 	constexpr auto list_possibilities(const std::array<T, N>& start, const std::array<T, N>& end)
 	{
-		return ql::list_possibilities(start, end);
+		return ql::detail::possibilities(start, end);
 	}
 
 	template <typename... Ts>
 	constexpr auto list_reverse_possibilities(Ts... values)
 	{
-		return ql::impl::reverse_possibilities(ql::tuple_to_array(values...));
+		return ql::detail::reverse_possibilities(ql::tuple_to_array(values...));
 	}
 
 	template <typename T, ql::size N>
 	constexpr auto list_reverse_possibilities(const std::array<T, N>& start)
 	{
-		return ql::impl::reverse_possibilities(start);
+		return ql::detail::reverse_possibilities(start);
 	}
 
 	template <typename T, ql::size N>
 	constexpr auto list_reverse_possibilities(const std::array<T, N>& start, const std::array<T, N>& end)
 	{
-		return ql::impl::reverse_possibilities(start, end);
+		return ql::detail::reverse_possibilities(start, end);
 	}
 }	 // namespace ql

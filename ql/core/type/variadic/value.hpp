@@ -5,7 +5,7 @@
 #include <ql/core/type/variadic/type.hpp>
 #include <ql/core/type/variadic/size.hpp>
 
-#include <ql/core/type/tuple/auto-tie.hpp>
+#include <ql/core/functional/auto-tie.hpp>
 #include <ql/core/type/tuple/value.hpp>
 
 #include <ql/core/type/expression.hpp>
