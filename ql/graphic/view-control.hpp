@@ -4,11 +4,10 @@
 #if defined QL_SFML
 
 #include <SFML/Graphics/RenderStates.hpp>
+#include <ql/graphic/state/base-state/base-state.hpp>
 
 namespace ql
 {
-
-	struct base_state;
 
 	template <typename T>
 	struct view_control_t : ql::view_t<T>

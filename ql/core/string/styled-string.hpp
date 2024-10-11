@@ -20,6 +20,11 @@ namespace ql
 			constexpr color(ql::rgb color) : value(color)
 			{
 			}
+
+			constexpr color(ql::print_color color)
+			{
+				this->value = ql::print_color_to_rgba(color);
+			}
 		};
 
 		struct style
@@ -255,6 +260,11 @@ namespace ql
 			{
 				this->elements.push_back({});
 			}
+		}
+
+		void add(const ql::print_color& color)
+		{
+			this->add(style::color(color));
 		}
 
 		void add(const ql::rgba& color)

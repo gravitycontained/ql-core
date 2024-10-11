@@ -24,7 +24,8 @@ namespace ql
 		bright_yellow = 14,
 		bright_white = 15,
 		bright_gray = 16,
-		reset = 17,
+		transparent = 17,
+		reset = 18,
 	};
 
 	constexpr auto black = ql::print_color::black;
@@ -91,4 +92,5 @@ namespace ql
 		}
 		return termcolor::reset<char>;
 	}
+
 }	 // namespace ql
