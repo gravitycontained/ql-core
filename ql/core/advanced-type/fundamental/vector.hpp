@@ -18,7 +18,7 @@
 #include <iomanip>
 #include <numeric>
 
-#if defined QL_SFML
+#if defined QL_GRAPHIC
 #include <SFML/Graphics.hpp>
 #endif
 
@@ -514,7 +514,14 @@ namespace ql
 		requires (ql::variadic_size<Args...>() > 1)
 		constexpr vectorN(Args&&... list) : impl_type()
 		{
-			*this = ql::tuple_to_array(std::make_tuple(std::forward<Args>(list)...));
+			*this = std::make_tuple(list...);
+		}
+
+		template <typename U>
+		requires (ql::is_tuple<U>())
+		constexpr vectorN(const U& tuple) : impl_type()
+		{
+			*this = tuple;
 		}
 
 		template <typename U>
@@ -524,14 +531,7 @@ namespace ql
 			*this = value;
 		}
 
-		template <typename T>
-		requires (ql::is_tuple<T>())
-		constexpr vectorN(const T& tuple) : impl_type()
-		{
-			*this = tuple;
-		}
-
-#if defined QL_SFML
+#if defined QL_GRAPHIC
 		template <typename U>
 		constexpr vectorN(const sf::Vector2<U>& other) : impl_type()
 		{
@@ -633,11 +633,11 @@ namespace ql
 			return *this;
 		}
 
-		template <typename T>
-		requires (ql::is_tuple<T>())
-		constexpr vectorN& operator=(const T& tuple)
+		template <typename U>
+		requires (ql::is_tuple<U>())
+		constexpr vectorN& operator=(const U& tuple)
 		{
-			this->data = ql::tuple_to_array(tuple);
+			this->data = ql::tuple_to_array<T>(tuple);
 			return *this;
 		}
 

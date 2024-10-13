@@ -1,7 +1,7 @@
 #include <ql/graphic/resources.hpp>
 #include <ql/core/system/exception/exception.hpp>
 
-#if defined QL_SFML
+#if defined QL_GRAPHIC
 
 namespace ql
 {

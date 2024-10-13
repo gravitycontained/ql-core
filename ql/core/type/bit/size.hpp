@@ -6,7 +6,7 @@ namespace ql
 {
 	constexpr ql::size bits_in_byte()
 	{
-#ifdef CHAR_BIT
+#if defined CHAR_BIT
 		return CHAR_BIT;
 #else
 		return 8u;

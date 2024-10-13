@@ -13,8 +13,8 @@
 
 #include <ql/core/system/system.hpp>
 
-#ifdef QL_SFML
-#include <ql/graphic/event-info.hpp>
+#if defined QL_GRAPHIC
+	#include <ql/graphic/event/event.hpp>
 #endif
 
 namespace ql
@@ -1698,8 +1698,8 @@ namespace ql
 		this->progress_change_flag = (this->progress != this->progress_before);
 		this->progress_before = this->progress;
 	}
-#ifdef QL_SFML
-	void ql::animation::update(const ql::event_info& event)
+#if defined QL_GRAPHIC
+	void ql::animation::update(const ql::event_manager& event)
 	{
 		this->update(event.frame_time_f());
 	}

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <ql/core/definition/definition.hpp>
-#if defined QL_SFML
+#if defined QL_GRAPHIC
 
 #include <SFML/Graphics.hpp>
 
@@ -12,10 +12,10 @@
 
 namespace ql
 {
-	struct event_info;
+	struct event_manager;
 
 	template <typename C, typename... Args>
-	concept has_update_c = requires(C x, const event_info& event, Args... args) { x.update(event, args...); };
+	concept has_update_c = requires(C x, const event_manager& event, Args... args) { x.update(event, args...); };
 
 	template <typename C, typename... Args>
 	constexpr bool has_update()
@@ -23,136 +23,8 @@ namespace ql
 		return has_update_c<C, Args...>;
 	}
 
-	struct event_info
+	struct event_manager
 	{
-		QL_SOURCE bool key_single_pressed(sf::Keyboard::Key key) const;
-		QL_SOURCE bool key_single_released(sf::Keyboard::Key key) const;
-		QL_SOURCE bool key_pressed(sf::Keyboard::Key key) const;
-		QL_SOURCE bool key_released(sf::Keyboard::Key key) const;
-		QL_SOURCE bool key_holding(sf::Keyboard::Key key) const;
-		QL_SOURCE bool keys_pressed(const std::vector<sf::Keyboard::Key>& keys) const;
-		QL_SOURCE bool keys_released(const std::vector<sf::Keyboard::Key>& keys) const;
-		QL_SOURCE bool keys_holding(const std::vector<sf::Keyboard::Key>& keys) const;
-
-		QL_SOURCE bool mouse_button_clicked(sf::Mouse::Button button) const;
-		QL_SOURCE bool mouse_button_released(sf::Mouse::Button button) const;
-		QL_SOURCE bool mouse_button_holding(sf::Mouse::Button button) const;
-
-		QL_SOURCE bool mouse_button_clicked() const;
-		QL_SOURCE bool mouse_button_released() const;
-		QL_SOURCE bool mouse_button_holding() const;
-
-		QL_SOURCE bool mouse_moved() const;
-		QL_SOURCE bool left_mouse_clicked() const;
-		QL_SOURCE bool left_mouse_released() const;
-		QL_SOURCE bool right_mouse_clicked() const;
-		QL_SOURCE bool right_mouse_released() const;
-		QL_SOURCE bool middle_mouse_clicked() const;
-		QL_SOURCE bool middle_mouse_released() const;
-		QL_SOURCE bool scrolled_up() const;
-		QL_SOURCE bool scrolled_down() const;
-		QL_SOURCE bool key_pressed() const;
-		QL_SOURCE bool key_single_pressed() const;
-		QL_SOURCE bool key_released() const;
-		QL_SOURCE bool key_single_released() const;
-		QL_SOURCE bool key_holding() const;
-
-		QL_SOURCE bool resized() const;
-		QL_SOURCE bool window_closed() const;
-
-		QL_SOURCE bool holding_left_mouse() const;
-		QL_SOURCE bool holding_right_mouse() const;
-		QL_SOURCE bool holding_middle_mouse() const;
-		QL_SOURCE bool holding_key() const;
-
-		QL_SOURCE bool left_mouse_fast_clicked() const;
-		QL_SOURCE bool right_mouse_fast_clicked() const;
-		QL_SOURCE bool middle_mouse_fast_clicked() const;
-
-		QL_SOURCE bool left_mouse_double_clicked() const;
-		QL_SOURCE bool right_mouse_double_clicked() const;
-		QL_SOURCE bool middle_mouse_double_clicked() const;
-		QL_SOURCE ql::size left_mouse_fast_click_count() const;
-		QL_SOURCE ql::size right_mouse_fast_click_count() const;
-		QL_SOURCE ql::size middle_mouse_fast_click_count() const;
-
-		QL_SOURCE void reset(const sf::RenderWindow& window);
-		QL_SOURCE void update(const sf::Event& event);
-		QL_SOURCE void set_fast_click_duration(ql::f64 duration);
-		QL_SOURCE ql::f64 get_fast_click_duration() const;
-		QL_SOURCE void set_fast_double_click_duration(ql::f64 duration);
-		QL_SOURCE ql::f64 get_fast_double_click_duration() const;
-
-		QL_SOURCE ql::vector2u screen_dimension() const;
-		QL_SOURCE ql::time frame_time() const;
-		QL_SOURCE ql::f64 frame_time_f() const;
-		QL_SOURCE ql::vector2i resized_size() const;
-		QL_SOURCE ql::vec2 mouse_position() const;
-		QL_SOURCE ql::vec2 delta_mouse_position() const;
-		QL_SOURCE ql::vector2i mouse_position_screen() const;
-		QL_SOURCE ql::vector2i mouse_position_desktop() const;
-
-		QL_SOURCE void reset_delta_mouse();
-
-		template <typename T>
-		void apply_view(const ql::view_t<T>& view) const
-		{
-			this->m_mouse_position = view.transform_point(this->m_mouse_position);
-			this->m_delta_mouse_position = view.transform_point_no_offset(this->m_delta_mouse_position);
-		}
-
-		QL_SOURCE bool text_entered(char c) const;
-		QL_SOURCE bool text_entered(wchar_t c) const;
-		QL_SOURCE bool text_entered(std::string c) const;
-		QL_SOURCE bool text_entered(std::wstring c) const;
-
-		QL_SOURCE bool is_text_entered() const;
-		QL_SOURCE std::wstring text_entered() const;
-		QL_SOURCE std::u32string u32_text_entered() const;
-		QL_SOURCE std::string text_entered_str() const;
-		QL_SOURCE std::wstring all_text_entered() const;
-		QL_SOURCE std::string all_text_entered_str() const;
-
-		template <typename T, typename... Args>
-		requires (
-				ql::has_update<T, Args...>() || (ql::is_container<T>() && ql::has_update<ql::container_deepest_subtype<T>, Args...>())
-		)
-		void update(T& updatable, Args&&... args) const
-		{
-			if constexpr (ql::has_update<T, Args...>())
-			{
-				if constexpr (ql::has_view<T>())
-				{
-					if (updatable.auto_view.is_default_view())
-					{
-						updatable.update(*this, args...);
-					}
-					else
-					{
-						auto before = this->m_mouse_position;
-						auto before_delta = this->m_delta_mouse_position;
-						this->apply_view(updatable.auto_view);
-
-						updatable.update(*this, args...);
-
-						this->m_mouse_position = before;
-						this->m_delta_mouse_position = before_delta;
-					}
-				}
-				else
-				{
-					updatable.update(*this, args...);
-				}
-			}
-			else
-			{
-				for (auto& i : updatable)
-				{
-					this->update(i, args...);
-				}
-			}
-		}
-
 		bool m_mouse_clicked = false;
 		bool m_mouse_released = false;
 		bool m_mouse_holding = false;
@@ -224,6 +96,134 @@ namespace ql
 		// std::unordered_set<sf::Joystick::Axis> m_joystick_axis_pressed;
 		// std::unordered_set<sf::Joystick::Axis> m_joystick_axis_released;
 		// std::unordered_set<sf::Joystick::Axis> m_joystick_axis_holding;
+
+		QL_SOURCE bool key_single_pressed(sf::Keyboard::Key key) const;
+		QL_SOURCE bool key_single_released(sf::Keyboard::Key key) const;
+		QL_SOURCE bool key_pressed(sf::Keyboard::Key key) const;
+		QL_SOURCE bool key_released(sf::Keyboard::Key key) const;
+		QL_SOURCE bool key_holding(sf::Keyboard::Key key) const;
+		QL_SOURCE bool keys_pressed(const std::vector<sf::Keyboard::Key>& keys) const;
+		QL_SOURCE bool keys_released(const std::vector<sf::Keyboard::Key>& keys) const;
+		QL_SOURCE bool keys_holding(const std::vector<sf::Keyboard::Key>& keys) const;
+
+		QL_SOURCE bool mouse_button_clicked(sf::Mouse::Button button) const;
+		QL_SOURCE bool mouse_button_released(sf::Mouse::Button button) const;
+		QL_SOURCE bool mouse_button_holding(sf::Mouse::Button button) const;
+
+		QL_SOURCE bool mouse_button_clicked() const;
+		QL_SOURCE bool mouse_button_released() const;
+		QL_SOURCE bool mouse_button_holding() const;
+
+		QL_SOURCE bool mouse_moved() const;
+		QL_SOURCE bool left_mouse_clicked() const;
+		QL_SOURCE bool left_mouse_released() const;
+		QL_SOURCE bool right_mouse_clicked() const;
+		QL_SOURCE bool right_mouse_released() const;
+		QL_SOURCE bool middle_mouse_clicked() const;
+		QL_SOURCE bool middle_mouse_released() const;
+		QL_SOURCE bool scrolled_up() const;
+		QL_SOURCE bool scrolled_down() const;
+		QL_SOURCE bool key_pressed() const;
+		QL_SOURCE bool key_single_pressed() const;
+		QL_SOURCE bool key_released() const;
+		QL_SOURCE bool key_single_released() const;
+		QL_SOURCE bool key_holding() const;
+
+		QL_SOURCE bool resized() const;
+		QL_SOURCE bool window_closed() const;
+
+		QL_SOURCE bool holding_left_mouse() const;
+		QL_SOURCE bool holding_right_mouse() const;
+		QL_SOURCE bool holding_middle_mouse() const;
+		QL_SOURCE bool holding_key() const;
+
+		QL_SOURCE bool left_mouse_fast_clicked() const;
+		QL_SOURCE bool right_mouse_fast_clicked() const;
+		QL_SOURCE bool middle_mouse_fast_clicked() const;
+
+		QL_SOURCE bool left_mouse_double_clicked() const;
+		QL_SOURCE bool right_mouse_double_clicked() const;
+		QL_SOURCE bool middle_mouse_double_clicked() const;
+		QL_SOURCE ql::size left_mouse_fast_click_count() const;
+		QL_SOURCE ql::size right_mouse_fast_click_count() const;
+		QL_SOURCE ql::size middle_mouse_fast_click_count() const;
+
+		QL_SOURCE void reset(const sf::RenderWindow& window);
+		QL_SOURCE void update(const sf::Event& event);
+		QL_SOURCE void set_fast_click_duration(ql::f64 duration);
+		QL_SOURCE ql::f64 get_fast_click_duration() const;
+		QL_SOURCE void set_fast_double_click_duration(ql::f64 duration);
+		QL_SOURCE ql::f64 get_fast_double_click_duration() const;
+
+		QL_SOURCE ql::vector2u screen_dimension() const;
+		QL_SOURCE ql::time frame_time() const;
+		QL_SOURCE ql::f64 frame_time_f() const;
+		QL_SOURCE ql::vector2i resized_size() const;
+		QL_SOURCE ql::vec2 mouse_position() const;
+		QL_SOURCE ql::vec2 delta_mouse_position() const;
+		QL_SOURCE ql::vector2i mouse_position_screen() const;
+		QL_SOURCE ql::vector2i mouse_position_desktop() const;
+
+		QL_SOURCE void reset_delta_mouse();
+
+		template <typename T>
+		void apply_view(const ql::view_type<T>& view) const
+		{
+			this->m_mouse_position = view.transform_point(this->m_mouse_position);
+			this->m_delta_mouse_position = view.transform_point_no_offset(this->m_delta_mouse_position);
+		}
+
+		QL_SOURCE bool text_entered(char c) const;
+		QL_SOURCE bool text_entered(wchar_t c) const;
+		QL_SOURCE bool text_entered(std::string c) const;
+		QL_SOURCE bool text_entered(std::wstring c) const;
+
+		QL_SOURCE bool is_text_entered() const;
+		QL_SOURCE std::wstring text_entered() const;
+		QL_SOURCE std::u32string u32_text_entered() const;
+		QL_SOURCE std::string text_entered_str() const;
+		QL_SOURCE std::wstring all_text_entered() const;
+		QL_SOURCE std::string all_text_entered_str() const;
+
+		template <typename T, typename... Args>
+		requires (
+				ql::has_update<T, Args...>() || (ql::is_container<T>() && ql::has_update<ql::container_deepest_subtype<T>, Args...>())
+		)
+		void update(T& updatable, Args&&... args) const
+		{
+			if constexpr (ql::has_update<T, Args...>())
+			{
+				if constexpr (ql::has_view<T>())
+				{
+					if (updatable.auto_view.is_default_view())
+					{
+						updatable.update(*this, args...);
+					}
+					else
+					{
+						auto before = this->m_mouse_position;
+						auto before_delta = this->m_delta_mouse_position;
+						this->apply_view(updatable.auto_view);
+
+						updatable.update(*this, args...);
+
+						this->m_mouse_position = before;
+						this->m_delta_mouse_position = before_delta;
+					}
+				}
+				else
+				{
+					updatable.update(*this, args...);
+				}
+			}
+			else
+			{
+				for (auto& i : updatable)
+				{
+					this->update(i, args...);
+				}
+			}
+		}
 	};
 
 }	 // namespace ql

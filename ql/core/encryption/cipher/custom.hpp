@@ -20,7 +20,9 @@
 
 #include <ql/core/random/random.hpp>
 
-#ifdef QL_RSA
+#include <ql/core/encryption/hash/hash.hpp>
+
+#if defined QL_RSA
 #pragma warning(push)
 #pragma warning(disable : 4146)
 #include <gmpxx.h>
@@ -29,172 +31,6 @@
 
 namespace ql
 {
-	struct sha256
-	{
-		using utype = ql::u32;
-
-		constexpr static ql::size bits = 32u;
-		constexpr static ql::size message_size = 512u;
-		constexpr static ql::size sequence_size = (message_size / bits);
-		constexpr static ql::size hash_size = 8u;
-		constexpr static ql::size working_size = 8u;
-		constexpr static ql::size round_size = 64u;
-		constexpr static ql::size output_size = 8u;
-		constexpr static ql::size state_size = 8u;
-		constexpr static ql::size block_size = 64u;
-		constexpr static ql::size digest_bits = bits * ql::bits_in_byte();
-
-		std::array<utype, block_size> data{};
-		std::array<utype, state_size> state;
-		utype blocklen;
-		ql::size bitlen;
-
-		using hash_result = std::array<ql::u8, bits>;
-
-		static constexpr auto table = std::array{
-				0x428a2f98u, 0x71374491u, 0xb5c0fbcfu, 0xe9b5dba5u, 0x3956c25bu, 0x59f111f1u, 0x923f82a4u, 0xab1c5ed5u,
-				0xd807aa98u, 0x12835b01u, 0x243185beu, 0x550c7dc3u, 0x72be5d74u, 0x80deb1feu, 0x9bdc06a7u, 0xc19bf174u,
-				0xe49b69c1u, 0xefbe4786u, 0x0fc19dc6u, 0x240ca1ccu, 0x2de92c6fu, 0x4a7484aau, 0x5cb0a9dcu, 0x76f988dau,
-				0x983e5152u, 0xa831c66du, 0xb00327c8u, 0xbf597fc7u, 0xc6e00bf3u, 0xd5a79147u, 0x06ca6351u, 0x14292967u,
-				0x27b70a85u, 0x2e1b2138u, 0x4d2c6dfcu, 0x53380d13u, 0x650a7354u, 0x766a0abbu, 0x81c2c92eu, 0x92722c85u,
-				0xa2bfe8a1u, 0xa81a664bu, 0xc24b8b70u, 0xc76c51a3u, 0xd192e819u, 0xd6990624u, 0xf40e3585u, 0x106aa070u,
-				0x19a4c116u, 0x1e376c08u, 0x2748774cu, 0x34b0bcb5u, 0x391c0cb3u, 0x4ed8aa4au, 0x5b9cca4fu, 0x682e6ff3u,
-				0x748f82eeu, 0x78a5636fu, 0x84c87814u, 0x8cc70208u, 0x90befffau, 0xa4506cebu, 0xbef9a3f7u, 0xc67178f2u,
-		};
-
-		sha256()
-		{
-			this->reset();
-		}
-
-		static constexpr auto rotr(utype x, utype n)
-		{
-			return (x >> n) | (x << (bits - n));
-		}
-
-		static constexpr auto choose(utype e, utype f, utype g)
-		{
-			return (e & f) ^ (~e & g);
-		}
-
-		static constexpr auto majority(utype a, utype b, utype c)
-		{
-			return (a & (b | c)) | (b & c);
-		}
-
-		static constexpr auto sig0(utype x)
-		{
-			return rotr(x, 7u) ^ rotr(x, 18u) ^ (x >> 3u);
-		}
-
-		static constexpr auto sig1(utype x)
-		{
-			return rotr(x, 17u) ^ rotr(x, 19u) ^ (x >> 10u);
-		}
-
-		QL_SOURCE void reset();
-		QL_SOURCE void update(const std::string_view& data);
-		QL_SOURCE auto digest();
-		QL_SOURCE void transform();
-		QL_SOURCE void add_padding();
-		QL_SOURCE void revert(ql::sha256::hash_result& hash);
-		QL_SOURCE static std::string to_string(const ql::sha256::hash_result& hash);
-	};
-
-	struct sha512
-	{
-		using utype = ql::u64;
-
-		constexpr static ql::size bits = 64u;
-		constexpr static ql::size message_size = 1024u;
-		constexpr static ql::size sequence_size = (message_size / bits);
-		constexpr static ql::size hash_size = 8u;
-		constexpr static ql::size working_size = 8u;
-		constexpr static ql::size round_size = 80u;
-		constexpr static ql::size output_size = 8u;
-		constexpr static ql::size state_size = 8u;
-		constexpr static ql::size block_size = 128u;
-		constexpr static ql::size digest_bits = bits * ql::bits_in_byte();
-
-		std::array<utype, block_size> data{};
-		std::array<utype, state_size> state;
-		utype blocklen;
-		ql::size bitlen;
-
-		using hash_result = std::array<ql::u8, bits>;
-
-		static constexpr auto table = std::array{
-				0x428a2f98d728ae22ULL, 0x7137449123ef65cdULL, 0xb5c0fbcfec4d3b2fULL, 0xe9b5dba58189dbbcULL, 0x3956c25bf348b538ULL,
-				0x59f111f1b605d019ULL, 0x923f82a4af194f9bULL, 0xab1c5ed5da6d8118ULL, 0xd807aa98a3030242ULL, 0x12835b0145706fbeULL,
-				0x243185be4ee4b28cULL, 0x550c7dc3d5ffb4e2ULL, 0x72be5d74f27b896fULL, 0x80deb1fe3b1696b1ULL, 0x9bdc06a725c71235ULL,
-				0xc19bf174cf692694ULL, 0xe49b69c19ef14ad2ULL, 0xefbe4786384f25e3ULL, 0x0fc19dc68b8cd5b5ULL, 0x240ca1cc77ac9c65ULL,
-				0x2de92c6f592b0275ULL, 0x4a7484aa6ea6e483ULL, 0x5cb0a9dcbd41fbd4ULL, 0x76f988da831153b5ULL, 0x983e5152ee66dfabULL,
-				0xa831c66d2db43210ULL, 0xb00327c898fb213fULL, 0xbf597fc7beef0ee4ULL, 0xc6e00bf33da88fc2ULL, 0xd5a79147930aa725ULL,
-				0x06ca6351e003826fULL, 0x142929670a0e6e70ULL, 0x27b70a8546d22ffcULL, 0x2e1b21385c26c926ULL, 0x4d2c6dfc5ac42aedULL,
-				0x53380d139d95b3dfULL, 0x650a73548baf63deULL, 0x766a0abb3c77b2a8ULL, 0x81c2c92e47edaee6ULL, 0x92722c851482353bULL,
-				0xa2bfe8a14cf10364ULL, 0xa81a664bbc423001ULL, 0xc24b8b70d0f89791ULL, 0xc76c51a30654be30ULL, 0xd192e819d6ef5218ULL,
-				0xd69906245565a910ULL, 0xf40e35855771202aULL, 0x106aa07032bbd1b8ULL, 0x19a4c116b8d2d0c8ULL, 0x1e376c085141ab53ULL,
-				0x2748774cdf8eeb99ULL, 0x34b0bcb5e19b48a8ULL, 0x391c0cb3c5c95a63ULL, 0x4ed8aa4ae3418acbULL, 0x5b9cca4f7763e373ULL,
-				0x682e6ff3d6b2b8a3ULL, 0x748f82ee5defb2fcULL, 0x78a5636f43172f60ULL, 0x84c87814a1f0ab72ULL, 0x8cc702081a6439ecULL,
-				0x90befffa23631e28ULL, 0xa4506cebde82bde9ULL, 0xbef9a3f7b2c67915ULL, 0xc67178f2e372532bULL, 0xca273eceea26619cULL,
-				0xd186b8c721c0c207ULL, 0xeada7dd6cde0eb1eULL, 0xf57d4f7fee6ed178ULL, 0x06f067aa72176fbaULL, 0x0a637dc5a2c898a6ULL,
-				0x113f9804bef90daeULL, 0x1b710b35131c471bULL, 0x28db77f523047d84ULL, 0x32caab7b40c72493ULL, 0x3c9ebe0a15c9bebcULL,
-				0x431d67c49c100d4cULL, 0x4cc5d4becb3e42b6ULL, 0x597f299cfc657e2aULL, 0x5fcb6fab3ad6faecULL, 0x6c44198c4a475817ULL,
-		};
-
-		sha512()
-		{
-			this->reset();
-		}
-
-		static constexpr auto rotr(utype x, utype n)
-		{
-			return (x >> n) | (x << (bits - n));
-		}
-
-		static constexpr auto choose(utype e, utype f, utype g)
-		{
-			return (e & f) ^ (~e & g);
-		}
-
-		static constexpr auto majority(utype a, utype b, utype c)
-		{
-			return (a & (b | c)) | (b & c);
-		}
-
-		static constexpr auto sig0(utype x)
-		{
-			return rotr(x, 1u) ^ rotr(x, 8u) ^ (x >> 7u);
-		}
-
-		static constexpr auto sig1(utype x)
-		{
-			return rotr(x, 19u) ^ rotr(x, 61u) ^ (x >> 6u);
-		}
-
-		QL_SOURCE void reset();
-		QL_SOURCE void update(const std::string_view& data);
-		QL_SOURCE auto digest();
-		QL_SOURCE void transform();
-		QL_SOURCE void add_padding();
-		QL_SOURCE void revert(ql::sha512::hash_result& hash);
-		QL_SOURCE static std::string to_string(const ql::sha512::hash_result& hash);
-	};
-
-	namespace detail
-	{
-		QL_SOURCE extern ql::sha256 sha256_t;
-		QL_SOURCE extern ql::sha512 sha512_t;
-	}	 // namespace detail
-
-	QL_SOURCE std::string sha256_hash(const std::string_view& string);
-	QL_SOURCE std::string sha512_hash(const std::string_view& string);
-
-	constexpr auto sha256_object = std::make_pair(sha256_hash, 256u);
-	constexpr auto sha512_object = std::make_pair(sha512_hash, 512u);
-	using hash_type = decltype(sha256_object);
-
-	QL_SOURCE std::string mgf1(const std::string_view& seed, ql::size length, hash_type hash_object);
 
 	namespace detail
 	{
@@ -650,7 +486,7 @@ namespace ql
 		}
 	}
 
-#ifdef QL_CIPHER
+#if defined QL_CIPHER
 	namespace detail
 	{
 		constexpr std::array<std::array<ql::u8, 256u>, 256u> galois_mul = {
@@ -6157,7 +5993,7 @@ namespace ql
 
 #endif
 
-#ifdef QL_RSA
+#if defined QL_RSA
 
 	struct RSA_key_pair
 	{
@@ -6268,7 +6104,7 @@ namespace ql
 		) const;
 	};
 
-#ifdef QL_CIPHER
+#if defined QL_CIPHER
 	template <typename symmetric_cipher>
 	struct RSASSA_PSS_OAEP_CIPHER
 	{

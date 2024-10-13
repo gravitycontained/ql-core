@@ -1,27 +1,28 @@
-#include <ql/graphic/event-info.hpp>
 
-#if defined QL_SFML
+#include <ql/graphic/event/event-manager/event-manager.hpp>
+
+#if defined QL_GRAPHIC
 
 #include <ql/core/string/cast/cast.hpp>
 
 namespace ql
 {
-	bool ql::event_info::key_single_pressed(sf::Keyboard::Key key) const
+	bool ql::event_manager::key_single_pressed(sf::Keyboard::Key key) const
 	{
 		return this->m_keys_single_pressed.find(key) != this->m_keys_single_pressed.cend();
 	}
 
-	bool ql::event_info::key_single_released(sf::Keyboard::Key key) const
+	bool ql::event_manager::key_single_released(sf::Keyboard::Key key) const
 	{
 		return this->m_keys_single_released.find(key) != this->m_keys_single_released.cend();
 	}
 
-	bool ql::event_info::key_pressed(sf::Keyboard::Key key) const
+	bool ql::event_manager::key_pressed(sf::Keyboard::Key key) const
 	{
 		return this->m_keys_pressed.find(key) != this->m_keys_pressed.cend();
 	}
 
-	bool ql::event_info::keys_pressed(const std::vector<sf::Keyboard::Key>& keys) const
+	bool ql::event_manager::keys_pressed(const std::vector<sf::Keyboard::Key>& keys) const
 	{
 		for (auto& i : keys)
 		{
@@ -33,12 +34,12 @@ namespace ql
 		return true;
 	}
 
-	bool ql::event_info::key_released(sf::Keyboard::Key key) const
+	bool ql::event_manager::key_released(sf::Keyboard::Key key) const
 	{
 		return this->m_keys_released.find(key) != this->m_keys_released.cend();
 	}
 
-	bool ql::event_info::keys_released(const std::vector<sf::Keyboard::Key>& keys) const
+	bool ql::event_manager::keys_released(const std::vector<sf::Keyboard::Key>& keys) const
 	{
 		for (auto& i : keys)
 		{
@@ -50,12 +51,12 @@ namespace ql
 		return true;
 	}
 
-	bool ql::event_info::key_holding(sf::Keyboard::Key key) const
+	bool ql::event_manager::key_holding(sf::Keyboard::Key key) const
 	{
 		return this->m_keys_holding.find(key) != this->m_keys_holding.cend();
 	}
 
-	bool ql::event_info::keys_holding(const std::vector<sf::Keyboard::Key>& keys) const
+	bool ql::event_manager::keys_holding(const std::vector<sf::Keyboard::Key>& keys) const
 	{
 		for (auto& i : keys)
 		{
@@ -67,7 +68,7 @@ namespace ql
 		return true;
 	}
 
-	bool ql::event_info::mouse_button_clicked(sf::Mouse::Button button) const
+	bool ql::event_manager::mouse_button_clicked(sf::Mouse::Button button) const
 	{
 		if (button == sf::Mouse::Button::Left)
 		{
@@ -84,7 +85,7 @@ namespace ql
 		return false;
 	}
 
-	bool ql::event_info::mouse_button_released(sf::Mouse::Button button) const
+	bool ql::event_manager::mouse_button_released(sf::Mouse::Button button) const
 	{
 		if (button == sf::Mouse::Button::Left)
 		{
@@ -101,7 +102,7 @@ namespace ql
 		return false;
 	}
 
-	bool ql::event_info::mouse_button_holding(sf::Mouse::Button button) const
+	bool ql::event_manager::mouse_button_holding(sf::Mouse::Button button) const
 	{
 		if (button == sf::Mouse::Button::Left)
 		{
@@ -118,152 +119,152 @@ namespace ql
 		return false;
 	}
 
-	bool ql::event_info::mouse_button_clicked() const
+	bool ql::event_manager::mouse_button_clicked() const
 	{
 		return this->m_mouse_clicked;
 	}
 
-	bool ql::event_info::mouse_button_released() const
+	bool ql::event_manager::mouse_button_released() const
 	{
 		return this->m_mouse_released;
 	}
 
-	bool ql::event_info::mouse_button_holding() const
+	bool ql::event_manager::mouse_button_holding() const
 	{
 		return this->m_mouse_holding;
 	}
 
-	bool ql::event_info::mouse_moved() const
+	bool ql::event_manager::mouse_moved() const
 	{
 		return this->m_mouse_moved;
 	}
 
-	bool ql::event_info::left_mouse_clicked() const
+	bool ql::event_manager::left_mouse_clicked() const
 	{
 		return this->m_left_mouse_clicked;
 	}
 
-	bool ql::event_info::left_mouse_released() const
+	bool ql::event_manager::left_mouse_released() const
 	{
 		return this->m_left_mouse_released;
 	}
 
-	bool ql::event_info::right_mouse_clicked() const
+	bool ql::event_manager::right_mouse_clicked() const
 	{
 		return this->m_right_mouse_clicked;
 	}
 
-	bool ql::event_info::right_mouse_released() const
+	bool ql::event_manager::right_mouse_released() const
 	{
 		return this->m_right_mouse_released;
 	}
 
-	bool ql::event_info::middle_mouse_clicked() const
+	bool ql::event_manager::middle_mouse_clicked() const
 	{
 		return this->m_middle_mouse_clicked;
 	}
 
-	bool ql::event_info::middle_mouse_released() const
+	bool ql::event_manager::middle_mouse_released() const
 	{
 		return this->m_middle_mouse_released;
 	}
 
-	bool ql::event_info::scrolled_up() const
+	bool ql::event_manager::scrolled_up() const
 	{
 		return this->m_scrolled_up;
 	}
 
-	bool ql::event_info::scrolled_down() const
+	bool ql::event_manager::scrolled_down() const
 	{
 		return this->m_scrolled_down;
 	}
 
-	bool ql::event_info::key_pressed() const
+	bool ql::event_manager::key_pressed() const
 	{
 		return this->m_key_pressed;
 	}
 
-	bool ql::event_info::key_single_pressed() const
+	bool ql::event_manager::key_single_pressed() const
 	{
 		return this->m_key_single_pressed;
 	}
 
-	bool ql::event_info::key_released() const
+	bool ql::event_manager::key_released() const
 	{
 		return this->m_key_released;
 	}
 
-	bool ql::event_info::key_single_released() const
+	bool ql::event_manager::key_single_released() const
 	{
 		return this->m_key_single_released;
 	}
 
-	bool ql::event_info::key_holding() const
+	bool ql::event_manager::key_holding() const
 	{
 		return this->m_key_holding;
 	}
 
-	bool ql::event_info::resized() const
+	bool ql::event_manager::resized() const
 	{
 		return this->m_resized;
 	}
 
-	bool ql::event_info::window_closed() const
+	bool ql::event_manager::window_closed() const
 	{
 		return this->m_window_closed;
 	}
 
-	bool ql::event_info::holding_left_mouse() const
+	bool ql::event_manager::holding_left_mouse() const
 	{
 		return this->m_holding_left_mouse;
 	}
 
-	bool ql::event_info::holding_right_mouse() const
+	bool ql::event_manager::holding_right_mouse() const
 	{
 		return this->m_holding_right_mouse;
 	}
 
-	bool ql::event_info::holding_middle_mouse() const
+	bool ql::event_manager::holding_middle_mouse() const
 	{
 		return this->m_holding_middle_mouse;
 	}
 
-	bool ql::event_info::holding_key() const
+	bool ql::event_manager::holding_key() const
 	{
 		return this->m_holding_key;
 	}
 
-	bool ql::event_info::left_mouse_fast_clicked() const
+	bool ql::event_manager::left_mouse_fast_clicked() const
 	{
 		return this->m_left_mouse_fast_click;
 	}
 
-	bool ql::event_info::right_mouse_fast_clicked() const
+	bool ql::event_manager::right_mouse_fast_clicked() const
 	{
 		return this->m_right_mouse_fast_click;
 	}
 
-	bool ql::event_info::middle_mouse_fast_clicked() const
+	bool ql::event_manager::middle_mouse_fast_clicked() const
 	{
 		return this->m_middle_mouse_fast_click;
 	}
 
-	bool ql::event_info::left_mouse_double_clicked() const
+	bool ql::event_manager::left_mouse_double_clicked() const
 	{
 		return this->m_left_mouse_double_click;
 	}
 
-	bool ql::event_info::right_mouse_double_clicked() const
+	bool ql::event_manager::right_mouse_double_clicked() const
 	{
 		return this->m_right_mouse_double_click;
 	}
 
-	bool ql::event_info::middle_mouse_double_clicked() const
+	bool ql::event_manager::middle_mouse_double_clicked() const
 	{
 		return this->m_middle_mouse_double_click;
 	}
 
-	ql::size ql::event_info::left_mouse_fast_click_count() const
+	ql::size ql::event_manager::left_mouse_fast_click_count() const
 	{
 		if (!this->left_mouse_double_clicked())
 		{
@@ -272,7 +273,7 @@ namespace ql
 		return this->m_left_mouse_fast_click_ctr;
 	}
 
-	ql::size ql::event_info::right_mouse_fast_click_count() const
+	ql::size ql::event_manager::right_mouse_fast_click_count() const
 	{
 		if (!this->right_mouse_double_clicked())
 		{
@@ -281,7 +282,7 @@ namespace ql
 		return this->m_right_mouse_fast_click_ctr;
 	}
 
-	ql::size ql::event_info::middle_mouse_fast_click_count() const
+	ql::size ql::event_manager::middle_mouse_fast_click_count() const
 	{
 		if (!this->middle_mouse_double_clicked())
 		{
@@ -290,7 +291,7 @@ namespace ql
 		return this->m_middle_mouse_fast_click_ctr;
 	}
 
-	void ql::event_info::reset(const sf::RenderWindow& window)
+	void ql::event_manager::reset(const sf::RenderWindow& window)
 	{
 		this->m_mouse_clicked = false;
 		this->m_mouse_released = false;
@@ -338,7 +339,7 @@ namespace ql
 		// this->m_joystick_axis_released.clear();
 	}
 
-	void ql::event_info::update(const sf::Event& event)
+	void ql::event_manager::update(const sf::Event& event)
 	{
 		if (event.type == sf::Event::TextEntered)
 		{
@@ -503,47 +504,47 @@ namespace ql
 		}
 	}
 
-	void ql::event_info::set_fast_click_duration(ql::f64 duration)
+	void ql::event_manager::set_fast_click_duration(ql::f64 duration)
 	{
 		this->m_fast_click_duration = duration;
 	}
 
-	ql::f64 ql::event_info::get_fast_click_duration() const
+	ql::f64 ql::event_manager::get_fast_click_duration() const
 	{
 		return this->m_fast_click_duration;
 	}
 
-	void ql::event_info::set_fast_double_click_duration(ql::f64 duration)
+	void ql::event_manager::set_fast_double_click_duration(ql::f64 duration)
 	{
 		this->m_fast_double_click_duration = duration;
 	}
 
-	ql::f64 ql::event_info::get_fast_double_click_duration() const
+	ql::f64 ql::event_manager::get_fast_double_click_duration() const
 	{
 		return this->m_fast_double_click_duration;
 	}
 
-	ql::vector2u ql::event_info::screen_dimension() const
+	ql::vector2u ql::event_manager::screen_dimension() const
 	{
 		return this->m_screen_dimension;
 	}
 
-	ql::time ql::event_info::frame_time() const
+	ql::time ql::event_manager::frame_time() const
 	{
 		return this->m_frame_time;
 	}
 
-	ql::f64 ql::event_info::frame_time_f() const
+	ql::f64 ql::event_manager::frame_time_f() const
 	{
 		return this->m_frame_time.secs_f();
 	}
 
-	ql::vector2i ql::event_info::resized_size() const
+	ql::vector2i ql::event_manager::resized_size() const
 	{
 		return this->m_resized_size;
 	}
 
-	bool ql::event_info::text_entered(char c) const
+	bool ql::event_manager::text_entered(char c) const
 	{
 		auto str = this->text_entered_str();
 		for (auto& i : str)
@@ -556,7 +557,7 @@ namespace ql
 		return false;
 	}
 
-	bool ql::event_info::text_entered(wchar_t c) const
+	bool ql::event_manager::text_entered(wchar_t c) const
 	{
 		for (auto& i : this->m_text_entered)
 		{
@@ -568,7 +569,7 @@ namespace ql
 		return false;
 	}
 
-	bool ql::event_info::text_entered(std::string c) const
+	bool ql::event_manager::text_entered(std::string c) const
 	{
 		for (auto& i : c)
 		{
@@ -580,7 +581,7 @@ namespace ql
 		return true;
 	}
 
-	bool ql::event_info::text_entered(std::wstring c) const
+	bool ql::event_manager::text_entered(std::wstring c) const
 	{
 		for (auto& i : c)
 		{
@@ -592,58 +593,58 @@ namespace ql
 		return true;
 	}
 
-	ql::vec2 ql::event_info::mouse_position() const
+	ql::vec2 ql::event_manager::mouse_position() const
 	{
 		return this->m_mouse_position;
 	}
 
-	ql::vec2 ql::event_info::delta_mouse_position() const
+	ql::vec2 ql::event_manager::delta_mouse_position() const
 	{
 		return this->m_delta_mouse_position;
 	}
 
-	ql::vector2i ql::event_info::mouse_position_screen() const
+	ql::vector2i ql::event_manager::mouse_position_screen() const
 	{
 		return this->m_mouse_position_screen;
 	}
 
-	ql::vector2i ql::event_info::mouse_position_desktop() const
+	ql::vector2i ql::event_manager::mouse_position_desktop() const
 	{
 		return this->m_mouse_position_desktop;
 	}
 
-	void ql::event_info::reset_delta_mouse()
+	void ql::event_manager::reset_delta_mouse()
 	{
 		this->m_mouse_position_screen_before = this->m_mouse_position_screen;
 		this->m_delta_mouse_position.clear();
 	}
 
-	bool ql::event_info::is_text_entered() const
+	bool ql::event_manager::is_text_entered() const
 	{
 		return !this->m_text_entered.empty();
 	}
 
-	std::wstring ql::event_info::text_entered() const
+	std::wstring ql::event_manager::text_entered() const
 	{
 		return this->m_text_entered;
 	}
 
-	std::u32string ql::event_info::u32_text_entered() const
+	std::u32string ql::event_manager::u32_text_entered() const
 	{
 		return this->m_u32_text_entered;
 	}
 
-	std::string ql::event_info::text_entered_str() const
+	std::string ql::event_manager::text_entered_str() const
 	{
 		return ql::wstring_to_string(this->m_text_entered);
 	}
 
-	std::wstring ql::event_info::all_text_entered() const
+	std::wstring ql::event_manager::all_text_entered() const
 	{
 		return this->m_text_entered_total;
 	}
 
-	std::string ql::event_info::all_text_entered_str() const
+	std::string ql::event_manager::all_text_entered_str() const
 	{
 		return ql::wstring_to_string(this->m_text_entered_total);
 	}

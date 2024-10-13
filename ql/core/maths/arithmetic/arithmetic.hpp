@@ -105,4 +105,12 @@ namespace ql
 		}
 		return n % static_cast<T1>(size);
 	}
+
+	template <typename T>
+	requires (ql::is_floating_point<T>())
+	constexpr T round(T value, ql::size precision)
+	{
+		T factor = ql::pow<T>(T{10}, precision);
+		return std::round(value * factor) / factor;
+	}
 }	 // namespace ql

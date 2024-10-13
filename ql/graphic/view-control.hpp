@@ -1,7 +1,7 @@
 #pragma once
 
 #include <ql/core/definition/definition.hpp>
-#if defined QL_SFML
+#if defined QL_GRAPHIC
 
 #include <SFML/Graphics/RenderStates.hpp>
 #include <ql/graphic/state/base-state/base-state.hpp>
@@ -10,7 +10,7 @@ namespace ql
 {
 
 	template <typename T>
-	struct view_control_t : ql::view_t<T>
+	struct view_control_t : ql::view_type<T>
 	{
 		sf::Mouse::Button drag_mouse_button = sf::Mouse::Left;
 
@@ -160,7 +160,7 @@ namespace ql
 			}
 		}
 
-		void update(const ql::event_info& event)
+		void update(const ql::event_manager& event)
 		{
 			if (!this->hitbox_set)
 			{
@@ -261,7 +261,7 @@ namespace ql
 		}
 
 		ql::hitbox hitbox;
-		ql::view_t<T> view;
+		ql::view_type<T> view;
 		ql::vector2<T> dimension;
 		ql::vector2<T> mouse_position;
 

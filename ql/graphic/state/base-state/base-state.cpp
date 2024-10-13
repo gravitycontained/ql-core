@@ -1,8 +1,7 @@
 #include <ql/graphic/state/base-state/base-state.hpp>
 
-#if defined QL_SFML
+#if defined QL_GRAPHIC
 
-#include <ql/graphic/resources.hpp>
 #include <ql/graphic/view-control.hpp>
 
 namespace ql
@@ -449,12 +448,12 @@ namespace ql
 		return this->state_manager->run_time();
 	}
 
-	const ql::event_info& ql::base_state::event() const
+	const ql::event_manager& ql::base_state::event() const
 	{
 		return this->state_manager->event;
 	}
 
-	ql::event_info& ql::base_state::event()
+	ql::event_manager& ql::base_state::event()
 	{
 		return this->state_manager->event;
 	}

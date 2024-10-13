@@ -1,4 +1,4 @@
-#include <ql/core/advanced-type/color/rgb.hpp>
+#include <ql/core/advanced-type/color/rgb/rgb.hpp>
 
 #include <ql/core/random/random.hpp>
 

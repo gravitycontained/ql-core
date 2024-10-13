@@ -290,10 +290,7 @@ namespace ql
 			ql::vectorN<T, N> result;
 			for (ql::size i = 0u; i < N; ++i)
 			{
-				for (ql::size j = 0u; j < N; ++j)
-				{
-					result.data[i] += this->data[j][i] * vec.data[j];
-				}
+				result[i] = vec::dot(this->data[i], vec);
 			}
 			return result;
 		}

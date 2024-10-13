@@ -1,4 +1,4 @@
-#include <ql/graphic/socket.hpp>
+#include <ql/core/network/socket/socket.hpp>
 
 #if defined QL_SFML
 

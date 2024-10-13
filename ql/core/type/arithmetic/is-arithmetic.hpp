@@ -109,7 +109,7 @@ namespace ql
 		return is_ql_dynamic_integer<T>() || is_ql_integer<T>() || is_ql_floating_point<T>();
 	}
 
-#ifdef ql_USE_INTRINSICS
+#if defined ql_USE_INTRINSICS
 	template <ql::size bits, bool sign>
 	struct x64_integer;
 
@@ -152,7 +152,7 @@ namespace ql
 		return std::is_arithmetic_v<T>;
 	}
 
-#ifdef QL_USE_INTRINSICS
+#if defined QL_USE_INTRINSICS
 	template <typename T>
 	constexpr bool is_arithmetic()
 	{

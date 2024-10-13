@@ -1,12 +1,12 @@
 #include <ql/graphic/ui-controls.hpp>
 
-#if defined QL_SFML
+#if defined QL_GRAPHIC
 
 #include <ql/core/definition/definition.hpp>
 #include <ql/core/system/system.hpp>
 #include <ql/core/transform/interpolate/interpolate.hpp>
 #include <ql/core/transform/cast/cast.hpp>
-#include <ql/graphic/resources.hpp>
+#include <ql/graphic/resources/resources.hpp>
 
 namespace ql
 {
@@ -92,9 +92,9 @@ namespace ql
 		return this->clicked;
 	}
 
-	void ql::vbutton::update(const event_info& event_info)
+	void ql::vbutton::update(const event_manager& event_manager)
 	{
-		auto pos = event_info.mouse_position();
+		auto pos = event_manager.mouse_position();
 
 		auto new_hovering = this->background.contains(pos);
 		if (new_hovering != this->hovering)
@@ -127,7 +127,7 @@ namespace ql
 
 		this->hovering = new_hovering;
 
-		this->clicked = this->hovering && event_info.left_mouse_clicked();
+		this->clicked = this->hovering && event_manager.left_mouse_clicked();
 	}
 
 	void ql::vbutton::set_text_alpha(ql::u8 alpha)
@@ -307,9 +307,9 @@ namespace ql
 		return this->clicked;
 	}
 
-	void ql::button::update(const event_info& event_info)
+	void ql::button::update(const event_manager& event_manager)
 	{
-		auto pos = event_info.mouse_position();
+		auto pos = event_manager.mouse_position();
 
 		auto new_hovering = this->background.contains(pos);
 		if (new_hovering != this->hovering)
@@ -342,12 +342,12 @@ namespace ql
 
 		this->hovering = new_hovering;
 
-		this->clicked = this->hovering && event_info.left_mouse_clicked();
+		this->clicked = this->hovering && event_manager.left_mouse_clicked();
 	}
 
-	void ql::button::update(const event_info& event_info, bool& hovering)
+	void ql::button::update(const event_manager& event_manager, bool& hovering)
 	{
-		this->update(event_info);
+		this->update(event_manager);
 		hovering = hovering || this->hovering;
 	}
 
@@ -633,7 +633,7 @@ namespace ql
 		return this->clicked;
 	}
 
-	void ql::smooth_button::update(const ql::event_info& event)
+	void ql::smooth_button::update(const ql::event_manager& event)
 	{
 		this->create_check();
 		if (this->simple_hitbox)
@@ -806,7 +806,7 @@ namespace ql
 		return this->text.get_wstring();
 	}
 
-	void ql::text_field::line::draw(ql::draw_object& draw) const
+	void ql::text_field::line::draw(ql::render& draw) const
 	{
 		// ql::rectangle rect;
 		// for (ql::size i = 0u; i < this->character_mouse_hitboxes.size(); ++i) {
@@ -1588,7 +1588,7 @@ namespace ql
 		}
 	}
 
-	void ql::text_field::update_mouse_events(const ql::event_info& event)
+	void ql::text_field::update_mouse_events(const ql::event_manager& event)
 	{
 		auto max = ql::vec2::max_values(this->hovering_increase, this->background_increase);
 		this->hovering = this->hitbox.increased(max).contains(event.mouse_position());
@@ -1878,7 +1878,7 @@ namespace ql
 		}
 	}
 
-	void ql::text_field::update(const ql::event_info& event)
+	void ql::text_field::update(const ql::event_manager& event)
 	{
 		auto cursor_before = this->cursor_position;
 		auto string_before = this->wstring();
@@ -2168,7 +2168,7 @@ namespace ql
 		this->dragging_selection_before = this->is_dragging_selection_considering_cooldown();
 	}
 
-	void ql::text_field::draw(ql::draw_object& draw) const
+	void ql::text_field::draw(ql::render& draw) const
 	{
 		draw.draw(this->background);
 		draw.draw(this->selection_rectangles);
@@ -3034,7 +3034,7 @@ namespace ql
 		}
 	}
 
-	void ql::color_picker::update(const ql::event_info& event)
+	void ql::color_picker::update(const ql::event_manager& event)
 	{
 		if (!this->visible)
 		{
@@ -3135,7 +3135,7 @@ namespace ql
 		}
 	}
 
-	void ql::color_picker::draw(ql::draw_object& draw) const
+	void ql::color_picker::draw(ql::render& draw) const
 	{
 		if (!this->visible)
 		{
@@ -3274,7 +3274,7 @@ namespace ql
 		this->knob_range = range;
 	}
 
-	void ql::scroll_bar::update_hover(const ql::event_info& event)
+	void ql::scroll_bar::update_hover(const ql::event_manager& event)
 	{
 		auto hitbox = this->knob.get_hitbox().increased(5);
 		this->hovering = hitbox.contains(event.mouse_position());
@@ -3301,7 +3301,7 @@ namespace ql
 		}
 	}
 
-	void ql::scroll_bar::update_background_hover(const ql::event_info& event)
+	void ql::scroll_bar::update_background_hover(const ql::event_manager& event)
 	{
 		this->hovering_background = !this->dragging && !this->hovering && this->hitbox.increased(5).contains(event.mouse_position());
 		if (this->hovering_background && event.left_mouse_clicked())
@@ -3333,7 +3333,7 @@ namespace ql
 		}
 	}
 
-	void ql::scroll_bar::update(const ql::event_info& event)
+	void ql::scroll_bar::update(const ql::event_manager& event)
 	{
 		this->value_changed = false;
 		this->released_dragging = false;
@@ -3375,7 +3375,7 @@ namespace ql
 		}
 	}
 
-	void ql::scroll_bar::draw(ql::draw_object& draw) const
+	void ql::scroll_bar::draw(ql::render& draw) const
 	{
 		if (this->knob_range >= 1.0f)
 		{
@@ -4056,7 +4056,7 @@ namespace ql
 		this->clear_selection_rectangles_if_visible();
 	}
 
-	void ql::console::update_key_input(const ql::event_info& event)
+	void ql::console::update_key_input(const ql::event_manager& event)
 	{
 		this->line_entered = false;
 		this->text_entered = false;
@@ -4241,7 +4241,7 @@ namespace ql
 		}
 	}
 
-	void ql::console::update_selection_rectangle(const ql::event_info& event)
+	void ql::console::update_selection_rectangle(const ql::event_manager& event)
 	{
 		if (event.left_mouse_clicked() && this->allow_text_dragging)
 		{
@@ -4287,7 +4287,7 @@ namespace ql
 		this->cursor.set_color(this->cursor.get_color().with_alpha(ql::u8_cast(progress * 255)));
 	}
 
-	void ql::console::update(const ql::event_info& event)
+	void ql::console::update(const ql::event_manager& event)
 	{
 		this->scroll_bar.allow_dragging = !this->text_dragging;
 
@@ -4408,7 +4408,7 @@ namespace ql
 		}
 	}
 
-	void ql::console::draw(ql::draw_object& draw) const
+	void ql::console::draw(ql::render& draw) const
 	{
 		auto copy = this->view;
 		copy.position.y += this->colored_text.get_chracter_top_offset();

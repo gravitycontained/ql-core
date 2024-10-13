@@ -1,6 +1,6 @@
 #include <ql/graphic/state/state-manager/state-manager.hpp>
 
-#if defined QL_SFML
+#if defined QL_GRAPHIC
 
 #include <ql/graphic/state/base-state/base-state.hpp>
 

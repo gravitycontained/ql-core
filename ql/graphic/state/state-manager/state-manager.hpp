@@ -1,14 +1,14 @@
 #pragma once
 
 #include <ql/core/core.hpp>
-#if defined QL_SFML
+#if defined QL_GRAPHIC
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 
-#include <ql/graphic/event-info.hpp>
+#include <ql/graphic/event/event.hpp>
 #include <ql/graphic/drawables.hpp>
-#include <ql/graphic/resources.hpp>
+#include <ql/graphic/resources/resources.hpp>
 
 namespace ql
 {
@@ -174,7 +174,7 @@ namespace ql
 		QL_SOURCE void set_icon(std::string path, std::string name = "icon");
 
 		std::vector<std::unique_ptr<ql::base_state>> states;
-		ql::event_info event;
+		ql::event_manager event;
 		sf::RenderWindow window;
 		std::unordered_map<std::string, ql::render_texture> render_textures;
 		sf::ContextSettings context_settings;

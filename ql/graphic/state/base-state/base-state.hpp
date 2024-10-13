@@ -2,12 +2,11 @@
 
 #include <ql/core/core.hpp>
 
-#if defined QL_SFML
+#if defined QL_GRAPHIC
 
 #include <ql/graphic/state/state-manager/state-manager.hpp>
 
 #include <ql/graphic/drawables.hpp>
-#include <ql/graphic/resources.hpp>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
@@ -103,9 +102,9 @@ namespace ql
 #endif
 				this->state_manager->window.draw(drawable, states);
 			}
-			else if constexpr (ql::has_draw_object<T>())
+			else if constexpr (ql::has_render<T>())
 			{
-				ql::draw_object draw(this->state_manager->window, states);
+				ql::render draw(this->state_manager->window, states);
 #if defined QL_GLEW
 				if (this->use_gl && !this->states_pushed)
 				{
@@ -117,9 +116,9 @@ namespace ql
 #endif
 				drawable.draw(draw);
 			}
-			else if constexpr (ql::has_draw_object_gl<T>())
+			else if constexpr (ql::has_render_gl<T>())
 			{
-				ql::draw_object_gl draw(this->state_manager->window, states);
+				ql::render_gl draw(this->state_manager->window, states);
 				drawable.draw(draw);
 			}
 			else if constexpr (ql::has_draw_sf<T>())
@@ -187,7 +186,7 @@ namespace ql
 
 		template <typename T, typename V>
 		requires (ql::has_any_draw<T>() || (ql::is_container<T>() && ql::has_any_draw<ql::container_deepest_subtype<T>>()))
-		void draw(const T& drawable, ql::view_t<V> view)
+		void draw(const T& drawable, ql::view_type<V> view)
 		{
 			this->draw(drawable, view.get_render_states());
 		}
@@ -419,7 +418,7 @@ namespace ql
 		requires (
 				ql::has_update<T, Args...>() || (ql::is_container<T>() && ql::has_update<ql::container_deepest_subtype<T>, Args...>())
 		)
-		void update(T& updatable, const ql::view_t<V>& view, Args&&... args)
+		void update(T& updatable, const ql::view_type<V>& view, Args&&... args)
 		{
 			auto before = this->event().m_mouse_position;
 			auto before_delta = this->event().m_delta_mouse_position;
@@ -553,8 +552,8 @@ namespace ql
 		QL_SOURCE ql::time frame_time() const;
 		QL_SOURCE ql::f64 frame_time_f() const;
 		QL_SOURCE ql::time run_time() const;
-		QL_SOURCE const ql::event_info& event() const;
-		QL_SOURCE ql::event_info& event();
+		QL_SOURCE const ql::event_manager& event() const;
+		QL_SOURCE ql::event_manager& event();
 
 		ql::state_manager* state_manager = nullptr;
 

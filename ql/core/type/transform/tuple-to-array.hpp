@@ -9,14 +9,14 @@
 
 namespace ql
 {
-	template <typename T>
+	template <typename R, typename T>
 	requires (ql::is_tuple<T>())
 	constexpr auto tuple_to_array(T tuple)
 	{
-		std::array<ql::tuple_type_front<T>, ql::tuple_size<T>()> result{};
+		std::array<R, ql::tuple_size<T>()> result{};
 
 		ql::constexpr_iterate<ql::tuple_size<T>()>([&](auto i)
-																							 { result[i] = ql::type_cast<ql::tuple_type_front<T>>(ql::tuple_value<i>(tuple)); }
+																							 { result[i] = ql::type_cast<R>(ql::tuple_value<i>(tuple)); }
 		);
 
 		return result;

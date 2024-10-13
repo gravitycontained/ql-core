@@ -13,7 +13,7 @@ namespace ql
 {
 	template <typename... Args>
 	requires (ql::is_printable<Args>() && ...)
-	std::string to_string2(Args&&... args)
+	std::string to_standard_string(Args&&... args)
 	{
 		if constexpr (sizeof...(Args) == 1u && ql::is_same<ql::variadic_type<0u, Args...>, std::string>())
 		{
@@ -38,7 +38,7 @@ namespace ql
 					{
 						stream << ", ";
 					}
-					stream << ql::to_string2(std::forward<decltype(i)>(i));
+					stream << ql::to_standard_string(std::forward<decltype(i)>(i));
 					first = false;
 				}
 				stream << ']';
@@ -49,9 +49,9 @@ namespace ql
 				if constexpr (ql::tuple_size<T>() > 1)
 				{
 					ql::constexpr_iterate<ql::tuple_size<T>() - 1>([&](auto index)
-																												 { stream << ql::to_string2(ql::tuple_value<index>(value)) << ", "; });
+																												 { stream << ql::to_standard_string(ql::tuple_value<index>(value)) << ", "; });
 				}
-				stream << ql::to_string2(ql::tuple_value_back(value)) << '}';
+				stream << ql::to_standard_string(ql::tuple_value_back(value)) << '}';
 			}
 			else
 			{

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <ql/core/definition/definition.hpp>
-#if defined QL_SFML
+#if defined QL_GRAPHIC
 
 #include <unordered_map>
 #include <string>

@@ -4,6 +4,7 @@
 #include <ql/core/type/compare/compare.hpp>
 #include <ql/core/type/arithmetic/is-arithmetic.hpp>
 #include <ql/core/type/arithmetic/bit-count-of-max-value.hpp>
+#include <ql/core/type/declval.hpp>
 
 namespace ql
 {

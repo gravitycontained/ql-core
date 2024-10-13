@@ -3,9 +3,9 @@
 #include <ql/core/definition/definition.hpp>
 #include <ql/core/advanced-type/fundamental/fundamental.hpp>
 
-#if defined QL_SFML
+#if defined QL_GRAPHIC
 #include <SFML/Graphics/RenderStates.hpp>
-#include <ql/graphic/event-info.hpp>
+#include <ql/graphic/event/event.hpp>
 #endif
 
 namespace ql
@@ -92,8 +92,8 @@ namespace ql
 		QL_SOURCE void update(ql::f32 delta_time);
 		QL_SOURCE void cap_max_velocity();
 
-#if defined QL_SFML
-		QL_SOURCE void update(const ql::event_info& event);
+#if defined QL_GRAPHIC
+		QL_SOURCE void update(const ql::event_manager& event);
 		QL_SOURCE sf::RenderStates get_render_states() const;
 #endif
 

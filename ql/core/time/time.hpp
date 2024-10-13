@@ -12,10 +12,10 @@
 #include <set>
 #include <functional>
 
-#ifdef QL_SFML
+#if defined QL_GRAPHIC
 namespace ql
 {
-	struct event_info;
+	struct event_manager;
 }
 #endif
 
@@ -616,8 +616,8 @@ namespace ql
 		QL_SOURCE void reset_and_start_reverse();
 		QL_SOURCE void set_duration(ql::f64 duration);
 		QL_SOURCE void update(ql::f64 frame_time);
-#ifdef QL_SFML
-		QL_SOURCE void update(const ql::event_info& event);
+#if defined QL_GRAPHIC
+		QL_SOURCE void update(const ql::event_manager& event);
 #endif
 		QL_SOURCE bool is_running() const;
 		QL_SOURCE bool is_reversed() const;

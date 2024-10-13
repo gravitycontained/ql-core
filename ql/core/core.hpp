@@ -8,6 +8,7 @@
 #include <ql/core/file-system/file-system.hpp>
 #include <ql/core/functional/functional.hpp>
 #include <ql/core/maths/maths.hpp>
+#include <ql/core/network/network.hpp>
 #include <ql/core/transform/transform.hpp>
 #include <ql/core/type/type.hpp>
 #include <ql/core/random/random.hpp>

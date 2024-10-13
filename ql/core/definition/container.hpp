@@ -4,7 +4,7 @@ namespace ql
 {
 	namespace detail
 	{
-#ifdef QL_RELEASE
+#if defined QL_RELEASE
 		constexpr bool array_boundary_check = false;
 		constexpr bool vector_boundary_check = false;
 #else

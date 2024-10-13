@@ -1,12 +1,14 @@
 #pragma once
 
 #include <ql/core/definition/definition.hpp>
-#if defined QL_SFML
+#if defined QL_GRAPHIC
 
 #include <ql/core/type/type.hpp>
 #include <ql/core/advanced-type/advanced-type.hpp>
 #include <ql/core/system/exception/exception.hpp>
 #include <ql/core/transform/container/fill.hpp>
+
+#include <ql/graphic/render/render.hpp>
 
 #include <functional>
 #include <string>
@@ -19,227 +21,6 @@
 
 namespace ql
 {
-	template <bool opengl>
-	struct draw_object_t;
-
-	struct render_texture;
-
-	template <typename C>
-	concept is_render_texture_c = ql::is_same_decayed<C, ql::render_texture>();
-
-	template <typename C>
-	constexpr bool is_render_texture()
-	{
-		return is_render_texture_c<C>;
-	}
-
-	namespace detail
-	{
-		template <typename C>
-		concept has_draw_object_c = requires(const C x, draw_object_t<false>& object) { x.draw(object); };
-		template <typename C>
-		concept has_draw_object_gl_c = requires(const C x, draw_object_t<true>& object) { x.draw(object); };
-	}	 // namespace detail
-
-	template <typename C>
-	constexpr bool has_draw_object()
-	{
-		return detail::has_draw_object_c<C>;
-	}
-
-	template <typename C>
-	constexpr bool has_draw_object_gl()
-	{
-		return detail::has_draw_object_gl_c<C>;
-	}
-
-	template <typename C>
-	concept has_draw_sf_c = requires(const C x, sf::RenderTarget& render, sf::RenderStates states) { x.draw(render, states); };
-
-	template <typename C>
-	constexpr bool has_draw_sf()
-	{
-		return has_draw_sf_c<C>;
-	}
-
-	template <typename C>
-	concept has_any_draw_c = is_render_texture_c<C> || has_draw_sf_c<C> || has_draw_object<C>() || has_draw_object_gl<C>() ||
-													 std::is_base_of_v<sf::Drawable, C>;
-
-	template <typename C>
-	constexpr bool has_any_draw()
-	{
-		return has_any_draw_c<C>;
-	}
-
-	template <bool opengl>
-	struct draw_object_t
-	{
-		draw_object_t(sf::RenderWindow& window, sf::RenderStates states = sf::RenderStates::Default)
-		{
-			this->window = &window;
-			this->texture = nullptr;
-			this->states = states;
-		}
-
-		draw_object_t(sf::RenderTexture& texture, sf::RenderStates states = sf::RenderStates::Default)
-		{
-			this->texture = &texture;
-			this->window = nullptr;
-			this->states = states;
-		}
-
-		template <typename T>
-		requires (ql::has_any_draw<T>() || ql::is_container<T>())
-		void final_draw(const T& object)
-		{
-			if constexpr (ql::has_any_draw<T>())
-			{
-				if constexpr (ql::is_render_texture<T>())
-				{
-					if (this->window)
-					{
-						this->window->draw(object.get_sprite(), this->states);
-					}
-					else if (this->texture)
-					{
-						this->texture->draw(object.get_sprite(), this->states);
-					}
-				}
-				else if constexpr (std::is_base_of<sf::Drawable, T>())
-				{
-					if (this->window)
-					{
-						this->window->draw(object, this->states);
-					}
-					else if (this->texture)
-					{
-						this->texture->draw(object, this->states);
-					}
-				}
-				else if constexpr (ql::has_draw_object<T>())
-				{
-					object.draw(*this);
-				}
-				else if constexpr (ql::has_draw_object_gl<T>())
-				{
-					object.draw(*this);
-				}
-				else if constexpr (ql::has_draw_sf<T>())
-				{
-					if (this->window)
-					{
-						object.draw(*this->window, this->states);
-					}
-					else if (this->texture)
-					{
-						object.draw(*this->texture, this->states);
-					}
-				}
-			}
-			else
-			{
-				for (auto& i : object)
-				{
-					this->draw(i);
-				}
-			}
-		}
-
-		template <typename T, typename U>
-		requires (ql::has_any_draw<T>() || ql::is_container<T>())
-		void draw(const T& object, const ql::view_t<U>& view)
-		{
-			auto copy = this->states;
-			view.apply_to(this->states);
-			this->draw(object);
-			this->states = copy;
-		}
-
-		template <typename T>
-		requires (ql::has_any_draw<T>() || ql::is_container<T>())
-		void draw(const T& object)
-		{
-			if constexpr (ql::has_view<T>())
-			{
-				auto before = this->states.transform;
-				object.auto_view.apply_to(this->states);
-				this->final_draw(object);
-				this->states.transform = before;
-			}
-			else
-			{
-				this->final_draw(object);
-			}
-		}
-
-		template <typename T>
-		requires (ql::has_any_draw<T>() || ql::is_container<T>())
-		void draw(const T& object, sf::RenderStates states)
-		{
-			if constexpr (ql::has_view<T>())
-			{
-				object.auto_view.apply_to(states);
-			}
-			if constexpr (ql::has_any_draw<T>())
-			{
-				if constexpr (ql::is_render_texture<T>())
-				{
-					if (this->window)
-					{
-						this->window->draw(object.get_sprite(), states);
-					}
-					else if (this->texture)
-					{
-						this->texture->draw(object.get_sprite(), states);
-					}
-				}
-				else if constexpr (std::is_base_of<sf::Drawable, T>())
-				{
-					if (this->window)
-					{
-						this->window->draw(object, states);
-					}
-					else if (this->texture)
-					{
-						this->texture->draw(object, states);
-					}
-				}
-				else if constexpr (ql::has_draw_object<T>())
-				{
-					auto copy = this->states;
-					this->states = states;
-					object.draw(*this);
-					this->states = copy;
-				}
-				else if constexpr (ql::has_draw_sf<T>())
-				{
-					if (this->window)
-					{
-						object.draw(*this->window, states);
-					}
-					else if (this->texture)
-					{
-						object.draw(*this->texture, states);
-					}
-				}
-			}
-			else
-			{
-				for (auto& i : object)
-				{
-					this->draw(i, states);
-				}
-			}
-		}
-
-		sf::RenderWindow* window;
-		sf::RenderTexture* texture;
-		sf::RenderStates states;
-	};
-
-	using draw_object = draw_object_t<false>;
-	using draw_object_gl = draw_object_t<true>;
 
 	struct vtext;
 	struct text;
@@ -270,7 +51,7 @@ namespace ql
 	struct vgraph;
 	struct graph;
 
-	struct event_info;
+	struct event_manager;
 
 	QL_SOURCE ql::hitbox get_text_hitbox(const sf::Text& text, bool ignore_outline = true);
 	QL_SOURCE ql::hitbox get_text_hitbox(const ql::text& text, bool ignore_outline = true);
@@ -1531,10 +1312,10 @@ namespace ql
 		QL_SOURCE void set_duration(ql::f64 duration);
 		QL_SOURCE void make_disappear();
 		QL_SOURCE void make_appear();
-		QL_SOURCE void update(const ql::event_info& event);
+		QL_SOURCE void update(const ql::event_manager& event);
 		QL_SOURCE bool just_finished_disappearing() const;
 		QL_SOURCE bool just_finished_appearing() const;
-		QL_SOURCE void draw(ql::draw_object& draw) const;
+		QL_SOURCE void draw(ql::render& draw) const;
 
 		ql::multiplied_color_extension<ql::rectangle> overlay;
 		ql::animation animation;
@@ -1600,9 +1381,9 @@ namespace ql
 				this->m_texture.draw(object, this->m_states);
 				this->m_changed = true;
 			}
-			else if constexpr (ql::has_draw_object<T>())
+			else if constexpr (ql::has_render<T>())
 			{
-				draw_object draw(this->m_texture, this->m_states);
+				render draw(this->m_texture, this->m_states);
 				object.draw(draw);
 				this->m_changed = true;
 			}
@@ -1627,9 +1408,9 @@ namespace ql
 				this->m_texture.draw(object, states);
 				this->m_changed = true;
 			}
-			else if constexpr (ql::has_draw_object<T>())
+			else if constexpr (ql::has_render<T>())
 			{
-				draw_object draw(this->m_texture, states);
+				render draw(this->m_texture, states);
 				object.draw(draw);
 				this->m_changed = true;
 			}
@@ -2030,7 +1811,7 @@ namespace ql
 				return this->standard_hitbox.position;
 			}
 
-			void draw(ql::draw_object& draw) const
+			void draw(ql::render& draw) const
 			{
 				if (this->is_text())
 				{
@@ -2464,7 +2245,7 @@ namespace ql
 			this->states.front().line_spacing = line_spacing;
 		}
 
-		void draw(ql::draw_object& draw) const
+		void draw(ql::render& draw) const
 		{
 			draw.draw(this->elements);
 		}
@@ -3284,7 +3065,7 @@ namespace ql
 		QL_SOURCE void enable_track_new_entries();
 		QL_SOURCE void disable_track_new_entries();
 		QL_SOURCE void enable_axis_info();
-		QL_SOURCE void update(const event_info& event_info);
+		QL_SOURCE void update(const event_manager& event_manager);
 		QL_SOURCE void copy_visible_range(const vgraph& other);
 		QL_SOURCE void set_visible_range(ql::size begin, ql::size end);
 		QL_SOURCE void set_visible_range_max();
@@ -3383,7 +3164,7 @@ namespace ql
 		QL_SOURCE void add_left(ql::f32 correction_gap = 0.0f);
 		QL_SOURCE void add_right(ql::f32 correction_gap = 0.0f);
 		QL_SOURCE void add_all_sides(ql::f32 correction_gap = 0.0f);
-		QL_SOURCE void draw(ql::draw_object& object) const;
+		QL_SOURCE void draw(ql::render& object) const;
 	};
 
 	struct glyph_quad_vertex

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <ql/core/definition/definition.hpp>
-#if defined QL_SFML
+#if defined QL_GRAPHIC
 
 #include <ql/core/advanced-type/fundamental/vector.hpp>
 #include <ql/core/advanced-type/graphic/hitbox.hpp>
@@ -9,13 +9,8 @@
 
 namespace ql
 {
-	template <bool opengl>
-	struct draw_object_t;
-	using draw_object = draw_object_t<false>;
-	using draw_object_gl = draw_object_t<true>;
-
 	template <typename T>
-	struct view_t
+	struct view_type
 	{
 		ql::vector2<T> position = {T{0}, T{0}};
 		ql::vector2<T> scale = {T{1}, T{1}};
@@ -133,7 +128,7 @@ namespace ql
 		}
 	};
 
-	using view = ql::view_t<ql::f32>;
+	using view = ql::view_type<ql::f32>;
 
 	template <typename T>
 	struct view_extension : T
@@ -144,7 +139,7 @@ namespace ql
 	namespace detail
 	{
 		template <typename T>
-		constexpr auto view_signature(ql::view_t<T>)
+		constexpr auto view_signature(ql::view_type<T>)
 		{
 			return std::true_type{};
 		}
