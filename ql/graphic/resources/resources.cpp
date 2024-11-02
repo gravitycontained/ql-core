@@ -1,4 +1,4 @@
-#include <ql/graphic/resources.hpp>
+#include <ql/graphic/resources/resources.hpp>
 #include <ql/core/system/exception/exception.hpp>
 
 #if defined QL_GRAPHIC
