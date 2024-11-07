@@ -156,7 +156,6 @@ namespace ql
 		return s.str();
 	}
 
-	
 	ql::sha512 ql::detail::sha512_t;
 
 	std::string sha512_hash(const std::string_view& string)
@@ -166,4 +165,4 @@ namespace ql
 		auto digest = ql::detail::sha512_t.digest();
 		return ql::sha512::to_string(digest);
 	}
-}
+}	 // namespace ql

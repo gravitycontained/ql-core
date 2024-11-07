@@ -354,11 +354,11 @@ namespace ql
 			this->elements.back().text += ql::to_basic_string<typename T::value_type>(string);
 		}
 
-		//template <typename T>
-		//void add(const T& other)
+		// template <typename T>
+		// void add(const T& other)
 		//{
 		//	static_assert(ql::is_string_type<T>(), "T must be a string type");
-		//}
+		// }
 
 		void remove_character_at(ql::vec2s pos)
 		{

@@ -76,6 +76,7 @@ namespace ql
 		}
 		return wc;
 	}
+
 	std::wstring utf8_to_wstring(const std::string& utf8_string)
 	{
 		std::wstring result;

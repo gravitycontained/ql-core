@@ -27,4 +27,4 @@ namespace ql
 			return std::forward<F>(function).template operator()<T>();
 		}
 	}
-}
+}	 // namespace ql

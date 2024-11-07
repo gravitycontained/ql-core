@@ -177,6 +177,6 @@ namespace ql
 
 	using render = render_type<false>;
 	using render_gl = render_type<true>;
-}
+}	 // namespace ql
 
 #endif

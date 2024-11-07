@@ -15,9 +15,7 @@ namespace ql
 	{
 		std::array<R, ql::tuple_size<T>()> result{};
 
-		ql::constexpr_iterate<ql::tuple_size<T>()>([&](auto i)
-																							 { result[i] = ql::type_cast<R>(ql::tuple_value<i>(tuple)); }
-		);
+		ql::constexpr_iterate<ql::tuple_size<T>()>([&](auto i) { result[i] = ql::type_cast<R>(ql::tuple_value<i>(tuple)); });
 
 		return result;
 	}

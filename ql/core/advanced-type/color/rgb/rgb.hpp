@@ -126,13 +126,15 @@ namespace ql
 		};
 
 		template <typename T, ql::size N>
-		using conditional_rgb = ql::conditional
-		<
-			ql::if_true<N == 1>, ql::detail::r_impl<T>,
-			ql::if_true<N == 2>, ql::detail::rg_impl<T>,
-			ql::if_true<N == 3>, ql::detail::rgb_impl<T>,
-			ql::if_true<N == 4>, ql::detail::rgba_impl<T>
-		>;
+		using conditional_rgb = ql::conditional<
+				ql::if_true<N == 1>,
+				ql::detail::r_impl<T>,
+				ql::if_true<N == 2>,
+				ql::detail::rg_impl<T>,
+				ql::if_true<N == 3>,
+				ql::detail::rgb_impl<T>,
+				ql::if_true<N == 4>,
+				ql::detail::rgba_impl<T>>;
 	}	 // namespace detail
 
 	template <typename T, ql::size N>
@@ -1340,29 +1342,28 @@ namespace ql
 	QL_SOURCE ql::rgb get_rainbow_color(ql::f64 f);
 	QL_SOURCE ql::rgb get_random_rainbow_color();
 
-	
 	constexpr auto console_colors = std::array{
-		/*black,       */ ql::rgba(12, 12, 12),
-		/*blue,        */ ql::rgba(0, 55, 218),
-		/*green,       */ ql::rgba(19, 161, 14),
-		/*aqua,        */ ql::rgba(58, 150, 221),
-		/*red,         */ ql::rgba(197, 15, 31),
-		/*purple,      */ ql::rgba(136, 23, 152),
-		/*yellow,      */ ql::rgba(193, 156, 0),
-		/*white,       */ ql::rgba(204, 204, 204),
-		/*gray,        */ ql::rgba(118, 118, 118),
-		/*light_blue,  */ ql::rgba(59, 120, 255),
-		/*light_green, */ ql::rgba(22, 198, 12),
-		/*light_aqua,  */ ql::rgba(97, 214, 214),
-		/*light_red,   */ ql::rgba(231, 72, 86),
-		/*light_purple,*/ ql::rgba(180, 0, 158),
-		/*light_yellow,*/ ql::rgba(249, 241, 165),
-		/*bright_white,*/ ql::rgba(242, 242, 242),
-		/*dark_blue    */ ql::rgba(0, 15, 75),
-		/*pink         */ ql::rgba(255, 166, 206),
-		/*dark-gray,   */ ql::rgba(83, 83, 83),
-		/*transparent, */ ql::rgba::transparent(),
-		/*reset*/ ql::rgba::transparent(),
+			/*black,       */ ql::rgba(12, 12, 12),
+			/*blue,        */ ql::rgba(0, 55, 218),
+			/*green,       */ ql::rgba(19, 161, 14),
+			/*aqua,        */ ql::rgba(58, 150, 221),
+			/*red,         */ ql::rgba(197, 15, 31),
+			/*purple,      */ ql::rgba(136, 23, 152),
+			/*yellow,      */ ql::rgba(193, 156, 0),
+			/*white,       */ ql::rgba(204, 204, 204),
+			/*gray,        */ ql::rgba(118, 118, 118),
+			/*light_blue,  */ ql::rgba(59, 120, 255),
+			/*light_green, */ ql::rgba(22, 198, 12),
+			/*light_aqua,  */ ql::rgba(97, 214, 214),
+			/*light_red,   */ ql::rgba(231, 72, 86),
+			/*light_purple,*/ ql::rgba(180, 0, 158),
+			/*light_yellow,*/ ql::rgba(249, 241, 165),
+			/*bright_white,*/ ql::rgba(242, 242, 242),
+			/*dark_blue    */ ql::rgba(0, 15, 75),
+			/*pink         */ ql::rgba(255, 166, 206),
+			/*dark-gray,   */ ql::rgba(83, 83, 83),
+			/*transparent, */ ql::rgba::transparent(),
+			/*reset*/ ql::rgba::transparent(),
 	};
 
 	constexpr ql::rgba print_color_to_rgba(ql::print_color background)

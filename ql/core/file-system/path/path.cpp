@@ -9,7 +9,6 @@
 
 #include <fstream>
 
-
 namespace ql::filesys
 {
 	ql::filesys::path& ql::filesys::path::operator=(const std::wstring_view& str)
@@ -2384,4 +2383,4 @@ namespace ql::filesys
 	{
 		return os << path.to_string();
 	}
-}
+}	 // namespace ql::filesys

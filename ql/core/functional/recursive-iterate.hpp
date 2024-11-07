@@ -24,11 +24,11 @@ namespace ql
 				else if constexpr (ql::is_tuple<T>())
 				{
 					ql::constexpr_iterate<ql::tuple_size<T>()>(
-						[&](auto index)
-						{
-							auto&& i = ql::tuple_value<index>(std::forward<T>(value));
+							[&](auto index)
+							{
+								auto&& i = ql::tuple_value<index>(std::forward<T>(value));
 								ql::detail::recursive_value_iterate(std::forward<F>(function), i);
-						}
+							}
 					);
 				}
 				else
@@ -40,9 +40,6 @@ namespace ql
 			(apply(std::forward<Args>(args)), ...);
 		}
 	}	 // namespace detail
-
-
-
 
 	/*
 	example:

@@ -95,4 +95,4 @@ namespace ql
 	QL_SOURCE std::string sha512_hash(const std::string_view& string);
 
 	constexpr auto sha512_object = std::make_pair(sha512_hash, 512u);
-}
+}	 // namespace ql

@@ -1004,6 +1004,7 @@ namespace ql
 		}
 
 	}	 // namespace filesys
+
 	void ql::file_encrypter::clear()
 	{
 		this->paths.clear();

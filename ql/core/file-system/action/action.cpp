@@ -89,9 +89,8 @@ namespace ql
 
 			for (ql::u32 i = 0u; i < splits; ++i)
 			{
-				auto file_name = ql::to_string(
-						path, ".PART", ql::string_prepended(i, '0', ql::size_cast(std::log(splits) / std::log(10) + 1))
-				);
+				auto file_name =
+						ql::to_string(path, ".PART", ql::string_prepended(i, '0', ql::size_cast(std::log(splits) / std::log(10) + 1)));
 				std::ofstream file(file_name.c_str(), std::ios::binary);
 				if (!file.good())
 				{

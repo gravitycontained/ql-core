@@ -55,14 +55,14 @@ namespace ql
 	}
 
 	template <typename C>
-	concept has_any_draw_c = ql::is_render_texture_c<C> || ql::has_draw_sf_c<C> || ql::has_render<C>() ||
-													 ql::has_render_gl<C>() || std::is_base_of_v<sf::Drawable, C>;
+	concept has_any_draw_c = ql::is_render_texture_c<C> || ql::has_draw_sf_c<C> || ql::has_render<C>() || ql::has_render_gl<C>() ||
+													 std::is_base_of_v<sf::Drawable, C>;
 
 	template <typename C>
 	constexpr bool has_any_draw()
 	{
 		return has_any_draw_c<C>;
 	}
-}
+}	 // namespace ql
 
 #endif

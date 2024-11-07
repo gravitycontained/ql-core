@@ -48,8 +48,9 @@ namespace ql
 				stream << '{';
 				if constexpr (ql::tuple_size<T>() > 1)
 				{
-					ql::constexpr_iterate<ql::tuple_size<T>() - 1>([&](auto index)
-																												 { stream << ql::to_standard_string(ql::tuple_value<index>(value)) << ", "; });
+					ql::constexpr_iterate<ql::tuple_size<T>() - 1>(
+							[&](auto index) { stream << ql::to_standard_string(ql::tuple_value<index>(value)) << ", "; }
+					);
 				}
 				stream << ql::to_standard_string(ql::tuple_value_back(value)) << '}';
 			}
@@ -64,7 +65,7 @@ namespace ql
 		return stream.str();
 	}
 
-		template <typename... Ts>
+	template <typename... Ts>
 	requires (ql::is_printable<Ts>() && ...)
 	auto to_string(Ts&&... args)
 	{

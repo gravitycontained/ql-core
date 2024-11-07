@@ -14,7 +14,7 @@
 #include <ql/core/system/system.hpp>
 
 #if defined QL_GRAPHIC
-	#include <ql/graphic/event/event.hpp>
+#include <ql/graphic/event/event.hpp>
 #endif
 
 namespace ql

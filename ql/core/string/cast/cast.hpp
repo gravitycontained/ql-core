@@ -25,7 +25,7 @@ namespace ql
 #pragma warning(disable : 4996)
 			std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 			auto result = converter.from_bytes(src);
-			#pragma warning(pop)
+#pragma warning(pop)
 			return result;
 		}
 		// Convert std::wstring -> std::string

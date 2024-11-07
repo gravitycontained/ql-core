@@ -36,4 +36,4 @@ namespace ql
 		}
 		container = removed_index(container, index);
 	}
-}
+}	 // namespace ql

@@ -11,7 +11,6 @@
 #include <functional>
 #include <type_traits>
 
-
 namespace ql
 {
 
@@ -324,4 +323,4 @@ namespace ql
 		return std::is_invocable_v<F, T>;
 	}
 
-}
+}	 // namespace ql

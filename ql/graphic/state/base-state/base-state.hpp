@@ -574,6 +574,6 @@ namespace ql
 		bool states_pushed = false;
 		bool call_resize_call_on_init = true;
 	};
-}
+}	 // namespace ql
 
 #endif

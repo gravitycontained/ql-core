@@ -335,4 +335,4 @@ namespace ql::filesys
 		mutable bool m_exists;
 	};
 
-}
+}	 // namespace ql::filesys

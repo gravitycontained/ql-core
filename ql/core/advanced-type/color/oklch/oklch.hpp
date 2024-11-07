@@ -40,7 +40,7 @@ namespace ql
 				this->data = {0, 0, 0, 1};
 			}
 		};
-	}
+	}	 // namespace detail
 
 	struct oklch : detail::oklch_impl
 	{
@@ -63,12 +63,9 @@ namespace ql
 
 		std::string to_string() const
 		{
-			return ql::to_string
-			(
-				"oklch(", ql::string_percentage_precision(this->l, 0),
-				", ", ql::round(this->c, 4),
-				", ", ql::round(this->h, 2),
-					this->a == 1 ? "" : ql::to_string(" / ", ql::round(this->a, 2)),  ")"
+			return ql::to_string(
+					"oklch(", ql::string_percentage_precision(this->l, 0), ", ", ql::round(this->c, 4), ", ", ql::round(this->h, 2),
+					this->a == 1 ? "" : ql::to_string(" / ", ql::round(this->a, 2)), ")"
 			);
 		}
 
@@ -161,6 +158,7 @@ namespace ql
 					rgb.a
 			};
 		}
+
 		constexpr auto as_rgba() const
 		{
 			if (this->oklch_cache != this->data)
@@ -177,16 +175,16 @@ namespace ql
 			return this->as_rgba();
 		}
 
-		#if defined QL_SFML
+#if defined QL_SFML
 
 		operator sf::Color() const
 		{
 			return this->as_rgba();
 		}
 
-		#endif
+#endif
 
-	private:
+	 private:
 		mutable std::array<ql::f64, 4> oklch_cache;
 		mutable ql::rgba rgba_cache;
 	};

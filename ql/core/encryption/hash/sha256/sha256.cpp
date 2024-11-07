@@ -163,4 +163,4 @@ namespace ql
 		auto digest = ql::detail::sha256_t.digest();
 		return ql::sha256::to_string(digest);
 	}
-}
+}	 // namespace ql

@@ -182,7 +182,7 @@ namespace ql
 				ql::aes::mode mode = ql::aes::mode::_256
 		);
 
-	}	 // namespace filsys
+	}	 // namespace filesys
 
 	QL_SOURCE std::string read_file(const std::string& path);
 	QL_SOURCE void write_to_file(const std::string& text, const std::string& path);

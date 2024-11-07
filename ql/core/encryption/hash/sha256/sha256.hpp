@@ -86,4 +86,4 @@ namespace ql
 	QL_SOURCE std::string sha256_hash(const std::string_view& string);
 
 	constexpr auto sha256_object = std::make_pair(sha256_hash, 256u);
-}
+}	 // namespace ql

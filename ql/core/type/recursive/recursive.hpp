@@ -6,7 +6,6 @@
 #include <ql/core/constexpr/chain.hpp>
 #include <ql/core/maths/operation.hpp>
 
-
 namespace ql
 {
 	template <typename T, ql::operation op, typename F>
@@ -19,8 +18,9 @@ namespace ql
 		else if constexpr (ql::is_tuple<T>())
 		{
 			constexpr auto size = ql::tuple_size<T>();
-			return ql::constexpr_chain<size, op>([&](auto i)
-																					 { return ql::recursive_type_chain<ql::tuple_type<i, T>, op>(std::forward<F>(function)); });
+			return ql::constexpr_chain<size, op>(
+					[&](auto i) { return ql::recursive_type_chain<ql::tuple_type<i, T>, op>(std::forward<F>(function)); }
+			);
 		}
 		else
 		{
