@@ -25,78 +25,6 @@ namespace ql
 
 	struct event_manager
 	{
-		bool m_mouse_clicked = false;
-		bool m_mouse_released = false;
-		bool m_mouse_holding = false;
-		bool m_left_mouse_clicked = false;
-		bool m_left_mouse_released = false;
-		bool m_right_mouse_clicked = false;
-		bool m_right_mouse_released = false;
-		bool m_middle_mouse_clicked = false;
-		bool m_middle_mouse_released = false;
-		bool m_scrolled_up = false;
-		bool m_scrolled_down = false;
-		bool m_key_pressed = false;
-		bool m_key_single_pressed = false;
-		bool m_key_released = false;
-		bool m_key_single_released = false;
-		bool m_key_holding = false;
-		bool m_mouse_moved = false;
-		bool m_window_closed = false;
-		bool m_resized = false;
-
-		bool m_holding_left_mouse = false;
-		bool m_holding_right_mouse = false;
-		bool m_holding_middle_mouse = false;
-		bool m_holding_key = false;
-		bool m_left_mouse_double_click = false;
-		bool m_right_mouse_double_click = false;
-		bool m_middle_mouse_double_click = false;
-		bool m_left_mouse_fast_click = false;
-		bool m_right_mouse_fast_click = false;
-		bool m_middle_mouse_fast_click = false;
-
-		std::wstring m_text_entered;
-		std::u32string m_u32_text_entered;
-		std::wstring m_text_entered_total;
-
-		ql::vector2i m_resized_size;
-		mutable ql::vec2 m_mouse_position;
-		mutable ql::vec2 m_delta_mouse_position;
-		ql::vector2i m_mouse_position_screen;
-		ql::vector2i m_mouse_position_screen_before;
-		ql::vector2i m_mouse_position_desktop;
-		std::set<sf::Keyboard::Key> m_keys_pressed;
-		std::set<sf::Keyboard::Key> m_keys_released;
-		std::set<sf::Keyboard::Key> m_keys_single_pressed;
-		std::set<sf::Keyboard::Key> m_keys_single_released;
-		std::set<sf::Keyboard::Key> m_keys_holding;
-
-		ql::time m_frame_time = 0;
-		ql::vector2u m_screen_dimension = ql::vec(0u, 0u);
-
-		ql::small_clock m_left_mouse_click_release_clock;
-		ql::small_clock m_right_mouse_click_release_clock;
-		ql::small_clock m_middle_mouse_click_release_clock;
-
-		ql::halted_clock m_left_mouse_clock;
-		ql::halted_clock m_right_mouse_clock;
-		ql::halted_clock m_middle_mouse_clock;
-		ql::size m_left_mouse_fast_click_ctr = 1u;
-		ql::size m_right_mouse_fast_click_ctr = 1u;
-		ql::size m_middle_mouse_fast_click_ctr = 1u;
-
-		ql::f64 m_fast_double_click_duration = 0.2;
-		ql::f64 m_fast_click_duration = 0.15;
-
-		// bool m_joystick_connect;
-		// bool m_joystick_disconnect;
-		// ql::vec2 m_joystick_left_direction;
-		// ql::vec2 m_joystick_right_direction;
-		// std::unordered_set<sf::Joystick::Axis> m_joystick_axis_pressed;
-		// std::unordered_set<sf::Joystick::Axis> m_joystick_axis_released;
-		// std::unordered_set<sf::Joystick::Axis> m_joystick_axis_holding;
-
 		QL_SOURCE bool key_single_pressed(sf::Keyboard::Key key) const;
 		QL_SOURCE bool key_single_released(sf::Keyboard::Key key) const;
 		QL_SOURCE bool key_pressed(sf::Keyboard::Key key) const;
@@ -150,6 +78,9 @@ namespace ql
 
 		QL_SOURCE void reset(const sf::RenderWindow& window);
 		QL_SOURCE void update(const sf::Event& event);
+		QL_SOURCE void update_move_direction();
+
+
 		QL_SOURCE void set_fast_click_duration(ql::f64 duration);
 		QL_SOURCE ql::f64 get_fast_click_duration() const;
 		QL_SOURCE void set_fast_double_click_duration(ql::f64 duration);
@@ -163,6 +94,9 @@ namespace ql
 		QL_SOURCE ql::vec2 delta_mouse_position() const;
 		QL_SOURCE ql::vector2i mouse_position_screen() const;
 		QL_SOURCE ql::vector2i mouse_position_desktop() const;
+
+		QL_SOURCE bool moved_direction() const;
+		QL_SOURCE ql::vec2 move_direction() const;
 
 		QL_SOURCE void reset_delta_mouse();
 
@@ -224,6 +158,81 @@ namespace ql
 				}
 			}
 		}
+
+		
+		bool m_mouse_clicked = false;
+		bool m_mouse_released = false;
+		bool m_mouse_holding = false;
+		bool m_left_mouse_clicked = false;
+		bool m_left_mouse_released = false;
+		bool m_right_mouse_clicked = false;
+		bool m_right_mouse_released = false;
+		bool m_middle_mouse_clicked = false;
+		bool m_middle_mouse_released = false;
+		bool m_scrolled_up = false;
+		bool m_scrolled_down = false;
+		bool m_key_pressed = false;
+		bool m_key_single_pressed = false;
+		bool m_key_released = false;
+		bool m_key_single_released = false;
+		bool m_key_holding = false;
+		bool m_mouse_moved = false;
+		bool m_window_closed = false;
+		bool m_resized = false;
+
+		bool m_holding_left_mouse = false;
+		bool m_holding_right_mouse = false;
+		bool m_holding_middle_mouse = false;
+		bool m_holding_key = false;
+		bool m_left_mouse_double_click = false;
+		bool m_right_mouse_double_click = false;
+		bool m_middle_mouse_double_click = false;
+		bool m_left_mouse_fast_click = false;
+		bool m_right_mouse_fast_click = false;
+		bool m_middle_mouse_fast_click = false;
+
+		std::wstring m_text_entered;
+		std::u32string m_u32_text_entered;
+		std::wstring m_text_entered_total;
+
+		bool m_moved_direction;
+		ql::vec2 m_move_direction;
+		ql::vector2i m_resized_size;
+		mutable ql::vec2 m_mouse_position;
+		mutable ql::vec2 m_delta_mouse_position;
+		ql::vector2i m_mouse_position_screen;
+		ql::vector2i m_mouse_position_screen_before;
+		ql::vector2i m_mouse_position_desktop;
+		std::set<sf::Keyboard::Key> m_keys_pressed;
+		std::set<sf::Keyboard::Key> m_keys_released;
+		std::set<sf::Keyboard::Key> m_keys_single_pressed;
+		std::set<sf::Keyboard::Key> m_keys_single_released;
+		std::set<sf::Keyboard::Key> m_keys_holding;
+
+		ql::time m_frame_time = 0;
+		ql::vector2u m_screen_dimension = ql::vec(0u, 0u);
+
+		ql::small_clock m_left_mouse_click_release_clock;
+		ql::small_clock m_right_mouse_click_release_clock;
+		ql::small_clock m_middle_mouse_click_release_clock;
+
+		ql::halted_clock m_left_mouse_clock;
+		ql::halted_clock m_right_mouse_clock;
+		ql::halted_clock m_middle_mouse_clock;
+		ql::size m_left_mouse_fast_click_ctr = 1u;
+		ql::size m_right_mouse_fast_click_ctr = 1u;
+		ql::size m_middle_mouse_fast_click_ctr = 1u;
+
+		ql::f64 m_fast_double_click_duration = 0.2;
+		ql::f64 m_fast_click_duration = 0.15;
+
+		// bool m_joystick_connect;
+		// bool m_joystick_disconnect;
+		// ql::vec2 m_joystick_left_direction;
+		// ql::vec2 m_joystick_right_direction;
+		// std::unordered_set<sf::Joystick::Axis> m_joystick_axis_pressed;
+		// std::unordered_set<sf::Joystick::Axis> m_joystick_axis_released;
+		// std::unordered_set<sf::Joystick::Axis> m_joystick_axis_holding;
 	};
 
 }	 // namespace ql

@@ -175,6 +175,11 @@ namespace ql
 			return this->as_rgba();
 		}
 
+		constexpr operator ql::rgb() const
+		{
+			return this->as_rgba();
+		}
+
 #if defined QL_SFML
 
 		operator sf::Color() const

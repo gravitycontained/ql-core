@@ -11,7 +11,6 @@
 
 namespace ql
 {
-
 	namespace detail
 	{
 

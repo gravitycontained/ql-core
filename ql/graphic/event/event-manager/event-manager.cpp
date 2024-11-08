@@ -307,7 +307,6 @@ namespace ql
 		this->m_key_single_pressed = false;
 		this->m_key_released = false;
 		this->m_mouse_moved = false;
-		this->m_key_holding = false;
 		this->m_window_closed = false;
 		this->m_resized = false;
 		this->m_left_mouse_double_click = false;
@@ -470,6 +469,8 @@ namespace ql
 				this->m_key_single_pressed = true;
 			}
 			this->m_keys_holding.insert(event.key.code);
+
+			this->update_move_direction();
 		}
 		else if (event.type == sf::Event::KeyReleased)
 		{
@@ -477,6 +478,8 @@ namespace ql
 			this->m_key_holding = false;
 			this->m_keys_released.insert(event.key.code);
 			this->m_keys_holding.erase(event.key.code);
+
+			this->update_move_direction();
 		}
 		else if (event.type == sf::Event::MouseWheelMoved)
 		{
@@ -502,6 +505,36 @@ namespace ql
 			this->m_resized = true;
 			this->m_resized_size = {event.size.width, event.size.height};
 		}
+	}
+
+	void ql::event_manager::update_move_direction()
+	{
+		ql::vec2 direction;
+
+		this->m_moved_direction = false;
+
+		if (this->key_holding(sf::Keyboard::W))
+		{
+			direction.y -= 1.f;
+			this->m_moved_direction = true;
+		}
+		if (this->key_holding(sf::Keyboard::A))
+		{
+			direction.x -= 1.f;
+			this->m_moved_direction = true;
+		}
+		if (this->key_holding(sf::Keyboard::S))
+		{
+			direction.y += 1.f;
+			this->m_moved_direction = true;
+		}
+		if (this->key_holding(sf::Keyboard::D))
+		{
+			direction.x += 1.f;
+			this->m_moved_direction = true;
+		}
+
+		this->m_move_direction = direction.normalized();
 	}
 
 	void ql::event_manager::set_fast_click_duration(ql::f64 duration)
@@ -611,6 +644,15 @@ namespace ql
 	ql::vector2i ql::event_manager::mouse_position_desktop() const
 	{
 		return this->m_mouse_position_desktop;
+	}
+
+	bool ql::event_manager::moved_direction() const
+	{
+		return this->m_moved_direction;
+	}
+	ql::vec2 ql::event_manager::move_direction() const
+	{
+		return this->m_move_direction;
 	}
 
 	void ql::event_manager::reset_delta_mouse()
