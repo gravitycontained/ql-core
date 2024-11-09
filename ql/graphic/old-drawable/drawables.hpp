@@ -1,7 +1,10 @@
 #pragma once
 
 #include <ql/core/definition/definition.hpp>
+
 #if defined QL_GRAPHIC
+
+#include <ql/graphic/drawable/drawable.hpp>
 
 #include <ql/core/type/type.hpp>
 #include <ql/core/advanced-type/advanced-type.hpp>
@@ -53,19 +56,8 @@ namespace ql
 
 	struct event_manager;
 
-	QL_SOURCE ql::hitbox get_text_hitbox(const sf::Text& text, bool ignore_outline = true);
-	QL_SOURCE ql::hitbox get_text_hitbox(const ql::text& text, bool ignore_outline = true);
-	QL_SOURCE void centerize_text(sf::Text& text);
-	QL_SOURCE void centerize_text(ql::text& text);
-
-	QL_SOURCE ql::hitbox get_sprite_hitbox(const sf::Sprite& sprite);
-	QL_SOURCE ql::vec2 get_sprite_center(const sf::Sprite& sprite);
-	QL_SOURCE void centerize_sprite_origin(sf::Sprite& sprite);
-	QL_SOURCE void centerize_sprite(sf::Sprite& sprite);
-
 	namespace detail
 	{
-		QL_SOURCE extern ql::text text;
 		QL_SOURCE extern ql::rectangle rectangle;
 		QL_SOURCE extern ql::rectangles rectangles;
 		QL_SOURCE extern ql::smooth_rectangle smooth_rectangle;
@@ -167,138 +159,6 @@ namespace ql
 
 		std::vector<ql::vertex> vertices;
 		ql::primitive_type primitive_type = ql::primitive_type::points;
-	};
-
-	struct vtext
-	{
-		QL_SOURCE void set_font(const std::string& font_name);
-		QL_SOURCE void set_style(ql::u32 style);
-		QL_SOURCE void set_character_size(ql::u32 character_size);
-		QL_SOURCE void set_color(ql::rgba color);
-		QL_SOURCE void set_outline_thickness(ql::f32 outline_thickness);
-		QL_SOURCE void set_outline_color(ql::rgba color);
-		QL_SOURCE void set_letter_spacing(ql::f32 spacing);
-		QL_SOURCE void set_position(ql::vec2 position);
-		QL_SOURCE void set_string(const std::string& string);
-		QL_SOURCE bool operator==(const vtext& other) const;
-
-		template <typename T, typename... Args>
-		requires (ql::is_printable<T, Args...>())
-		void set_string(T first, Args... values)
-		{
-			this->set_string(ql::to_string(first, values...));
-		}
-
-		QL_SOURCE void draw(sf::RenderTarget& window, sf::RenderStates states = sf::RenderStates::Default) const;
-
-		std::string font_name;
-		ql::u32 style = sf::Text::Style::Regular;
-		ql::u32 character_size = 22u;
-		ql::f32 outline_thickness = 0.0f;
-		ql::rgba color = ql::rgba::white();
-		ql::rgba outline_color;
-		ql::f32 letter_spacing = 1.0f;
-		ql::vec2 position;
-		std::string string;
-	};
-
-	struct text
-	{
-		QL_SOURCE const sf::Font& get_sf_font() const;
-		QL_SOURCE const sf::Glyph& get_glyph(ql::wchar_type c) const;
-		QL_SOURCE ql::hitbox get_glyph_hitbox(ql::wchar_type c) const;
-		QL_SOURCE ql::f32 get_character_advance(ql::wchar_type current) const;
-		QL_SOURCE ql::f32 get_next_character_advance() const;
-		QL_SOURCE ql::f32 get_line_spacing_pixels() const;
-		QL_SOURCE ql::f32 get_line_spacing() const;
-
-		QL_SOURCE ql::f32 get_letter_spacing_pixels() const;
-		QL_SOURCE ql::f32 get_whitespace_width() const;
-		QL_SOURCE ql::f32 get_italic_shear() const;
-
-		QL_SOURCE bool is_bold() const;
-		QL_SOURCE std::string get_font() const;
-		QL_SOURCE ql::u32 get_style() const;
-		QL_SOURCE ql::u32 get_character_size() const;
-		QL_SOURCE ql::rgba get_color() const;
-		QL_SOURCE ql::rgba get_outline_color() const;
-		QL_SOURCE ql::f32 get_outline_thickness() const;
-		QL_SOURCE ql::f32 get_letter_spacing() const;
-		QL_SOURCE ql::vec2 get_position() const;
-		QL_SOURCE ql::vec2 get_center() const;
-		QL_SOURCE std::string get_string() const;
-		QL_SOURCE std::wstring get_wstring() const;
-		QL_SOURCE sf::String get_sfstring() const;
-		QL_SOURCE void set_font(const sf::Font& font);
-		QL_SOURCE void set_font(const std::string& font_name);
-		QL_SOURCE void set_style(ql::u32 style);
-		QL_SOURCE void set_character_size(ql::u32 character_size);
-		QL_SOURCE void set_color(ql::rgba color);
-		QL_SOURCE void set_outline_color(ql::rgba color);
-		QL_SOURCE void set_outline_thickness(ql::f32 outline_thickness);
-		QL_SOURCE void set_rotation(ql::f32 angle);
-		QL_SOURCE void set_letter_spacing(ql::f32 spacing);
-		QL_SOURCE void set_line_spacing(ql::f32 spacing);
-		QL_SOURCE void set_position(ql::vec2 position);
-		QL_SOURCE void set_center(ql::vec2 position);
-		QL_SOURCE void set_string(const std::string& string);
-		QL_SOURCE void set_string(const std::wstring& string);
-		QL_SOURCE void set_string(const sf::String& string);
-
-		template <typename T, typename... Args>
-		requires (ql::is_printable<T, Args...>())
-		void set_string(T first, Args... values)
-		{
-			this->set_string(ql::to_string(first, values...));
-		}
-
-		QL_SOURCE void centerize();
-		QL_SOURCE void centerize_x();
-		QL_SOURCE void centerize_y();
-		QL_SOURCE void move(ql::vec2 delta);
-
-		ql::text()
-		{
-		}
-
-		ql::text(const ql::vtext& other)
-		{
-			*this = other;
-		}
-
-		QL_SOURCE ql::vec2 find_character_position(ql::size index) const;
-		QL_SOURCE ql::f32 get_underline_baseline() const;
-		QL_SOURCE ql::f32 get_underline_thickness() const;
-		QL_SOURCE ql::f32 get_character_size_plus_baseline() const;
-		QL_SOURCE std::vector<std::pair<ql::size, ql::hitbox>> get_all_characters_hitbox() const;
-		QL_SOURCE std::vector<ql::hitbox> get_all_characters_hitbox_whitespace_included() const;
-		QL_SOURCE ql::vec2 get_starting_line_position() const;
-		QL_SOURCE ql::f32 get_delta_underline() const;
-		QL_SOURCE ql::f32 get_line_height() const;
-		QL_SOURCE ql::vec2 get_character_dimension(wchar_t character) const;
-		QL_SOURCE ql::size get_line_number(ql::size index) const;
-		QL_SOURCE ql::hitbox get_visible_hitbox(bool ignore_outline = true) const;
-		QL_SOURCE ql::hitbox get_standard_hitbox() const;
-		QL_SOURCE ql::vec2 get_offset() const;
-
-		QL_SOURCE ql::size size() const;
-		QL_SOURCE std::string string() const;
-		QL_SOURCE void clear();
-		QL_SOURCE ql::text& operator<<(const std::string& string);
-		QL_SOURCE ql::text& operator<<(const std::wstring& string);
-		QL_SOURCE ql::text& operator<<(const sf::String& string);
-
-		QL_SOURCE ql::text& operator=(const ql::vtext& text);
-
-		QL_SOURCE void draw(sf::RenderTarget& window, sf::RenderStates states = sf::RenderStates::Default) const;
-
-		std::string m_font;
-		sf::Text m_text;
-
-		QL_SOURCE ql::f32 get_letter_kerning(ql::wchar_type c) const;
-		QL_SOURCE ql::f32 get_letter_advance(ql::wchar_type c) const;
-		QL_SOURCE ql::f32 get_letter_advance_and_spacing(ql::wchar_type c) const;
-		QL_SOURCE ql::f32 get_letter_width(ql::wchar_type c) const;
 	};
 
 	struct endl_type
@@ -1247,60 +1107,6 @@ namespace ql
 		ql::vertex_array vertices;
 	};
 
-	struct sprite
-	{
-		sf::Sprite m_sprite;
-
-		sprite()
-		{
-		}
-
-		sprite(const ql::sprite& sprite)
-		{
-			*this = sprite;
-		}
-
-		sprite(const sf::Sprite& sprite)
-		{
-			*this = sprite;
-		}
-
-		QL_SOURCE void set_texture(const sf::Texture& texture);
-		QL_SOURCE void set_texture_rect(const sf::IntRect& rect);
-		QL_SOURCE void set_texture_rect(ql::hitbox hitbox);
-		QL_SOURCE void set_color(ql::rgba color);
-		QL_SOURCE void set_position(ql::vec2 position);
-		QL_SOURCE void set_position_x(ql::f32 x);
-		QL_SOURCE void set_position_y(ql::f32 y);
-		QL_SOURCE void set_center(ql::vec2 position);
-		QL_SOURCE void set_scale(ql::vec2 scale);
-		QL_SOURCE void set_scale(ql::f32 scale);
-		QL_SOURCE void set_origin(ql::vec2 origin);
-		QL_SOURCE void set_rotation(ql::f32 rotation);
-
-		QL_SOURCE ql::rgba get_color() const;
-		QL_SOURCE ql::vec2 get_position() const;
-		QL_SOURCE ql::vec2 get_dimension() const;
-		QL_SOURCE ql::vec2 get_scale() const;
-		QL_SOURCE ql::vec2 get_origin() const;
-		QL_SOURCE ql::f32 get_rotation() const;
-		QL_SOURCE ql::hitbox get_hitbox() const;
-		QL_SOURCE ql::vec2 get_center() const;
-
-		QL_SOURCE void centerize_origin();
-		QL_SOURCE void centerize();
-		QL_SOURCE void centerize_x();
-		QL_SOURCE void centerize_y();
-		QL_SOURCE void move(ql::vec2 delta);
-		QL_SOURCE void move_scaled(ql::vec2 delta);
-
-		QL_SOURCE operator sf::Sprite&();
-		QL_SOURCE operator const sf::Sprite&() const;
-		QL_SOURCE ql::sprite& operator=(const sf::Sprite& sprite);
-
-		QL_SOURCE void draw(sf::RenderTarget& window, sf::RenderStates states = sf::RenderStates::Default) const;
-	};
-
 	struct transition_overlay
 	{
 		transition_overlay();
@@ -1320,118 +1126,6 @@ namespace ql
 		ql::multiplied_color_extension<ql::rectangle> overlay;
 		ql::animation animation;
 		ql::f64 slope = 1.0;
-	};
-
-	struct render_texture
-	{
-		QL_SOURCE void set_antialiasing(ql::u32 antialiasing);
-		QL_SOURCE void resize(ql::vector2i dimension, bool resize_with_window = false);
-		QL_SOURCE void set_smooth(bool smooth);
-		QL_SOURCE void enable_smooth();
-		QL_SOURCE void disable_smooth();
-		QL_SOURCE bool is_smooth() const;
-		QL_SOURCE void enable_resize_with_window();
-		QL_SOURCE void disable_resize_with_window();
-		QL_SOURCE bool is_resize_with_window_enabled() const;
-
-		QL_SOURCE void enable_clear_with_window();
-		QL_SOURCE void disable_clear_with_window();
-		QL_SOURCE bool is_clear_with_window_enabled() const;
-
-		QL_SOURCE void set_color(ql::rgba color);
-		QL_SOURCE void set_position(ql::vec2 position);
-		QL_SOURCE void set_scale(ql::vec2 scale);
-		QL_SOURCE void set_scale(ql::f32 scale);
-		QL_SOURCE void set_origin(ql::vec2 origin);
-		QL_SOURCE void set_rotation(ql::f32 rotation);
-
-		QL_SOURCE ql::rgba get_color() const;
-		QL_SOURCE ql::vec2 get_position() const;
-		QL_SOURCE ql::vec2 get_scale() const;
-		QL_SOURCE ql::vec2 get_origin() const;
-		QL_SOURCE ql::f32 get_rotation() const;
-		QL_SOURCE ql::vec2 get_dimension() const;
-		QL_SOURCE ql::vec2 get_center() const;
-
-		QL_SOURCE void move(ql::vec2 delta);
-		QL_SOURCE void move_scaled(ql::vec2 delta);
-
-		QL_SOURCE const ql::sprite& get_sprite() const;
-		QL_SOURCE void clear();
-		QL_SOURCE void display();
-
-		QL_SOURCE const sf::RenderStates& get_render_states() const;
-		QL_SOURCE const sf::Texture& get_texture() const;
-
-		QL_SOURCE void set_shader(const std::string& name);
-		QL_SOURCE void set_shader(sf::Shader& shader);
-		QL_SOURCE void unbind_shader();
-
-		template <typename T>
-		requires (ql::has_any_draw<T>())
-		void draw(const T& object)
-		{
-			if constexpr (ql::is_render_texture<T>())
-			{
-				this->m_texture.draw(object.get_sprite(), this->m_states);
-				this->m_changed = true;
-			}
-			else if constexpr (std::is_base_of<sf::Drawable, T>())
-			{
-				this->m_texture.draw(object, this->m_states);
-				this->m_changed = true;
-			}
-			else if constexpr (ql::has_render<T>())
-			{
-				render draw(this->m_texture, this->m_states);
-				object.draw(draw);
-				this->m_changed = true;
-			}
-			else if constexpr (ql::has_draw_sf<T>())
-			{
-				object.draw(this->m_texture, this->m_states);
-				this->m_changed = true;
-			}
-		}
-
-		template <typename T>
-		requires (ql::has_any_draw<T>())
-		void draw(const T& object, sf::RenderStates states)
-		{
-			if constexpr (ql::is_render_texture<T>())
-			{
-				this->m_texture.draw(object.get_sprite(), states);
-				this->m_changed = true;
-			}
-			else if constexpr (std::is_base_of<sf::Drawable, T>())
-			{
-				this->m_texture.draw(object, states);
-				this->m_changed = true;
-			}
-			else if constexpr (ql::has_render<T>())
-			{
-				render draw(this->m_texture, states);
-				object.draw(draw);
-				this->m_changed = true;
-			}
-			else if constexpr (ql::has_draw_sf<T>())
-			{
-				object.draw(this->m_texture, states);
-				this->m_changed = true;
-			}
-		}
-
-		QL_SOURCE void apply() const;
-
-		mutable sf::RenderTexture m_texture;
-		mutable ql::sprite m_sprite;
-		mutable bool m_changed = false;
-		ql::vector2i m_create_size;
-		bool m_smooth = false;
-		bool m_resize_with_window = true;
-		bool m_clear_with_window = true;
-		sf::RenderStates m_states;
-		sf::ContextSettings m_settings;
 	};
 
 	struct pixel_image

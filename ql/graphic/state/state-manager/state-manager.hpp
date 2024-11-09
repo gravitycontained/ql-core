@@ -3,11 +3,14 @@
 #include <ql/core/core.hpp>
 #if defined QL_GRAPHIC
 
+#include <ql/graphic/drawable/drawable.hpp>
+
+#include <ql/graphic/render/render.hpp>
+
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 
 #include <ql/graphic/event/event.hpp>
-#include <ql/graphic/drawables.hpp>
 #include <ql/graphic/resources/resources.hpp>
 
 namespace ql
@@ -25,14 +28,6 @@ namespace ql
 
 	struct base_state;
 
-	/*
-	ql::framework framework;
-	framework.set_dimension({ 1800, 720 });
-	framework.set_title("x");
-	framework.set_style(sf::Style::Default);
-	framework.add_state<state>();
-	framework.game_loop();
-	*/
 	struct state_manager
 	{
 		QL_SOURCE state_manager();
@@ -132,7 +127,6 @@ namespace ql
 		QL_SOURCE void add_sprite(const std::string& name, sf::Texture& texture);
 		QL_SOURCE void add_shader(const std::string& name, const std::string& path, sf::Shader::Type shader_type);
 		QL_SOURCE void add_shader(const std::string& name, const std::string& path);
-		QL_SOURCE void add_text(const std::string& name);
 
 		QL_SOURCE void add_font_from_memory(const std::string& name, const std::string& memory);
 		QL_SOURCE void add_sound_from_memory(const std::string& name, const std::string& memory);
@@ -145,7 +139,6 @@ namespace ql
 		QL_SOURCE sf::Sprite& get_sprite(const std::string& name);
 		QL_SOURCE sf::Image& get_image(const std::string& name);
 		QL_SOURCE sf::Shader& get_shader(const std::string& name);
-		QL_SOURCE ql::text& get_text(const std::string& name);
 
 		QL_SOURCE const sf::Font& get_font(const std::string& name) const;
 		QL_SOURCE const sf::SoundBuffer& get_sound(const std::string& name) const;
@@ -153,7 +146,6 @@ namespace ql
 		QL_SOURCE const sf::Sprite& get_sprite(const std::string& name) const;
 		QL_SOURCE const sf::Image& get_image(const std::string& name) const;
 		QL_SOURCE const sf::Shader& get_shader(const std::string& name) const;
-		QL_SOURCE const ql::text& get_text(const std::string& name) const;
 
 		QL_SOURCE void create();
 		QL_SOURCE bool is_open() const;

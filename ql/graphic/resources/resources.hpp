@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ql/core/definition/definition.hpp>
+
 #if defined QL_GRAPHIC
 
 #include <unordered_map>
@@ -11,7 +12,6 @@
 
 namespace ql
 {
-
 	QL_SOURCE void load_font(sf::Font& Font, const std::string& path);
 	QL_SOURCE void load_texture(sf::Texture& texture, const std::string& path, bool set_smooth = false);
 	QL_SOURCE void load_image(sf::Image& image, const std::string& path);

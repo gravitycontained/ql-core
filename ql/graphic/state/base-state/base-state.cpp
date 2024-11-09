@@ -3,6 +3,7 @@
 #if defined QL_GRAPHIC
 
 #include <ql/graphic/view-control.hpp>
+#include <ql/graphic/resources/resources.hpp>
 
 namespace ql
 {
@@ -238,11 +239,6 @@ namespace ql
 		ql::add_shader(name, path);
 	}
 
-	void ql::base_state::add_text(const std::string& name)
-	{
-		ql::add_text(name);
-	}
-
 	void ql::base_state::add_font_from_memory(const std::string& name, const std::string& memory)
 	{
 		ql::add_font_from_memory(name, memory);
@@ -288,11 +284,6 @@ namespace ql
 		return ql::get_shader(name);
 	}
 
-	ql::text& ql::base_state::get_text(const std::string& name)
-	{
-		return ql::get_text(name);
-	}
-
 	const sf::Font& ql::base_state::get_font(const std::string& name) const
 	{
 		return ql::get_font(name);
@@ -316,11 +307,6 @@ namespace ql
 	const sf::Shader& ql::base_state::get_shader(const std::string& name) const
 	{
 		return ql::get_shader(name);
-	}
-
-	const ql::text& ql::base_state::get_text(const std::string& name) const
-	{
-		return ql::get_text(name);
 	}
 
 	void ql::base_state::add_render(const std::string& name, bool smooth)

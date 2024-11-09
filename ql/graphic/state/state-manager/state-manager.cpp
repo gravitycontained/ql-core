@@ -11,28 +11,30 @@
 
 namespace ql
 {
-	ql::state_manager::state_manager()
+	state_manager::state_manager()
 	{
 		this->set_title(" ");
 		this->set_dimension({1280, 720});
 		this->set_style(sf::Style::Default);
-#if defined QL_GLEW
-		this->disable_gl();
-#endif
+
+		#if defined QL_GLEW
+			this->disable_gl();
+		#endif
+
 		this->created = false;
 	}
 
-	ql::state_manager::~state_manager()
+	state_manager::~state_manager()
 	{
-#if defined QL_GLEW
-		if (this->created_gl)
-		{
-			this->destroy_gl();
-		}
-#endif
+		#if defined QL_GLEW
+			if (this->created_gl)
+			{
+				this->destroy_gl();
+			}
+		#endif
 	}
 
-	void ql::state_manager::draw_call()
+	void state_manager::draw_call()
 	{
 		if (this->states.back()->is_clear_allowed())
 		{
@@ -52,7 +54,7 @@ namespace ql
 		}
 	}
 
-	void ql::state_manager::init_back()
+	void state_manager::init_back()
 	{
 		if (this->states.size() && !this->states.back()->is_initalized)
 		{
@@ -65,12 +67,12 @@ namespace ql
 		}
 	}
 
-	void ql::state_manager::display()
+	void state_manager::display()
 	{
 		this->window.display();
 	}
 
-	void ql::state_manager::internal_update()
+	void state_manager::internal_update()
 	{
 		this->frametime = this->frametime_clock.elapsed_reset();
 
@@ -129,7 +131,7 @@ namespace ql
 		}
 	}
 
-	bool ql::state_manager::game_loop_segment()
+	bool state_manager::game_loop_segment()
 	{
 		if (!this->is_created())
 		{
@@ -177,7 +179,7 @@ namespace ql
 		return true;
 	}
 
-	void ql::state_manager::game_loop()
+	void state_manager::game_loop()
 	{
 		if (this->states.empty())
 		{
@@ -198,7 +200,7 @@ namespace ql
 	}
 
 #if defined QL_GLEW
-	void ql::state_manager::enable_gl()
+	void state_manager::enable_gl()
 	{
 		this->context_settings.depthBits = 24;
 		this->context_settings.sRgbCapable = false;
@@ -206,14 +208,14 @@ namespace ql
 		this->use_gl = true;
 	}
 
-	void ql::state_manager::disable_gl()
+	void state_manager::disable_gl()
 	{
 		this->context_settings.depthBits = 0;
 		this->context_settings.antialiasingLevel = 12u;
 		this->use_gl = false;
 	}
 
-	void ql::state_manager::create_gl()
+	void state_manager::create_gl()
 	{
 		if (!this->created)
 		{
@@ -246,7 +248,7 @@ namespace ql
 		this->resize_gl();
 	}
 
-	void ql::state_manager::destroy_gl()
+	void state_manager::destroy_gl()
 	{
 		for (auto& shader : qgl::shaders)
 		{
@@ -254,109 +256,109 @@ namespace ql
 		}
 	}
 
-	void ql::state_manager::resize_gl()
+	void state_manager::resize_gl()
 	{
 		qgl::gl::viewport(0, 0, this->dimension.x, this->dimension.y);
 	}
 #endif
-	void ql::state_manager::enable_vsync()
+	void state_manager::enable_vsync()
 	{
 		this->use_vsync = true;
 		this->window.setVerticalSyncEnabled(this->use_vsync);
 	}
 
-	void ql::state_manager::disable_vsync()
+	void state_manager::disable_vsync()
 	{
 		this->use_vsync = false;
 		this->window.setVerticalSyncEnabled(this->use_vsync);
 	}
 
-	bool ql::state_manager::is_vsync_enabled()
+	bool state_manager::is_vsync_enabled()
 	{
 		return this->use_vsync;
 	}
 
-	void ql::state_manager::set_active(bool active)
+	void state_manager::set_active(bool active)
 	{
 		this->window.setActive(active);
 	}
 
-	void ql::state_manager::push_gl_states()
+	void state_manager::push_gl_states()
 	{
 		this->window.pushGLStates();
 	}
 
-	void ql::state_manager::pop_gl_states()
+	void state_manager::pop_gl_states()
 	{
 		this->window.popGLStates();
 	}
 
-	void ql::state_manager::set_framerate_limit(ql::u32 value)
+	void state_manager::set_framerate_limit(ql::u32 value)
 	{
 		this->framerate_limit = value;
 	}
 
-	ql::u32 ql::state_manager::get_framerate_limit() const
+	ql::u32 state_manager::get_framerate_limit() const
 	{
 		return this->framerate_limit;
 	}
 
-	void ql::state_manager::disable_framerate_limit()
+	void state_manager::disable_framerate_limit()
 	{
 		this->framerate_limit = 0u;
 	}
 
-	void ql::state_manager::enable_update_if_no_focus()
+	void state_manager::enable_update_if_no_focus()
 	{
 		this->update_if_no_focus = true;
 	}
 
-	void ql::state_manager::disable_update_if_no_focus()
+	void state_manager::disable_update_if_no_focus()
 	{
 		this->update_if_no_focus = false;
 	}
 
-	bool ql::state_manager::is_update_if_no_focus_enabled() const
+	bool state_manager::is_update_if_no_focus_enabled() const
 	{
 		return this->update_if_no_focus;
 	}
 
-	void ql::state_manager::enable_call_resize_call_on_init()
+	void state_manager::enable_call_resize_call_on_init()
 	{
 		this->call_resize_call_on_init = true;
 	}
 
-	void ql::state_manager::disable_call_resize_call_on_init()
+	void state_manager::disable_call_resize_call_on_init()
 	{
 		this->call_resize_call_on_init = false;
 	}
 
-	bool ql::state_manager::is_call_resize_call_on_init() const
+	bool state_manager::is_call_resize_call_on_init() const
 	{
 		return this->call_resize_call_on_init;
 	}
 
-	bool ql::state_manager::has_focus() const
+	bool state_manager::has_focus() const
 	{
 		return this->focus;
 	}
 
-	bool ql::state_manager::has_gained_focus() const
+	bool state_manager::has_gained_focus() const
 	{
 		return this->gained_focus;
 	}
 
-	bool ql::state_manager::has_lost_focus() const
+	bool state_manager::has_lost_focus() const
 	{
 		return this->lost_focus;
 	}
 
-	void ql::state_manager::close()
+	void state_manager::close()
 	{
 		this->window.close();
 	}
 
-	ql::time ql::state_manager::get_no_focus_time() const
+	ql::time state_manager::get_no_focus_time() const
 	{
 		if (this->focus || this->gained_focus)
 		{
@@ -368,24 +370,24 @@ namespace ql
 		}
 	}
 
-	ql::time ql::state_manager::run_time() const
+	ql::time state_manager::run_time() const
 	{
 		return this->run_time_clock.elapsed();
 	}
 
-	ql::time ql::state_manager::frame_time() const
+	ql::time state_manager::frame_time() const
 	{
 		return this->frametime;
 	}
 
-	void ql::state_manager::add_render(const std::string& name, bool smooth)
+	void state_manager::add_render(const std::string& name, bool smooth)
 	{
 		this->render_textures[name].set_antialiasing(this->context_settings.antialiasingLevel);
 		this->render_textures[name].resize(this->dimension, true);
 		this->render_textures[name].set_smooth(smooth);
 	}
 
-	ql::render_texture& ql::state_manager::get_render(const std::string& name)
+	ql::render_texture& state_manager::get_render(const std::string& name)
 	{
 		if (this->render_textures.find(name) == this->render_textures.cend())
 		{
@@ -394,7 +396,7 @@ namespace ql
 		return this->render_textures[name];
 	}
 
-	const ql::render_texture& ql::state_manager::get_render(const std::string& name) const
+	const ql::render_texture& state_manager::get_render(const std::string& name) const
 	{
 		if (this->render_textures.find(name) == this->render_textures.cend())
 		{
@@ -403,147 +405,132 @@ namespace ql
 		return this->render_textures.at(name);
 	}
 
-	void ql::state_manager::play_sound(const std::string& name, ql::f32 volume, ql::f32 speed)
+	void state_manager::play_sound(const std::string& name, ql::f32 volume, ql::f32 speed)
 	{
 		ql::play_sound(name, volume, speed);
 	}
 
-	void ql::state_manager::add_font(const std::string& name, const std::string& path)
+	void state_manager::add_font(const std::string& name, const std::string& path)
 	{
 		ql::add_font(name, path);
 	}
 
-	void ql::state_manager::add_sound(const std::string& name, const std::string& path)
+	void state_manager::add_sound(const std::string& name, const std::string& path)
 	{
 		ql::add_sound(name, path);
 	}
 
-	void ql::state_manager::add_texture(const std::string& name, const std::string& path)
+	void state_manager::add_texture(const std::string& name, const std::string& path)
 	{
 		ql::add_texture(name, path);
 	}
 
-	void ql::state_manager::add_image(const std::string& name, const std::string& path)
+	void state_manager::add_image(const std::string& name, const std::string& path)
 	{
 		ql::add_image(name, path);
 	}
 
-	void ql::state_manager::add_sprite(const std::string& name, const std::string& path)
+	void state_manager::add_sprite(const std::string& name, const std::string& path)
 	{
 		ql::add_sprite(name, path);
 	}
 
-	void ql::state_manager::add_sprite(const std::string& name, sf::Texture& texture)
+	void state_manager::add_sprite(const std::string& name, sf::Texture& texture)
 	{
 		ql::add_sprite(name, texture);
 	}
 
-	void ql::state_manager::add_shader(const std::string& name, const std::string& path, sf::Shader::Type shader_type)
+	void state_manager::add_shader(const std::string& name, const std::string& path, sf::Shader::Type shader_type)
 	{
 		ql::add_shader(name, path, shader_type);
 	}
 
-	void ql::state_manager::add_shader(const std::string& name, const std::string& path)
+	void state_manager::add_shader(const std::string& name, const std::string& path)
 	{
 		ql::add_shader(name, path);
 	}
 
-	void ql::state_manager::add_text(const std::string& name)
-	{
-		ql::add_text(name);
-	}
-
-	void ql::state_manager::add_font_from_memory(const std::string& name, const std::string& memory)
+	void state_manager::add_font_from_memory(const std::string& name, const std::string& memory)
 	{
 		ql::add_font_from_memory(name, memory);
 	}
 
-	void ql::state_manager::add_sound_from_memory(const std::string& name, const std::string& memory)
+	void state_manager::add_sound_from_memory(const std::string& name, const std::string& memory)
 	{
 		ql::add_sound_from_memory(name, memory);
 	}
 
-	void ql::state_manager::add_texture_from_memory(const std::string& name, const std::string& memory)
+	void state_manager::add_texture_from_memory(const std::string& name, const std::string& memory)
 	{
 		ql::add_texture_from_memory(name, memory);
 	}
 
-	void ql::state_manager::add_shader_from_memory(const std::string& name, const std::string& memory, sf::Shader::Type shader_type)
+	void state_manager::add_shader_from_memory(const std::string& name, const std::string& memory, sf::Shader::Type shader_type)
 	{
 		ql::add_shader_from_memory(name, memory, shader_type);
 	}
 
-	sf::Font& ql::state_manager::get_font(const std::string& name)
+	sf::Font& state_manager::get_font(const std::string& name)
 	{
 		return ql::get_font(name);
 	}
 
-	sf::SoundBuffer& ql::state_manager::get_sound(const std::string& name)
+	sf::SoundBuffer& state_manager::get_sound(const std::string& name)
 	{
 		return ql::get_sound(name);
 	}
 
-	sf::Texture& ql::state_manager::get_texture(const std::string& name)
+	sf::Texture& state_manager::get_texture(const std::string& name)
 	{
 		return ql::get_texture(name);
 	}
 
-	sf::Sprite& ql::state_manager::get_sprite(const std::string& name)
+	sf::Sprite& state_manager::get_sprite(const std::string& name)
 	{
 		return ql::get_sprite(name);
 	}
 
-	sf::Image& ql::state_manager::get_image(const std::string& name)
+	sf::Image& state_manager::get_image(const std::string& name)
 	{
 		return ql::get_image(name);
 	}
 
-	sf::Shader& ql::state_manager::get_shader(const std::string& name)
+	sf::Shader& state_manager::get_shader(const std::string& name)
 	{
 		return ql::get_shader(name);
 	}
 
-	ql::text& ql::state_manager::get_text(const std::string& name)
-	{
-		return ql::get_text(name);
-	}
-
-	const sf::Font& ql::state_manager::get_font(const std::string& name) const
+	const sf::Font& state_manager::get_font(const std::string& name) const
 	{
 		return ql::get_font(name);
 	}
 
-	const sf::SoundBuffer& ql::state_manager::get_sound(const std::string& name) const
+	const sf::SoundBuffer& state_manager::get_sound(const std::string& name) const
 	{
 		return ql::get_sound(name);
 	}
 
-	const sf::Texture& ql::state_manager::get_texture(const std::string& name) const
+	const sf::Texture& state_manager::get_texture(const std::string& name) const
 	{
 		return ql::get_texture(name);
 	}
 
-	const sf::Image& ql::state_manager::get_image(const std::string& name) const
+	const sf::Image& state_manager::get_image(const std::string& name) const
 	{
 		return ql::get_image(name);
 	}
 
-	const sf::Sprite& ql::state_manager::get_sprite(const std::string& name) const
+	const sf::Sprite& state_manager::get_sprite(const std::string& name) const
 	{
 		return ql::get_sprite(name);
 	}
 
-	const sf::Shader& ql::state_manager::get_shader(const std::string& name) const
+	const sf::Shader& state_manager::get_shader(const std::string& name) const
 	{
 		return ql::get_shader(name);
 	}
 
-	const ql::text& ql::state_manager::get_text(const std::string& name) const
-	{
-		return ql::get_text(name);
-	}
-
-	void ql::state_manager::create()
+	void state_manager::create()
 	{
 		if (!this->is_created())
 		{
@@ -568,24 +555,24 @@ namespace ql
 		}
 	}
 
-	bool ql::state_manager::is_open() const
+	bool state_manager::is_open() const
 	{
 		return this->window.isOpen();
 	}
 
-	bool ql::state_manager::is_created() const
+	bool state_manager::is_created() const
 	{
 		return this->created;
 	}
 
-	void ql::state_manager::set_info(const std::string& title, ql::vector2u dimension, ql::u32 style)
+	void state_manager::set_info(const std::string& title, ql::vector2u dimension, ql::u32 style)
 	{
 		this->set_title(title);
 		this->set_dimension(dimension);
 		this->set_style(style);
 	}
 
-	void ql::state_manager::set_title(const std::string& title)
+	void state_manager::set_title(const std::string& title)
 	{
 		this->title = title;
 		if (this->created)
@@ -594,7 +581,7 @@ namespace ql
 		}
 	}
 
-	void ql::state_manager::set_dimension(ql::vector2u dimension)
+	void state_manager::set_dimension(ql::vector2u dimension)
 	{
 		this->dimension = dimension;
 		this->event.m_screen_dimension = dimension;
@@ -605,51 +592,51 @@ namespace ql
 		}
 	}
 
-	void ql::state_manager::set_style(ql::u32 style)
+	void state_manager::set_style(ql::u32 style)
 	{
 		this->style = style;
 	}
 
-	void ql::state_manager::set_antialiasing_level(ql::u32 level)
+	void state_manager::set_antialiasing_level(ql::u32 level)
 	{
 		this->context_settings.antialiasingLevel = level;
 	}
 
-	void ql::state_manager::hide_cursor()
+	void state_manager::hide_cursor()
 	{
 		this->window.setMouseCursorVisible(false);
 	}
 
-	void ql::state_manager::set_cursor_hand()
+	void state_manager::set_cursor_hand()
 	{
 		sf::Cursor cursor;
 		cursor.loadFromSystem(sf::Cursor::Hand);
 		this->window.setMouseCursor(cursor);
 	}
 
-	void ql::state_manager::set_cursor_arrow()
+	void state_manager::set_cursor_arrow()
 	{
 		sf::Cursor cursor;
 		cursor.loadFromSystem(sf::Cursor::Arrow);
 		this->window.setMouseCursor(cursor);
 	}
 
-	void ql::state_manager::set_window_position(ql::vector2u position)
+	void state_manager::set_window_position(ql::vector2u position)
 	{
 		this->window.setPosition(sf::Vector2i(position));
 	}
 
-	ql::vector2u ql::state_manager::get_window_position() const
+	ql::vector2u state_manager::get_window_position() const
 	{
 		return ql::vector2u(this->window.getPosition());
 	}
 
-	void ql::state_manager::show_cursor()
+	void state_manager::show_cursor()
 	{
 		this->window.setMouseCursorVisible(true);
 	}
 
-	void ql::state_manager::set_cursor_position(ql::vector2i position)
+	void state_manager::set_cursor_position(ql::vector2i position)
 	{
 		sf::Mouse::setPosition(position, this->window);
 		this->event.m_mouse_position_screen = position;
@@ -657,12 +644,12 @@ namespace ql
 		this->event.m_mouse_position_screen_before = this->event.m_mouse_position_screen;
 	}
 
-	void ql::state_manager::set_speed_factor(ql::f64 speed)
+	void state_manager::set_speed_factor(ql::f64 speed)
 	{
 		this->speed_factor = speed;
 	}
 
-	void ql::state_manager::set_icon(std::string path, std::string name)
+	void state_manager::set_icon(std::string path, std::string name)
 	{
 		this->add_image(name, path);
 		const auto& image = this->get_image(name);

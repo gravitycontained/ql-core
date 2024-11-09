@@ -4,7 +4,8 @@
 #if defined QL_GRAPHIC
 
 #include <ql/graphic/event/event.hpp>
-#include <ql/graphic/drawables.hpp>
+#include <ql/graphic/drawable/drawable.hpp>
+#include <ql/graphic/old-drawable/drawables.hpp>
 
 #include <ql/core/advanced-type/advanced-type.hpp>
 #include <ql/core/string/styled-string.hpp>
