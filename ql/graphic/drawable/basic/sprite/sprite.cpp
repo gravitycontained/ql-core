@@ -2,7 +2,7 @@
 
 #if defined QL_GRAPHIC
 
-#include <ql/graphic/util/sprite/sprite.hpp>
+#include <ql/graphic/util/util-sprite//util-sprite.hpp>
 
 namespace ql
 {

@@ -1,4 +1,4 @@
-#include <ql/graphic/ui-controls.hpp>
+#include <ql/graphic/old-drawable/ui-controls.hpp>
 
 #if defined QL_GRAPHIC
 
