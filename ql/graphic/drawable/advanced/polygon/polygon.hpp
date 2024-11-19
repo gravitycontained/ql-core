@@ -4,9 +4,11 @@
 
 #if defined QL_GRAPHIC
 
+#include <SFML/Graphics.hpp>
+
 namespace ql
 {
-	struct polygon
+	struct polygon_shape
 	{
 		struct polygon_proxy
 		{
@@ -50,7 +52,7 @@ namespace ql
 		QL_SOURCE void resize(ql::size size);
 		QL_SOURCE void add(ql::vec2 point);
 
-		QL_SOURCE bool contains(ql::vec2 point, ql::size increment = 1u) const;
+		QL_SOURCE bool collides(ql::vec2 point, ql::size increment = 1u) const;
 
 		QL_SOURCE void draw(sf::RenderTarget& window, sf::RenderStates states = sf::RenderStates::Default) const;
 	};

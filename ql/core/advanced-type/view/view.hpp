@@ -4,7 +4,7 @@
 #if defined QL_GRAPHIC
 
 #include <ql/core/advanced-type/fundamental/vector.hpp>
-#include <ql/core/advanced-type/graphic/hitbox.hpp>
+#include <ql/core/advanced-type/fundamental/hitbox.hpp>
 #include <SFML/Graphics.hpp>
 
 namespace ql

@@ -210,8 +210,8 @@ namespace ql
 		QL_SOURCE void increase(ql::f32 delta);
 		QL_SOURCE ql::vrectangle increased(ql::f32 delta) const;
 
-		QL_SOURCE bool contains(ql::vec2 position) const;
-		QL_SOURCE bool contains(ql::vec2 position, ql::f32 hitbox_increase) const;
+		QL_SOURCE bool collides(ql::vec2 position) const;
+		QL_SOURCE bool collides(ql::vec2 position, ql::f32 hitbox_increase) const;
 		QL_SOURCE bool collides(ql::straight_line line) const;
 		QL_SOURCE bool collides(ql::straight_line line, ql::f32 hitbox_increase) const;
 
@@ -244,12 +244,6 @@ namespace ql
 		QL_SOURCE void set_outline_color(ql::rgba outline_color);
 
 		QL_SOURCE void increase(ql::f64 delta);
-
-		QL_SOURCE bool contains(ql::vec2 position) const;
-		QL_SOURCE bool contains(ql::vec2 position, ql::f32 hitbox_increase) const;
-		QL_SOURCE bool contains(ql::vec2 position, ql::vec2 hitbox_increase) const;
-		QL_SOURCE bool collides(ql::straight_line line) const;
-		QL_SOURCE bool collides(ql::straight_line line, ql::f32 hitbox_increase) const;
 
 		QL_SOURCE ql::rgba get_color() const;
 		QL_SOURCE ql::rgba get_outline_color() const;
@@ -591,25 +585,25 @@ namespace ql
 		ql::rgba outline_color = ql::rgba::unset();
 	};
 
-	struct circle
+	struct circle_shape
 	{
-		circle()
+		circle_shape()
 		{
 		}
 
-		circle(const ql::vcircle& circle)
+		circle_shape(const ql::vcircle& circle)
 		{
 			*this = circle;
 		}
 
-		circle(const ql::circle& circle)
+		circle_shape(const ql::circle_shape& circle)
 		{
 			*this = circle;
 		}
 
 		QL_SOURCE void draw(sf::RenderTarget& window, sf::RenderStates states = sf::RenderStates::Default) const;
-		QL_SOURCE ql::circle& operator=(const ql::vcircle& circle);
-		QL_SOURCE ql::circle& operator=(const ql::circle& circle);
+		QL_SOURCE ql::circle_shape& operator=(const ql::vcircle& circle);
+		QL_SOURCE ql::circle_shape& operator=(const ql::circle_shape& circle);
 
 		QL_SOURCE bool contains(ql::vec2 position) const;
 		QL_SOURCE void centerize_origin();
@@ -628,7 +622,7 @@ namespace ql
 		QL_SOURCE void set_point_count(ql::size count);
 		QL_SOURCE ql::size get_point_count() const;
 
-		sf::CircleShape circle_shape;
+		sf::CircleShape shape;
 	};
 
 	struct vcircles
@@ -676,17 +670,17 @@ namespace ql
 		QL_SOURCE void resize(ql::size new_size);
 		QL_SOURCE void reserve(ql::size new_size);
 
-		QL_SOURCE ql::circle& operator[](ql::size index);
-		QL_SOURCE const ql::circle& operator[](ql::size index) const;
+		QL_SOURCE ql::circle_shape& operator[](ql::size index);
+		QL_SOURCE const ql::circle_shape& operator[](ql::size index) const;
 
-		QL_SOURCE ql::circle& front();
-		QL_SOURCE const ql::circle& front() const;
+		QL_SOURCE ql::circle_shape& front();
+		QL_SOURCE const ql::circle_shape& front() const;
 
-		QL_SOURCE ql::circle& back();
-		QL_SOURCE const ql::circle& back() const;
+		QL_SOURCE ql::circle_shape& back();
+		QL_SOURCE const ql::circle_shape& back() const;
 
 		QL_SOURCE void add_circle(const ql::vcircle& circle);
-		QL_SOURCE void add_circle(const ql::circle& circle);
+		QL_SOURCE void add_circle(const ql::circle_shape& circle);
 		QL_SOURCE void add_circle(ql::vpoint point, ql::f32 radius, ql::rgba color);
 		QL_SOURCE void add_circle(ql::vec2 position, ql::f32 radius, ql::rgba color);
 		QL_SOURCE void draw(sf::RenderTarget& window, sf::RenderStates states = sf::RenderStates::Default) const;
@@ -696,7 +690,7 @@ namespace ql
 		QL_SOURCE ql::size size() const;
 		QL_SOURCE void clear();
 
-		std::vector<ql::circle> circles_;
+		std::vector<ql::circle_shape> circles_;
 	};
 
 	struct vline

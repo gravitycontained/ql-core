@@ -1,7 +1,7 @@
 #pragma once
 
 #include <ql/core/advanced-type/fundamental/vector.hpp>
-#include <ql/core/advanced-type/graphic/straight-line.hpp>
+#include <ql/core/advanced-type/fundamental/straight-line.hpp>
 
 namespace ql
 {
@@ -199,7 +199,7 @@ namespace ql
 			return copy;
 		}
 
-		constexpr bool contains(ql::vector2f position) const
+		constexpr bool collides(ql::vector2<T> position) const
 		{
 			return (
 					position.x > this->position.x && position.x < (this->position.x + this->dimension.x) && position.y > this->position.y &&
@@ -275,7 +275,7 @@ namespace ql
 			auto p2 = this->position + this->dimension.just_x();
 			auto p3 = this->position + this->dimension.just_y();
 			auto p4 = this->position + this->dimension;
-			return hitbox.contains(p1) || hitbox.contains(p2) || hitbox.contains(p3) || hitbox.contains(p4);
+			return hitbox.collides(p1) || hitbox.collides(p2) || hitbox.collides(p3) || hitbox.collides(p4);
 		}
 
 		template <typename U>

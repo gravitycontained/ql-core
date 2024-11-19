@@ -14,7 +14,7 @@ namespace ql
 		ql::smooth_corner ql::detail::smooth_corner;
 		ql::point ql::detail::point;
 		ql::points ql::detail::points;
-		ql::circle ql::detail::circle;
+		ql::circle_shape ql::detail::circle;
 		ql::circles ql::detail::circles;
 		ql::line ql::detail::line;
 		ql::lines ql::detail::lines;
@@ -248,7 +248,7 @@ namespace ql
 		return copy;
 	}
 
-	bool ql::vrectangle::contains(ql::vec2 position) const
+	bool ql::vrectangle::collides(ql::vec2 position) const
 	{
 		return (
 				position.x > this->position.x && position.x < (this->position.x + this->dimension.x) && position.y > this->position.y &&
@@ -256,7 +256,7 @@ namespace ql
 		);
 	}
 
-	bool ql::vrectangle::contains(ql::vec2 position, ql::f32 hitbox_increase) const
+	bool ql::vrectangle::collides(ql::vec2 position, ql::f32 hitbox_increase) const
 	{
 		return (
 				position.x > (this->position.x - hitbox_increase) &&
@@ -315,37 +315,6 @@ namespace ql
 	{
 		this->set_position(this->get_position() - ql::vec2(delta, delta));
 		this->set_dimension(this->get_dimension() + ql::vec2(delta, delta) * 2);
-	}
-
-	bool ql::rectangle::contains(ql::vec2 position) const
-	{
-		auto pos = this->get_position();
-		auto dim = this->get_dimension();
-		return (position.x > pos.x && position.x < (pos.x + dim.x) && position.y > pos.y && position.y < (pos.y + dim.y));
-	}
-
-	bool ql::rectangle::contains(ql::vec2 position, ql::f32 hitbox_increase) const
-	{
-		auto pos = this->get_position() - hitbox_increase;
-		auto dim = this->get_dimension() + hitbox_increase * 2;
-		return (position.x > pos.x && position.x < (pos.x + dim.x) && position.y > pos.y && position.y < (pos.y + dim.y));
-	}
-
-	bool ql::rectangle::contains(ql::vec2 position, ql::vec2 hitbox_increase) const
-	{
-		auto pos = this->get_position() - hitbox_increase;
-		auto dim = this->get_dimension() + hitbox_increase * 2;
-		return (position.x > pos.x && position.x < (pos.x + dim.x) && position.y > pos.y && position.y < (pos.y + dim.y));
-	}
-
-	bool ql::rectangle::collides(ql::straight_line line) const
-	{
-		return this->get_hitbox().collides(line);
-	}
-
-	bool ql::rectangle::collides(ql::straight_line line, ql::f32 hitbox_increase) const
-	{
-		return this->get_hitbox().collides(line, hitbox_increase);
 	}
 
 	void ql::rectangle::draw(sf::RenderTarget& window, sf::RenderStates states) const
@@ -1294,108 +1263,108 @@ namespace ql
 		ql::detail::circle.draw(window, states);
 	}
 
-	void ql::circle::draw(sf::RenderTarget& window, sf::RenderStates states) const
+	void ql::circle_shape::draw(sf::RenderTarget& window, sf::RenderStates states) const
 	{
 		window.draw(this->circle_shape, states);
 	}
 
-	ql::circle& ql::circle::operator=(const ql::vcircle& circle)
+	ql::circle_shape& ql::circle_shape::operator=(const ql::vcircle& circle)
 	{
-		this->circle_shape.setPosition(circle.point.position);
-		this->circle_shape.setRadius(circle.radius);
-		this->circle_shape.setFillColor(circle.point.color);
-		this->circle_shape.setOutlineThickness(circle.outline_thickness);
-		this->circle_shape.setOutlineColor(circle.outline_color);
+		this->shape.setPosition(circle.point.position);
+		this->shape.setRadius(circle.radius);
+		this->shape.setFillColor(circle.point.color);
+		this->shape.setOutlineThickness(circle.outline_thickness);
+		this->shape.setOutlineColor(circle.outline_color);
 		return *this;
 	}
 
-	ql::circle& ql::circle::operator=(const ql::circle& circle)
+	ql::circle_shape& ql::circle_shape::operator=(const ql::circle_shape& circle)
 	{
-		this->circle_shape.setPosition(circle.circle_shape.getPosition());
-		this->circle_shape.setRadius(circle.circle_shape.getRadius());
-		this->circle_shape.setFillColor(circle.circle_shape.getFillColor());
-		this->circle_shape.setOrigin(circle.circle_shape.getOrigin());
+		this->shape.setPosition(circle.shape.getPosition());
+		this->shape.setRadius(circle.shape.getRadius());
+		this->shape.setFillColor(circle.shape.getFillColor());
+		this->shape.setOrigin(circle.shape.getOrigin());
 		return *this;
 	}
 
-	bool ql::circle::contains(ql::vec2 position) const
+	bool ql::circle_shape::contains(ql::vec2 position) const
 	{
 		return (this->get_center() - position).length() < this->get_radius();
 	}
 
-	void ql::circle::centerize_origin()
+	void ql::circle_shape::centerize_origin()
 	{
-		this->circle_shape.setOrigin(ql::vec(this->get_radius(), this->get_radius()));
+		this->shape.setOrigin(ql::vec(this->get_radius(), this->get_radius()));
 	}
 
-	void ql::circle::set_radius(ql::f32 radius)
+	void ql::circle_shape::set_radius(ql::f32 radius)
 	{
-		this->circle_shape.setRadius(radius);
+		this->shape.setRadius(radius);
 	}
 
-	ql::f32 ql::circle::get_radius() const
+	ql::f32 ql::circle_shape::get_radius() const
 	{
-		return this->circle_shape.getRadius();
+		return this->shape.getRadius();
 	}
 
-	void ql::circle::set_position(ql::vec2 position)
+	void ql::circle_shape::set_position(ql::vec2 position)
 	{
-		this->circle_shape.setPosition(position);
+		this->shape.setPosition(position);
 	}
 
-	void ql::circle::set_center(ql::vec2 center)
+	void ql::circle_shape::set_center(ql::vec2 center)
 	{
 		this->set_position(center - ql::vec2{this->get_radius(), this->get_radius()});
 	}
 
-	ql::vec2 ql::circle::get_center() const
+	ql::vec2 ql::circle_shape::get_center() const
 	{
 		return this->get_position() + ql::vec2{this->get_radius(), this->get_radius()};
 	}
 
-	ql::vec2 ql::circle::get_position() const
+	ql::vec2 ql::circle_shape::get_position() const
 	{
-		return this->circle_shape.getPosition();
+		return this->shape.getPosition();
 	}
 
-	void ql::circle::set_color(ql::rgba color)
+	void ql::circle_shape::set_color(ql::rgba color)
 	{
-		this->circle_shape.setFillColor(color);
+		this->shape.setFillColor(color);
 	}
 
-	ql::rgba ql::circle::get_color() const
+	ql::rgba ql::circle_shape::get_color() const
 	{
-		return this->circle_shape.getFillColor();
+		return this->shape.getFillColor();
 	}
 
-	void ql::circle::set_outline_thickness(ql::f32 outline_thickness)
+	void ql::circle_shape::set_outline_thickness(ql::f32 outline_thickness)
 	{
-		this->circle_shape.setOutlineThickness(outline_thickness);
+		this->shape.setOutlineThickness(outline_thickness);
 	}
 
-	ql::f32 ql::circle::get_outline_thickness() const
+	ql::f32 ql::circle_shape::get_outline_thickness() const
 	{
-		return this->circle_shape.getOutlineThickness();
+		return this->shape.getOutlineThickness();
 	}
 
-	void ql::circle::set_outline_color(ql::rgba outline_color)
+	void ql::circle_shape::set_outline_color(ql::rgba outline_color)
 	{
-		this->circle_shape.setOutlineColor(outline_color);
+		this->shape.setOutlineColor(outline_color);
 	}
 
-	ql::rgba ql::circle::get_outline_color() const
+	ql::rgba ql::circle_shape::get_outline_color() const
 	{
-		return this->circle_shape.getOutlineColor();
+		return this->shape.getOutlineColor();
 	}
 
-	void ql::circle::set_point_count(ql::size count)
+	void ql::circle_shape::set_point_count(ql::size count)
 	{
-		this->circle_shape.setPointCount(count);
+		this->shape.setPointCount(count);
 	}
 
-	ql::size ql::circle::get_point_count() const
+	ql::size ql::circle_shape::get_point_count() const
 	{
-		return this->circle_shape.getPointCount();
+		return this->shape.getPointCount();
 	}
 
 	void ql::vcircles::resize(ql::size new_size)
@@ -1479,32 +1448,32 @@ namespace ql
 		this->circles_.reserve(new_size);
 	}
 
-	ql::circle& ql::circles::operator[](ql::size index)
+	ql::circle_shape& ql::circles::operator[](ql::size index)
 	{
 		return this->circles_[index];
 	}
 
-	const ql::circle& ql::circles::operator[](ql::size index) const
+	const ql::circle_shape& ql::circles::operator[](ql::size index) const
 	{
 		return this->circles_[index];
 	}
 
-	ql::circle& ql::circles::front()
+	ql::circle_shape& ql::circles::front()
 	{
 		return this->circles_.front();
 	}
 
-	const ql::circle& ql::circles::front() const
+	const ql::circle_shape& ql::circles::front() const
 	{
 		return this->circles_.front();
 	}
 
-	ql::circle& ql::circles::back()
+	ql::circle_shape& ql::circles::back()
 	{
 		return this->circles_.back();
 	}
 
-	const ql::circle& ql::circles::back() const
+	const ql::circle_shape& ql::circles::back() const
 	{
 		return this->circles_.back();
 	}
@@ -1514,7 +1483,7 @@ namespace ql
 		this->circles_.push_back(circle);
 	}
 
-	void ql::circles::add_circle(const ql::circle& circle)
+	void ql::circles::add_circle(const ql::circle_shape& circle)
 	{
 		this->circles_.push_back(circle);
 	}
@@ -4245,7 +4214,7 @@ namespace ql
 			ql::vrectangle rect(this->position, this->true_graph_dimension());
 			rect.position.x += ql::f32_cast(this->y_axis_text_space);
 
-			if (rect.contains(event_manager.mouse_position()))
+			if (rect.collides(event_manager.mouse_position()))
 			{
 				this->drag = true;
 				this->click_position = event_manager.mouse_position();
@@ -4465,7 +4434,7 @@ namespace ql
 			ql::vrectangle rect(this->position, this->true_graph_dimension());
 			rect.position.x += ql::f32_cast(this->y_axis_text_space);
 
-			if (rect.contains(event_manager.mouse_position()))
+			if (rect.collides(event_manager.mouse_position()))
 			{
 				auto progress = (event_manager.mouse_position().x - rect.position.x) / rect.dimension.x;
 				auto change = this->visible_element_size();
@@ -4501,7 +4470,7 @@ namespace ql
 			ql::vrectangle rect(this->position, this->true_graph_dimension());
 			rect.position.x += ql::f32_cast(this->y_axis_text_space);
 
-			if (rect.contains(event_manager.mouse_position()))
+			if (rect.collides(event_manager.mouse_position()))
 			{
 				auto progress = (event_manager.mouse_position().x - rect.position.x) / rect.dimension.x;
 				auto change = this->visible_element_size();

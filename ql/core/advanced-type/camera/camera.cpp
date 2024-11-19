@@ -1,4 +1,4 @@
-#include <ql/core/advanced-type/graphic/camera.hpp>
+#include <ql/core/advanced-type/camera/camera.hpp>
 #include <ql/core/maths/circular/circular.hpp>
 
 #include <cmath>
