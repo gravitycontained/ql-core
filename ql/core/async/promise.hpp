@@ -4,11 +4,6 @@
 #include <ql/core/type/functional/functional.hpp>
 
 #include <future>
-#include <functional>
-#include <optional>
-#include <mutex>
-#include <thread>
-#include <type_traits>
 
 namespace ql
 {
@@ -16,154 +11,91 @@ namespace ql
 	class promise
 	{
 	 private:
-		std::mutex mtx;
-		std::condition_variable cv;
-		std::optional<T> value;
-		bool resolved = false;
-		std::function<void(T)> callback;
+		using TaskType = std::function<T()>;
+		using StorageType = std::conditional_t<std::is_void_v<T>, ql::empty_type, T>;
+
+		struct shared_state
+		{
+			TaskType task;
+			std::mutex mutex;
+			std::condition_variable cv;
+			std::atomic<bool> is_ready{false};
+			std::optional<StorageType> result;
+			std::thread worker;
+
+			explicit shared_state(TaskType&& task) : task(std::move(task))
+			{
+			}
+		};
+
+		std::shared_ptr<shared_state> state;
 
 	 public:
-		// Default constructor
-		promise() = default;
-
-		// Move constructor
-		promise(promise&& other) noexcept
-				: value(std::move(other.value)), resolved(other.resolved), callback(std::move(other.callback))
+		explicit promise(TaskType&& task) : state(std::make_shared<shared_state>(std::move(task)))
 		{
-			// Reset the moved-from object
-			other.resolved = false;
-		}
-
-		// Move assignment operator
-		promise& operator=(promise&& other) noexcept
-		{
-			if (this != &other)
-			{
-				value = std::move(other.value);
-				resolved = other.resolved;
-				callback = std::move(other.callback);
-
-				// Reset the moved-from object
-				other.resolved = false;
-			}
-			return *this;
-		}
-
-		// Disable copy constructor and copy assignment operator
-		promise(const promise&) = delete;
-		promise& operator=(const promise&) = delete;
-
-		void set_value(T&& val)
-		{
-			std::unique_lock lock(mtx);
-			this->value = std::move(val);
-			this->resolved = true;
-			this->cv.notify_all();
-			if (this->callback)
-			{
-				this->callback(*this->value);
-			}
-		}
-
-		void wait()
-		{
-			std::unique_lock lock(this->mtx);
-			this->cv.wait(lock, [this]() { return this->resolved; });
-		}
-
-		auto as_shared_ptr()
-		{
-			return std::make_shared<ql::decay<decltype(*this)>>(std::move(*this));
-		}
-
-		template <typename F>
-		auto then(F&& func)
-		{
-			std::unique_lock lock(mtx);
-			using NextPromiseType = promise<typename ql::return_type<F>>;
-
-			NextPromiseType next_promise;
-
-			auto execute = [&next_promise, func = std::forward<F>(func)](auto&& val)
-			{
-				if constexpr (ql::parameter_size<F>() > 0)
+			state->worker = std::thread(
+				[state = state]()
 				{
-					if constexpr (ql::return_size<F>() > 0)
-						next_promise.set_value(func(std::forward<decltype(val)>(val)));
+					if constexpr (std::is_void_v<T>)
+					{
+						state->task();
+						std::lock_guard<std::mutex> lock(state->mutex);
+						state->result.emplace(ql::empty_type{});
+					}
 					else
 					{
-						func(std::forward<decltype(val)>(val));
-						next_promise.set_value(ql::empty_type{});
+						auto result = state->task();
+						std::lock_guard<std::mutex> lock(state->mutex);
+						state->result.emplace(std::move(result));
 					}
+					state->is_ready = true;
+					state->cv.notify_all();
 				}
-				else
+			);
+			state->worker.detach();
+		}
+
+		template <typename Func>
+		auto then(Func&& continuation)
+		{
+			using NextType = std::invoke_result_t<Func, StorageType>;
+			using CleanNextType = std::conditional_t<std::is_void_v<NextType>, ql::empty_type, NextType>;
+
+			auto current_state = state;
+			return promise<CleanNextType>(
+				[continuation = std::forward<Func>(continuation), current_state]() mutable
 				{
-					if constexpr (ql::return_size<F>() > 1)
-						next_promise.set_value(func());
+					wait(current_state);
+
+					if constexpr (std::is_void_v<NextType>)
+					{
+						continuation(std::move(*current_state->result));
+						return ql::empty_type{};
+					}
 					else
 					{
-						func();
-						next_promise.set_value(ql::empty_type{});
+						return continuation(std::move(*current_state->result));
 					}
 				}
-			};
+			);
+		}
 
-			if (resolved)
+	 private:
+		static void wait(const std::shared_ptr<shared_state>& state)
+		{
+			if (!state->is_ready)
 			{
-				execute(*this->value);
+				std::unique_lock<std::mutex> lock(state->mutex);
+				state->cv.wait(lock, [state]() { return state->is_ready.load(); });
 			}
-			else
-			{
-				callback = [execute = std::move(execute)](T val) mutable { execute(std::move(val)); };
-			}
-
-			return next_promise;
 		}
 	};
 
-	template <typename F>
-	requires (ql::is_callable<F>())
-	auto create_promise(F&& function)
+	template <typename Func>
+	auto make_promise(Func&& task)
 	{
-		promise<typename ql::return_type<F>> result;
-
-		std::thread(
-				[result = std::move(result), func = std::forward<F>(function)]() mutable
-				{
-					if constexpr (ql::return_size<F>() > 0)
-						result.set_value(func());
-					else
-					{
-						func();
-						result.set_value(ql::empty_type{});
-					}
-				}
-		).detach();
-
-		return result;
+		using ResultType = std::invoke_result_t<Func>;
+		return promise<ResultType>(std::forward<Func>(task));
 	}
 
-	template <typename F>
-	requires (ql::is_callable<F>())
-	auto create_promise_ptr(F&& function)
-	{
-		auto result = std::make_shared<promise<typename ql::return_type<F>>>();
-
-		std::thread(
-				[result, func = std::forward<F>(function)]() mutable
-				{
-					if constexpr (ql::return_size<F>() > 0)
-						result->set_value(func());
-
-					else
-					{
-						func();
-						result->set_value(ql::empty_type{});
-					}
-				}
-		).detach();
-
-		return result;
-	}
-
-}	 // namespace ql2
+}	 // namespace ql
