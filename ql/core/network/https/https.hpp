@@ -9,5 +9,5 @@
 namespace ql
 {
 	QL_SOURCE std::optional<std::string> https_get(std::string url);
-	QL_SOURCE std::future<std::optional<std::string>> https_get_async(std::string url);
+	QL_SOURCE void https_get_add_request(const std::string& url, std::function<void(std::optional<std::string>)> callback);
 }

@@ -74,25 +74,25 @@ namespace ql
 		template <typename R, typename... A>
 		constexpr auto parameter_type(R (*)(A...))
 		{
-			return std::tuple<A...>{};
+			return std::tuple<ql::decay<A>...>{};
 		}
 
 		template <typename R, typename... A>
 		constexpr auto parameter_type(std::function<R(A...)>)
 		{
-			return std::tuple<A...>{};
+			return std::tuple<ql::decay<A>...>{};
 		}
 
 		template <typename C, typename R, typename... A>
 		constexpr auto parameter_type(R (C::*)(A...))
 		{
-			return std::tuple<A...>{};
+			return std::tuple<ql::decay<A>...>{};
 		}
 
 		template <typename C, typename R, typename... A>
 		constexpr auto parameter_type(R (C::*)(A...) const)
 		{
-			return std::tuple<A...>{};
+			return std::tuple<ql::decay<A>...>{};
 		}
 
 		template <typename F>

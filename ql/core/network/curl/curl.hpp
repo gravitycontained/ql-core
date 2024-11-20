@@ -1,37 +1,32 @@
 #pragma once
 
-#include <string>
 #include <ql/core/definition/definition.hpp>
+#include <ql/core/async/worker-queue.hpp>
 
 #include <curl/curl.h>
 
-#include <optional>
-#include <future>
-
 namespace ql
 {
-	namespace detail
+	class curl
 	{
-		QL_SOURCE ql::size write_callback(void* contents, size_t size, size_t nmemb, std::string* output);
-	}
+	 protected:
+		ql::worker_queue<std::function<void()>> worker_queue;
 
-	struct curl_t
-	{
-		CURL* curl = nullptr;
+		QL_SOURCE static ql::size write_callback(void* contents, ql::size size, ql::size nmemb, void* userp);
+		QL_SOURCE void make_request(const std::string& url, std::function<void(std::optional<std::string>)> callback);
 
-		curl_t()
+	 public:
+		void add_request(const std::string& url, std::function<void(std::optional<std::string>)> callback)
 		{
-			this->curl = curl_easy_init();
-		}
-		~curl_t()
-		{
-			curl_easy_cleanup(this->curl);
+			this->make_request(url, callback);
 		}
 
-		QL_SOURCE std::optional<std::string> get(std::string url);
-		QL_SOURCE std::future<std::optional<std::string>> get_async(std::string url);
+		std::optional<std::string> get(std::string url);
 	};
 
-	QL_SOURCE extern ql::curl_t curl;
-	
+	namespace detail
+	{
+		QL_SOURCE extern ql::curl curl;
+	}
+
 }

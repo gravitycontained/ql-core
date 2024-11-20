@@ -1,5 +1,6 @@
 #pragma once
 
+#include <ql/core/async/async.hpp>
 #include <ql/core/advanced-type/advanced-type.hpp>
 #include <ql/core/constexpr/constexpr.hpp>
 #include <ql/core/container/container.hpp>
