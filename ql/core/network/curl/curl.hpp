@@ -2,6 +2,7 @@
 
 #include <ql/core/definition/definition.hpp>
 #include <ql/core/async/worker-queue.hpp>
+#include <ql/core/async/promise.hpp>
 
 #include <curl/curl.h>
 
@@ -13,20 +14,15 @@ namespace ql
 		ql::worker_queue<std::function<void()>> worker_queue;
 
 		QL_SOURCE static ql::size write_callback(void* contents, ql::size size, ql::size nmemb, void* userp);
-		QL_SOURCE void make_request(const std::string& url, std::function<void(std::optional<std::string>)> callback);
 
 	 public:
-		void add_request(const std::string& url, std::function<void(std::optional<std::string>)> callback)
-		{
-			this->make_request(url, callback);
-		}
-
-		std::optional<std::string> get(std::string url);
+		std::optional<std::string> get(std::string url);										 // Synchronous method
+		ql::promise<std::optional<std::string>> get_async(std::string url);	 // Asynchronous method
+		std::shared_ptr<ql::promise<std::optional<std::string>>> get_async_ptr(std::string url);	 // Asynchronous method
 	};
 
 	namespace detail
 	{
 		QL_SOURCE extern ql::curl curl;
 	}
-
-}
+}	 // namespace ql

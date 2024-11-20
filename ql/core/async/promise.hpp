@@ -23,10 +23,40 @@ namespace ql
 		std::function<void(T)> callback;
 
 	 public:
-		void set_value(const T& val)
+		// Default constructor
+		promise() = default;
+
+		// Move constructor
+		promise(promise&& other) noexcept
+				: value(std::move(other.value)), resolved(other.resolved), callback(std::move(other.callback))
+		{
+			// Reset the moved-from object
+			other.resolved = false;
+		}
+
+		// Move assignment operator
+		promise& operator=(promise&& other) noexcept
+		{
+			if (this != &other)
+			{
+				value = std::move(other.value);
+				resolved = other.resolved;
+				callback = std::move(other.callback);
+
+				// Reset the moved-from object
+				other.resolved = false;
+			}
+			return *this;
+		}
+
+		// Disable copy constructor and copy assignment operator
+		promise(const promise&) = delete;
+		promise& operator=(const promise&) = delete;
+
+		void set_value(T&& val)
 		{
 			std::unique_lock lock(mtx);
-			this->value = val;
+			this->value = std::move(val);
 			this->resolved = true;
 			this->cv.notify_all();
 			if (this->callback)
@@ -39,6 +69,11 @@ namespace ql
 		{
 			std::unique_lock lock(this->mtx);
 			this->cv.wait(lock, [this]() { return this->resolved; });
+		}
+
+		auto as_shared_ptr()
+		{
+			return std::make_shared<ql::decay<decltype(*this)>>(std::move(*this));
 		}
 
 		template <typename F>
@@ -55,7 +90,6 @@ namespace ql
 				{
 					if constexpr (ql::return_size<F>() > 0)
 						next_promise.set_value(func(std::forward<decltype(val)>(val)));
-
 					else
 					{
 						func(std::forward<decltype(val)>(val));
@@ -66,7 +100,6 @@ namespace ql
 				{
 					if constexpr (ql::return_size<F>() > 1)
 						next_promise.set_value(func());
-
 					else
 					{
 						func();
@@ -92,6 +125,28 @@ namespace ql
 	requires (ql::is_callable<F>())
 	auto create_promise(F&& function)
 	{
+		promise<typename ql::return_type<F>> result;
+
+		std::thread(
+				[result = std::move(result), func = std::forward<F>(function)]() mutable
+				{
+					if constexpr (ql::return_size<F>() > 0)
+						result.set_value(func());
+					else
+					{
+						func();
+						result.set_value(ql::empty_type{});
+					}
+				}
+		).detach();
+
+		return result;
+	}
+
+	template <typename F>
+	requires (ql::is_callable<F>())
+	auto create_promise_ptr(F&& function)
+	{
 		auto result = std::make_shared<promise<typename ql::return_type<F>>>();
 
 		std::thread(
@@ -111,4 +166,4 @@ namespace ql
 		return result;
 	}
 
-}	 // namespace ql
+}	 // namespace ql2

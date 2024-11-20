@@ -10,8 +10,13 @@ namespace ql
 		return ql::detail::curl.get(url);
 	}
 
-	void https_get_add_request(const std::string& url, std::function<void(std::optional<std::string>)> callback)
+	ql::promise<std::optional<std::string>> https_get_async(const std::string& url)
 	{
-		ql::detail::curl.add_request(url, callback);
+		return ql::detail::curl.get_async(url);
+	}
+
+	std::shared_ptr<ql::promise<std::optional<std::string>>> https_get_async_ptr(const std::string& url)
+	{
+		return ql::detail::curl.get_async_ptr(url);
 	}
 }
