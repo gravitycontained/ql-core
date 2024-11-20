@@ -291,7 +291,7 @@ namespace ql
 		this->create_check();
 		if (this->simple_hitbox)
 		{
-			this->hovering = this->rectangle.get_hitbox().increased(5).contains(event.mouse_position());
+			this->hovering = this->rectangle.get_hitbox().increased(5).collides(event.mouse_position());
 		}
 		else
 		{

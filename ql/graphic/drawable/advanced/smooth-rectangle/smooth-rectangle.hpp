@@ -65,7 +65,7 @@ namespace ql
 
 	struct smooth_rectangle
 	{
-		mutable ql::polygon polygon;
+		mutable ql::polygon_shape polygon;
 
 		smooth_rectangle()
 		{

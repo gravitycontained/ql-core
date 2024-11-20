@@ -96,7 +96,7 @@ namespace ql
 	{
 		auto pos = event_manager.mouse_position();
 
-		auto new_hovering = this->background.contains(pos);
+		auto new_hovering = this->background.collides(pos);
 		if (new_hovering != this->hovering)
 		{
 			if (new_hovering)
@@ -311,7 +311,7 @@ namespace ql
 	{
 		auto pos = event_manager.mouse_position();
 
-		auto new_hovering = this->background.contains(pos);
+		auto new_hovering = this->background.get_hitbox().collides(pos);
 		if (new_hovering != this->hovering)
 		{
 			if (this->invert_on_hover)
@@ -1232,12 +1232,12 @@ namespace ql
 	void ql::text_field::update_mouse_events(const ql::event_manager& event)
 	{
 		auto max = ql::vec2::max_values(this->hovering_increase, this->background_increase);
-		this->hovering = this->hitbox.increased(max).contains(event.mouse_position());
+		this->hovering = this->hitbox.increased(max).collides(event.mouse_position());
 
 		bool selection_hovering = false;
 		for (auto& i : this->selection_rectangles)
 		{
-			if (i.contains(event.mouse_position()))
+			if (i.get_hitbox().collides(event.mouse_position()))
 			{
 				selection_hovering = true;
 				break;
@@ -1298,11 +1298,11 @@ namespace ql
 				for (ql::size y = 0u; !stop && y < this->lines.size(); ++y)
 				{
 					const auto& line = this->lines[y];
-					if (line.line_mouse_hitbox.contains(event.mouse_position()))
+					if (line.line_mouse_hitbox.collides(event.mouse_position()))
 					{
 						for (ql::size x = 0u; x < line.character_mouse_hitboxes.size(); ++x)
 						{
-							if (line.character_mouse_hitboxes[x].contains(event.mouse_position()))
+							if (line.character_mouse_hitboxes[x].collides(event.mouse_position()))
 							{
 								this->cursor_position = ql::vec(x, y);
 
@@ -1340,11 +1340,11 @@ namespace ql
 			for (ql::size y = 0u; !found && y < this->lines.size(); ++y)
 			{
 				const auto& line = this->lines[y];
-				if (line.line_mouse_hitbox.contains(event.mouse_position()))
+				if (line.line_mouse_hitbox.collides(event.mouse_position()))
 				{
 					for (ql::size x = 0u; x < line.character_mouse_hitboxes.size(); ++x)
 					{
-						if (line.character_mouse_hitboxes[x].contains(event.mouse_position()))
+						if (line.character_mouse_hitboxes[x].collides(event.mouse_position()))
 						{
 							this->cursor_position = ql::vec(x, y);
 
@@ -2703,7 +2703,7 @@ namespace ql
 		bool clicked_hue_slider = false;
 		bool clicked_transparency_slider = false;
 		bool clicked_gradient = false;
-		if (this->get_gradient_hitbox().increased(this->hitbox_increase).contains(event.mouse_position()))
+		if (this->get_gradient_hitbox().increased(this->hitbox_increase).collides(event.mouse_position()))
 		{
 			if (event.left_mouse_clicked())
 			{
@@ -2711,7 +2711,7 @@ namespace ql
 				this->dragging_gradient = true;
 			}
 		}
-		if (this->get_hue_slider_hitbox().increased(this->hitbox_increase).contains(event.mouse_position()))
+		if (this->get_hue_slider_hitbox().increased(this->hitbox_increase).collides(event.mouse_position()))
 		{
 			if (event.left_mouse_clicked())
 			{
@@ -2720,7 +2720,7 @@ namespace ql
 			}
 		}
 		if (this->transparency_used &&
-				this->get_transparency_slider_hitbox().increased(this->hitbox_increase).contains(event.mouse_position()))
+				this->get_transparency_slider_hitbox().increased(this->hitbox_increase).collides(event.mouse_position()))
 		{
 			if (event.left_mouse_clicked())
 			{
@@ -2918,7 +2918,7 @@ namespace ql
 	void ql::scroll_bar::update_hover(const ql::event_manager& event)
 	{
 		auto hitbox = this->knob.get_hitbox().increased(5);
-		this->hovering = hitbox.contains(event.mouse_position());
+		this->hovering = hitbox.collides(event.mouse_position());
 		if (this->hovering && event.left_mouse_clicked() && this->allow_dragging)
 		{
 			this->dragging_position = event.mouse_position();
@@ -2944,7 +2944,7 @@ namespace ql
 
 	void ql::scroll_bar::update_background_hover(const ql::event_manager& event)
 	{
-		this->hovering_background = !this->dragging && !this->hovering && this->hitbox.increased(5).contains(event.mouse_position());
+		this->hovering_background = !this->dragging && !this->hovering && this->hitbox.increased(5).collides(event.mouse_position());
 		if (this->hovering_background && event.left_mouse_clicked())
 		{
 			if (event.mouse_position().y < this->knob.get_position().y)

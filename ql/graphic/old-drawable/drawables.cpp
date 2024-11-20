@@ -1265,7 +1265,7 @@ namespace ql
 
 	void ql::circle_shape::draw(sf::RenderTarget& window, sf::RenderStates states) const
 	{
-		window.draw(this->circle_shape, states);
+		window.draw(this->shape, states);
 	}
 
 	ql::circle_shape& ql::circle_shape::operator=(const ql::vcircle& circle)

@@ -295,7 +295,7 @@ namespace ql
 	bool ql::smooth_rectangle::contains(ql::vec2 point) const
 	{
 		this->check_create();
-		return this->polygon.contains(point);
+		return this->polygon.collides(point);
 	}
 
 	void ql::smooth_rectangle::check_create() const

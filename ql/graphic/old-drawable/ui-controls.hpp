@@ -53,7 +53,7 @@ namespace ql
 		{
 			auto pos = event_manager.mouse_position();
 
-			auto new_hovering = this->background.contains(pos);
+			auto new_hovering = this->background.collides(pos);
 			if (new_hovering != this->hovering)
 			{
 				if (new_hovering)
@@ -148,7 +148,7 @@ namespace ql
 		{
 			auto pos = event_manager.mouse_position();
 
-			auto new_hovering = this->background.contains(pos);
+			auto new_hovering = this->background.get_hitbox().collides(pos);
 			if (new_hovering != this->hovering)
 			{
 				if (this->invert_on_hover)
@@ -1250,7 +1250,7 @@ namespace ql
 		void update(const ql::event_manager& event)
 		{
 			this->value_modified = false;
-			if (this->background.get_hitbox().contains(event.mouse_position()) && event.left_mouse_clicked())
+			if (this->background.get_hitbox().collides(event.mouse_position()) && event.left_mouse_clicked())
 			{
 				this->active_value = !this->active_value;
 				this->value_modified = true;
@@ -1278,7 +1278,7 @@ namespace ql
 		mutable ql::smooth_rectangle hue_slider_knob;
 		mutable ql::smooth_rectangle transparency_slider_knob;
 		mutable ql::smooth_rectangle display_color_rectangle;
-		mutable ql::circle gradient_control_circle;
+		mutable ql::circle_shape gradient_control_circle;
 		mutable ql::smooth_button confirm_button;
 
 		ql::hitbox hitbox;

@@ -38,7 +38,7 @@ namespace ql
 	struct vpoints;
 	struct points;
 	struct vcircle;
-	struct circle;
+	struct circle_shape;
 	struct vcircles;
 	struct circles;
 	struct vline;
@@ -61,7 +61,7 @@ namespace ql
 		QL_SOURCE extern ql::smooth_corner smooth_corner;
 		QL_SOURCE extern ql::point point;
 		QL_SOURCE extern ql::points points;
-		QL_SOURCE extern ql::circle circle;
+		QL_SOURCE extern ql::circle_shape circle;
 		QL_SOURCE extern ql::circles circles;
 		QL_SOURCE extern ql::line line;
 		QL_SOURCE extern ql::lines lines;

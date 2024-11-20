@@ -182,7 +182,7 @@ namespace ql
 			this->zoomed = false;
 			this->mouse_position = this->position + event.mouse_position() * this->scale;
 
-			this->hovering = this->hitbox.contains(event.mouse_position());
+			this->hovering = this->hitbox.collides(event.mouse_position());
 
 			if (!this->allow_dragging)
 			{
