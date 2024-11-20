@@ -106,10 +106,8 @@ namespace ql
 		QL_SOURCE ql::filesys::paths search_where_name_equals(const ql::filesys::path& directory, const std::string& name);
 		QL_SOURCE ql::filesys::paths search_where_name_contains(const ql::filesys::path& directory, const std::string& regex);
 
-		QL_SOURCE ql::filesys::paths
-		search_where_extension_doesnt_equal(const ql::filesys::path& directory, const std::string& extension);
-		QL_SOURCE ql::filesys::paths
-		search_where_extension_doesnt_contain(const ql::filesys::path& directory, const std::string& regex);
+		QL_SOURCE ql::filesys::paths search_where_extension_doesnt_equal(const ql::filesys::path& directory, const std::string& extension);
+		QL_SOURCE ql::filesys::paths search_where_extension_doesnt_contain(const ql::filesys::path& directory, const std::string& regex);
 		QL_SOURCE ql::filesys::paths search_where_name_doesnt_equal(const ql::filesys::path& directory, const std::string& name);
 		QL_SOURCE ql::filesys::paths search_where_name_doesnt_contain(const ql::filesys::path& directory, const std::string& regex);
 
