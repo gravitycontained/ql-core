@@ -3,13 +3,14 @@
 #include <ql/core/definition/definition.hpp>
 
 #include <ql/core/string/format/options.hpp>
+#include <ql/core/string/format/memory/memory.hpp>
+#include <ql/core/string/format/precision/precision.hpp>
 
 #include <ql/core/type/type.hpp>
-
 #include <ql/core/string/to-string.hpp>
 
+
 #include <string>
-#include <iomanip>
 
 namespace ql
 {
@@ -50,22 +51,6 @@ namespace ql
 	std::string string_right_spaced(const T& value, ql::size length)
 	{
 		return ql::string_prepended(value, ' ', length);
-	}
-
-	template <typename T>
-	requires (ql::is_printable<T>())
-	std::string string_precision(const T& value, ql::size precision)
-	{
-		std::ostringstream stream;
-		stream << std::fixed << std::setprecision(precision) << ql::f64_cast(value);
-		return stream.str();
-	}
-
-	template <typename T>
-	requires (ql::is_printable<T>())
-	std::string string_percentage_precision(const T& value, ql::size precision)
-	{
-		return ql::to_string(ql::string_precision(value * 100, precision), '%');
 	}
 
 	template <typename T>

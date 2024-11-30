@@ -1,7 +1,10 @@
 #pragma once
 
+
 #include <ql/core/definition/definition.hpp>
 #include <ql/core/type/type.hpp>
+
+#include <ql/core/transform/bit/memory-size.hpp>
 
 namespace ql
 {

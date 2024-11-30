@@ -8,6 +8,8 @@
 #include <ql/core/advanced-type/fundamental/matrix.hpp>
 #include <ql/core/advanced-type/fundamental/vector.hpp>
 
+#include <ql/core/string/format/format.hpp>
+
 #include <ql/core/transform/transform.hpp>
 
 #if defined QL_SFML

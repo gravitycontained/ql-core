@@ -6,7 +6,7 @@
 #include <SFML/Graphics.hpp>
 
 #include <ql/core/advanced-type/view/view.hpp>
-#include <ql/core/time/time.hpp>
+#include <ql/core/time/clock/clock.hpp>
 
 #include <set>
 
