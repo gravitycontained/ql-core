@@ -25,12 +25,20 @@ namespace ql
 			result.push_back(ql::char_cast(0x80 | ((wc >> 6) & 0x3F)));
 			result.push_back(ql::char_cast(0x80 | (wc & 0x3F)));
 		}
-		else
+		else if constexpr (ql::bytes_in_type<wchar_t>() >= 4)
 		{
-			result.push_back(ql::char_cast(0xF0 | wc >> 18));
-			result.push_back(ql::char_cast(0x80 | ((wc >> 12) & 0x3F)));
-			result.push_back(ql::char_cast(0x80 | ((wc >> 6) & 0x3F)));
-			result.push_back(ql::char_cast(0x80 | (wc & 0x3F)));
+			if (wc < 0x110000)
+			{
+				#pragma warning(push)
+				#pragma warning(disable : 4333)
+
+				result.push_back(ql::char_cast(0xF0 | wc >> 18));
+				result.push_back(ql::char_cast(0x80 | ((wc >> 12) & 0x3F)));
+				result.push_back(ql::char_cast(0x80 | ((wc >> 6) & 0x3F)));
+				result.push_back(ql::char_cast(0x80 | (wc & 0x3F)));
+
+				#pragma warning(pop)
+			}
 		}
 		return result;
 	}
