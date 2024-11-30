@@ -342,7 +342,7 @@ namespace ql
 
 		if (this->clicked_once && this->click_timer.elapsed_f() < 1.5)
 		{
-			auto progress = ql::curve_slope(this->click_timer.elapsed_f() / 1.5, 1.0);
+			auto progress = ql::slope_curve(this->click_timer.elapsed_f() / 1.5, 1.0);
 			this->text.set_color(text_color_effect.interpolated(this->text_color_click, 1.0 - progress));
 		}
 	}

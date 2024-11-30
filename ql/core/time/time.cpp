@@ -9,7 +9,7 @@
 #include <ql/core/maths/maths.hpp>
 #include <ql/core/string/to-string.hpp>
 
-#include <ql/core/transform/interpolate/curve.hpp>
+#include <ql/core/transform/slope/curve.hpp>
 
 #include <ql/core/system/system.hpp>
 
@@ -1773,12 +1773,12 @@ namespace ql
 
 	ql::f64 ql::animation::get_curve_progress(ql::f64 curve) const
 	{
-		return ql::curve_slope(this->progress, curve);
+		return ql::slope_curve(this->progress, curve);
 	}
 
 	ql::f64 ql::animation::get_double_curve_progress(ql::f64 curve) const
 	{
-		return ql::double_curve_slope(this->progress, curve);
+		return ql::slope_double_curve(this->progress, curve);
 	}
 
 	void ql::timed_task::update()

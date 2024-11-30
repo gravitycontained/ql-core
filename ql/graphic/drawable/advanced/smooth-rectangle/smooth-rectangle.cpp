@@ -313,203 +313,110 @@ namespace ql
 			rect.set_outline_thickness(this->outline_thickness);
 			rect.set_round_corners(this->get_round_corners());
 
-			*this = rect;
+			this->create_from(rect);
 		}
+	}
+
+	void ql::smooth_rectangle::create_from(const ql::vsmooth_rectangle& smooth_rectangle) const
+	{
+		this->position = smooth_rectangle.get_position();
+		this->dimension = smooth_rectangle.get_dimension();
+
+		this->polygon.set_color(smooth_rectangle.color);
+		this->polygon.set_outline_color(smooth_rectangle.outline_color);
+		this->polygon.set_outline_thickness(smooth_rectangle.outline_thickness);
+		this->polygon.shape.setFillColor(smooth_rectangle.color);
+		this->polygon.shape.setOutlineColor(smooth_rectangle.outline_color);
+
+		auto active_corners = smooth_rectangle.round_corners.number_of_set_bits();
+		auto size = smooth_rectangle.slope_point_count;
+		this->polygon.resize(active_corners * size + (4 - active_corners));
+
+		auto position = smooth_rectangle.position;
+		auto dimension = smooth_rectangle.slope_dim;
+		auto rect_dimension = smooth_rectangle.dimension;
+		auto slope_exponent = std::pow(smooth_rectangle.slope, 1.0);
+
+		ql::u32 ctr = 0u;
+
+		if (smooth_rectangle.round_corners[0u])
+		{
+			for (ql::u32 i = 0u; i < size; ++i)
+			{
+				auto progress = std::pow(ql::f64_cast(i) / (size - 1), slope_exponent);
+				auto value = ql::slope_curve(progress, smooth_rectangle.slope);
+				auto curve_pos = ql::vec(progress, -value) * dimension;
+				auto pos = position + ql::vec(0, dimension.y) + curve_pos;
+				this->polygon.set_point(ctr, pos);
+				++ctr;
+			}
+		}
+		else
+		{
+			auto pos = position;
+			this->polygon.set_point(ctr, pos);
+			++ctr;
+		}
+		if (smooth_rectangle.round_corners[1u])
+		{
+			for (ql::u32 i = 0u; i < size; ++i)
+			{
+				auto progress = std::pow(1 - ql::f64_cast(i) / (size - 1), slope_exponent);
+				auto value = ql::slope_curve(progress, smooth_rectangle.slope);
+				auto curve_pos = ql::vec(progress, value) * dimension;
+				auto pos = position + ql::vec(rect_dimension.x, dimension.y) - curve_pos;
+				this->polygon.set_point(ctr, pos);
+				++ctr;
+			}
+		}
+		else
+		{
+			auto pos = position + rect_dimension.just_x();
+			this->polygon.set_point(ctr, pos);
+			++ctr;
+		}
+		if (smooth_rectangle.round_corners[2u])
+		{
+			for (ql::u32 i = 0u; i < size; ++i)
+			{
+				auto progress = std::pow(ql::f64_cast(i) / (size - 1), slope_exponent);
+				auto value = ql::slope_curve(progress, smooth_rectangle.slope);
+				auto curve_pos = ql::vec(-progress, value) * dimension;
+				auto pos = position + ql::vec(rect_dimension.x, rect_dimension.y - dimension.y) + curve_pos;
+				this->polygon.set_point(ctr, pos);
+				++ctr;
+			}
+		}
+		else
+		{
+			auto pos = position + rect_dimension;
+			this->polygon.set_point(ctr, pos);
+			++ctr;
+		}
+		if (smooth_rectangle.round_corners[3u])
+		{
+			for (ql::u32 i = 0u; i < size; ++i)
+			{
+				auto progress = std::pow(1 - ql::f64_cast(i) / (size - 1), slope_exponent);
+				auto value = ql::slope_curve(progress, smooth_rectangle.slope);
+				auto curve_pos = ql::vec(progress, value) * dimension;
+				auto pos = position + ql::vec(0, rect_dimension.y - dimension.y) + curve_pos;
+				this->polygon.set_point(ctr, pos);
+				++ctr;
+			}
+		}
+		else
+		{
+			auto pos = position + rect_dimension.just_y();
+			this->polygon.set_point(ctr, pos);
+			++ctr;
+		}
+		this->internal_check = false;
 	}
 
 	ql::smooth_rectangle& ql::smooth_rectangle::operator=(const ql::vsmooth_rectangle& smooth_rectangle)
 	{
-		this->position = smooth_rectangle.get_position();
-		this->dimension = smooth_rectangle.get_dimension();
-
-		this->polygon.set_color(smooth_rectangle.color);
-		this->polygon.set_outline_color(smooth_rectangle.outline_color);
-		this->polygon.set_outline_thickness(smooth_rectangle.outline_thickness);
-		this->polygon.shape.setFillColor(smooth_rectangle.color);
-		this->polygon.shape.setOutlineColor(smooth_rectangle.outline_color);
-
-		auto active_corners = smooth_rectangle.round_corners.number_of_set_bits();
-		auto size = smooth_rectangle.slope_point_count;
-		this->polygon.resize(active_corners * size + (4 - active_corners));
-
-		auto position = smooth_rectangle.position;
-		auto dimension = smooth_rectangle.slope_dim;
-		auto rect_dimension = smooth_rectangle.dimension;
-		auto slope_exponent = std::pow(smooth_rectangle.slope, 1.0);
-
-		ql::u32 ctr = 0u;
-
-		if (smooth_rectangle.round_corners[0u])
-		{
-			for (ql::u32 i = 0u; i < size; ++i)
-			{
-				auto progress = std::pow(ql::f64_cast(i) / (size - 1), slope_exponent);
-				auto value = ql::smooth_curve(progress, smooth_rectangle.slope);
-				auto curve_pos = ql::vec(progress, -value) * dimension;
-				auto pos = position + ql::vec(0, dimension.y) + curve_pos;
-				this->polygon.set_point(ctr, pos);
-				++ctr;
-			}
-		}
-		else
-		{
-			auto pos = position;
-			this->polygon.set_point(ctr, pos);
-			++ctr;
-		}
-		if (smooth_rectangle.round_corners[1u])
-		{
-			for (ql::u32 i = 0u; i < size; ++i)
-			{
-				auto progress = std::pow(1 - ql::f64_cast(i) / (size - 1), slope_exponent);
-				auto value = ql::smooth_curve(progress, smooth_rectangle.slope);
-				auto curve_pos = ql::vec(progress, value) * dimension;
-				auto pos = position + ql::vec(rect_dimension.x, dimension.y) - curve_pos;
-				this->polygon.set_point(ctr, pos);
-				++ctr;
-			}
-		}
-		else
-		{
-			auto pos = position + rect_dimension.just_x();
-			this->polygon.set_point(ctr, pos);
-			++ctr;
-		}
-		if (smooth_rectangle.round_corners[2u])
-		{
-			for (ql::u32 i = 0u; i < size; ++i)
-			{
-				auto progress = std::pow(ql::f64_cast(i) / (size - 1), slope_exponent);
-				auto value = ql::smooth_curve(progress, smooth_rectangle.slope);
-				auto curve_pos = ql::vec(-progress, value) * dimension;
-				auto pos = position + ql::vec(rect_dimension.x, rect_dimension.y - dimension.y) + curve_pos;
-				this->polygon.set_point(ctr, pos);
-				++ctr;
-			}
-		}
-		else
-		{
-			auto pos = position + rect_dimension;
-			this->polygon.set_point(ctr, pos);
-			++ctr;
-		}
-		if (smooth_rectangle.round_corners[3u])
-		{
-			for (ql::u32 i = 0u; i < size; ++i)
-			{
-				auto progress = std::pow(1 - ql::f64_cast(i) / (size - 1), slope_exponent);
-				auto value = ql::smooth_curve(progress, smooth_rectangle.slope);
-				auto curve_pos = ql::vec(progress, value) * dimension;
-				auto pos = position + ql::vec(0, rect_dimension.y - dimension.y) + curve_pos;
-				this->polygon.set_point(ctr, pos);
-				++ctr;
-			}
-		}
-		else
-		{
-			auto pos = position + rect_dimension.just_y();
-			this->polygon.set_point(ctr, pos);
-			++ctr;
-		}
-		this->internal_check = false;
-		return *this;
-	}
-
-	const ql::smooth_rectangle& ql::smooth_rectangle::operator=(const ql::vsmooth_rectangle& smooth_rectangle) const
-	{
-		this->position = smooth_rectangle.get_position();
-		this->dimension = smooth_rectangle.get_dimension();
-
-		this->polygon.set_color(smooth_rectangle.color);
-		this->polygon.set_outline_color(smooth_rectangle.outline_color);
-		this->polygon.set_outline_thickness(smooth_rectangle.outline_thickness);
-		this->polygon.shape.setFillColor(smooth_rectangle.color);
-		this->polygon.shape.setOutlineColor(smooth_rectangle.outline_color);
-
-		auto active_corners = smooth_rectangle.round_corners.number_of_set_bits();
-		auto size = smooth_rectangle.slope_point_count;
-		this->polygon.resize(active_corners * size + (4 - active_corners));
-
-		auto position = smooth_rectangle.position;
-		auto dimension = smooth_rectangle.slope_dim;
-		auto rect_dimension = smooth_rectangle.dimension;
-		auto slope_exponent = std::pow(smooth_rectangle.slope, 1.0);
-
-		ql::u32 ctr = 0u;
-
-		if (smooth_rectangle.round_corners[0u])
-		{
-			for (ql::u32 i = 0u; i < size; ++i)
-			{
-				auto progress = std::pow(ql::f64_cast(i) / (size - 1), slope_exponent);
-				auto value = ql::smooth_curve(progress, smooth_rectangle.slope);
-				auto curve_pos = ql::vec(progress, -value) * dimension;
-				auto pos = position + ql::vec(0, dimension.y) + curve_pos;
-				this->polygon.set_point(ctr, pos);
-				++ctr;
-			}
-		}
-		else
-		{
-			auto pos = position;
-			this->polygon.set_point(ctr, pos);
-			++ctr;
-		}
-		if (smooth_rectangle.round_corners[1u])
-		{
-			for (ql::u32 i = 0u; i < size; ++i)
-			{
-				auto progress = std::pow(1 - ql::f64_cast(i) / (size - 1), slope_exponent);
-				auto value = ql::smooth_curve(progress, smooth_rectangle.slope);
-				auto curve_pos = ql::vec(progress, value) * dimension;
-				auto pos = position + ql::vec(rect_dimension.x, dimension.y) - curve_pos;
-				this->polygon.set_point(ctr, pos);
-				++ctr;
-			}
-		}
-		else
-		{
-			auto pos = position + rect_dimension.just_x();
-			this->polygon.set_point(ctr, pos);
-			++ctr;
-		}
-		if (smooth_rectangle.round_corners[2u])
-		{
-			for (ql::u32 i = 0u; i < size; ++i)
-			{
-				auto progress = std::pow(ql::f64_cast(i) / (size - 1), slope_exponent);
-				auto value = ql::smooth_curve(progress, smooth_rectangle.slope);
-				auto curve_pos = ql::vec(-progress, value) * dimension;
-				auto pos = position + ql::vec(rect_dimension.x, rect_dimension.y - dimension.y) + curve_pos;
-				this->polygon.set_point(ctr, pos);
-				++ctr;
-			}
-		}
-		else
-		{
-			auto pos = position + rect_dimension;
-			this->polygon.set_point(ctr, pos);
-			++ctr;
-		}
-		if (smooth_rectangle.round_corners[3u])
-		{
-			for (ql::u32 i = 0u; i < size; ++i)
-			{
-				auto progress = std::pow(1 - ql::f64_cast(i) / (size - 1), slope_exponent);
-				auto value = ql::smooth_curve(progress, smooth_rectangle.slope);
-				auto curve_pos = ql::vec(progress, value) * dimension;
-				auto pos = position + ql::vec(0, rect_dimension.y - dimension.y) + curve_pos;
-				this->polygon.set_point(ctr, pos);
-				++ctr;
-			}
-		}
-		else
-		{
-			auto pos = position + rect_dimension.just_y();
-			this->polygon.set_point(ctr, pos);
-			++ctr;
-		}
-		this->internal_check = false;
+		this->create_from(smooth_rectangle);
 		return *this;
 	}
 

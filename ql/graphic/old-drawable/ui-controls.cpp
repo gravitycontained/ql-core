@@ -2937,7 +2937,7 @@ namespace ql
 		if (this->hover_animation.is_running())
 		{
 			auto p = this->hover_animation.get_progress();
-			auto curve = ql::smooth_curve(p, 1.5);
+			auto curve = ql::slope_curve(p, 1.5);
 			this->knob.set_color(this->knob_color.interpolated(this->knob_color_hover, curve));
 		}
 	}
@@ -2969,7 +2969,7 @@ namespace ql
 		if (this->background_hover_animation.is_running())
 		{
 			auto p = this->background_hover_animation.get_progress();
-			auto curve = ql::smooth_curve(p, 1.5);
+			auto curve = ql::slope_curve(p, 1.5);
 			this->background.set_color(this->background_color.interpolated(this->background_color_hover, curve));
 		}
 	}
@@ -4023,8 +4023,8 @@ namespace ql
 		if (this->scroll_transition_animation.is_running())
 		{
 			auto p = this->scroll_transition_animation.get_progress();
-			// auto curve = ql::smooth_slope(p);
-			auto curve = ql::smooth_curve(p, 1.5);
+
+			auto curve = ql::slope_curve(p, 1.5);
 			this->view.position.y =
 					ql::f32_cast(ql::linear_interpolation(this->scroll_transition_start, this->scroll_transition_end, curve));
 

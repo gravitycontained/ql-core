@@ -5,14 +5,13 @@
 
 namespace ql
 {
-
 	template <typename T>
 	struct straight_line_t
 	{
 		ql::vector2<T> a;
 		ql::vector2<T> b;
 
-		using maths_float_type = ql::conditional<ql::if_true<ql::is_same<T, ql::f32>()>, ql::f32, ql::default_type, ql::f64>;
+		using float_type = ql::conditional<ql::if_true<ql::is_same<T, ql::f32>()>, ql::f32, ql::default_type, ql::f64>;
 
 		constexpr straight_line_t() : a(), b()
 		{
@@ -27,23 +26,23 @@ namespace ql
 			return ql::to_string(std::array{this->a, this->b});
 		}
 
-		maths_float_type length() const
+		float_type length() const
 		{
 			auto diff = this->b - this->a;
-			return static_cast<maths_float_type>(std::sqrt(diff.x * diff.x + diff.y * diff.y));
+			return static_cast<float_type>(std::sqrt(diff.x * diff.x + diff.y * diff.y));
 		}
 
-		ql::vector2<maths_float_type> normal() const
+		ql::vector2<float_type> normal() const
 		{
-			return ql::vector2<maths_float_type>{this->a.y - this->b.y, this->b.x - this->a.x} / this->length();
+			return ql::vector2<float_type>{this->a.y - this->b.y, this->b.x - this->a.x} / this->length();
 		}
 
-		maths_float_type angle() const
+		float_type angle() const
 		{
 			auto atan = std::atan2(this->a.y - this->b.y, this->b.x - this->a.x);
 			if (atan < 0)
 				atan = static_cast<decltype(atan)>(2 * ql::pi + atan);
-			return static_cast<maths_float_type>(atan);
+			return static_cast<float_type>(atan);
 		}
 
 		void set_rotation_a(ql::f64 angle)

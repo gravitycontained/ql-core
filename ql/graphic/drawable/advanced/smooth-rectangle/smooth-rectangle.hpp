@@ -124,8 +124,8 @@ namespace ql
 		QL_SOURCE void check_create() const;
 		QL_SOURCE void move(ql::vec2 delta);
 		QL_SOURCE bool contains(ql::vec2 point) const;
+		QL_SOURCE void create_from(const ql::vsmooth_rectangle& smooth_rectangle) const;
 		QL_SOURCE ql::smooth_rectangle& operator=(const ql::vsmooth_rectangle& smooth_rectangle);
-		QL_SOURCE const ql::smooth_rectangle& operator=(const ql::vsmooth_rectangle& smooth_rectangle) const;
 		QL_SOURCE void draw(sf::RenderTarget& window, sf::RenderStates states = sf::RenderStates::Default) const;
 
 		mutable ql::vec2 dimension;
