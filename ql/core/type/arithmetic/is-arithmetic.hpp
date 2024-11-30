@@ -230,59 +230,51 @@ namespace ql
 
 	template <typename T>
 	using signed_type = ql::conditional<
-			ql::if_true<ql::is_arithmetic<ql::decay<T>>()>,
-			ql::conditional<
-					ql::if_true<ql::bits_in_type<T>() == std::size_t{8}>,
-					ql::i8,
-					ql::if_true<ql::bits_in_type<T>() == std::size_t{16}>,
-					ql::i16,
-					ql::if_true<ql::bits_in_type<T>() == std::size_t{32}>,
-					ql::i32,
-					ql::if_true<ql::bits_in_type<T>() == std::size_t{64}>,
-					ql::i64,
-					ql::default_error>,
-			ql::default_error>;
+		ql::if_true<ql::bits_in_type<T>() == ql::size{8}>,
+		ql::i8,
+		ql::if_true<ql::bits_in_type<T>() == ql::size{16}>,
+		ql::i16,
+		ql::if_true<ql::bits_in_type<T>() == ql::size{32}>,
+		ql::i32,
+		ql::if_true<ql::bits_in_type<T>() == ql::size{64}>,
+		ql::i64,
+		ql::default_error
+	>;
 
 	template <typename T>
 	using unsigned_type = ql::conditional<
-			ql::if_true<ql::is_arithmetic<ql::decay_t<T>>()>,
-			ql::conditional<
-					ql::if_true<ql::bits_in_type<T>() == std::size_t{8}>,
-					ql::u8,
-					ql::if_true<ql::bits_in_type<T>() == std::size_t{16}>,
-					ql::u16,
-					ql::if_true<ql::bits_in_type<T>() == std::size_t{32}>,
-					ql::u32,
-					ql::if_true<ql::bits_in_type<T>() == std::size_t{64}>,
-					ql::u64,
-					ql::default_error>,
-			ql::default_error>;
+		ql::if_true<ql::bits_in_type<T>() == ql::size{8}>,
+		ql::u8,
+		ql::if_true<ql::bits_in_type<T>() == ql::size{16}>,
+		ql::u16,
+		ql::if_true<ql::bits_in_type<T>() == ql::size{32}>,
+		ql::u32,
+		ql::if_true<ql::bits_in_type<T>() == ql::size{64}>,
+		ql::u64,
+		ql::default_error
+	>;
 
 	template <typename T>
 	using int_type = ql::conditional<
-			ql::if_true<ql::is_arithmetic<ql::decay<T>>()>,
-			ql::conditional<
-					ql::if_true<ql::is_integer<T>()>,
-					T,
-					ql::if_true<ql::bits_in_type<T>() == std::size_t{32}>,
-					ql::i32,
-					ql::if_true<ql::bits_in_type<T>() == std::size_t{64}>,
-					ql::i64,
-					ql::default_error>,
-			ql::default_error>;
+		ql::if_true<ql::is_integer<T>()>,
+		T,
+		ql::if_true<ql::bits_in_type<T>() == ql::size{32}>,
+		ql::i32,
+		ql::if_true<ql::bits_in_type<T>() == ql::size{64}>,
+		ql::i64,
+		ql::default_error
+	>;
 
 	template <typename T>
 	using float_type = ql::conditional<
-			ql::if_true<ql::is_arithmetic<ql::decay<T>>()>,
-			ql::conditional<
-					ql::if_true<ql::is_floating_point<T>()>,
-					T,
-					ql::if_true<ql::bits_in_type<T>() <= std::size_t{32}>,
-					ql::f32,
-					ql::if_true<ql::bits_in_type<T>() == std::size_t{64}>,
-					ql::f64,
-					ql::default_error>,
-			ql::default_error>;
+		ql::if_true<ql::is_floating_point<T>()>,
+		T,
+		ql::if_true<ql::bits_in_type<T>() <= ql::size{32}>,
+		ql::f32,
+		ql::if_true<ql::bits_in_type<T>() == ql::size{64}>,
+		ql::f64,
+		ql::default_error
+	>;
 
 	constexpr bool char_is_signed()
 	{

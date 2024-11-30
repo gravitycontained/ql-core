@@ -7,7 +7,7 @@
 
 #include <ql/core/transform/limit.hpp>
 
-#include <ql/core/maths/arithmetic/arithmetic.hpp>
+#include <ql/core/transform/round.hpp>
 
 namespace ql
 {

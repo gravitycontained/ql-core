@@ -6,6 +6,7 @@
 #include <ql/core/transform/interpolate/interpolate.hpp>
 #include <ql/core/transform/memory/memory.hpp>
 #include <ql/core/transform/limit.hpp>
+#include <ql/core/transform/round.hpp>
 #include <ql/core/transform/shuffle.hpp>
 #include <ql/core/transform/slope/slope.hpp>
 #include <ql/core/transform/sort.hpp>

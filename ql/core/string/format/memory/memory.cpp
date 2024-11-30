@@ -2,6 +2,8 @@
 
 #include <ql/core/string/format/precision/precision.hpp>
 #include <ql/core/string/to-string.hpp>
+#include <ql/core/transform/round.hpp>
+#include <ql/core/transform/limit.hpp>
 
 namespace ql
 {
@@ -14,14 +16,16 @@ namespace ql
 			constexpr auto names = std::array{"kibi", "mebi", "gibi", "tebi", "pebi", "exbi", "zebi", "yebi"};
 
 			if (converted < 1024)
-				return ql::to_string(ql::string_precision(converted, 1), " bytes");
+				return ql::to_string(ql::round(converted, 1), " bytes");
 
 			for (ql::size i = 0u; i < names.size(); ++i)
 			{
 				converted /= 1024.0;
 				if (converted < 1000)
 				{
-					return ql::to_string(ql::string_precision(converted, 1), " ", names[i], "bytes");
+					auto length = std::floor(std::log10(converted));
+					auto precision = ql::size_cast(ql::clamp(4 - length, 1., 3.));
+					return ql::to_string(ql::round(converted, precision), " ", names[i], "bytes");
 				}
 			}
 		}
@@ -30,14 +34,16 @@ namespace ql
 			constexpr auto names = std::array{"kilo", "mega", "giga", "tera", "peta", "exa", "zetta", "yotta"};
 
 			if (converted < 1000)
-				return ql::to_string(ql::string_precision(converted, 1), " bytes");
+				return ql::to_string(ql::round(converted, 1), " bytes");
 
 			for (ql::size i = 0u; i < names.size(); ++i)
 			{
 				converted /= 1000.0;
 				if (converted < 1000)
 				{
-					return ql::to_string(ql::string_precision(converted, 1), " ", names[i], "bytes");
+					auto length = std::floor(std::log10(converted));
+					auto precision = ql::size_cast(ql::clamp(4 - length, 1., 3.));
+					return ql::to_string(ql::round(converted, precision), " ", names[i], "bytes");
 				}
 			}
 		}
