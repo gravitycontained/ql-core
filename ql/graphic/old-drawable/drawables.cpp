@@ -954,7 +954,7 @@ namespace ql
 		for (ql::u32 i = 0u; i < size; ++i)
 		{
 			auto progress = std::pow(ql::f64_cast(i) / (size - 1), slope_exponent);
-			auto value = ql::smooth_curve(progress, smooth_corner.slope);
+			auto value = ql::slope_curve(progress, smooth_corner.slope);
 			auto curve_pos = ql::vec(progress, 1.0 - value);
 
 			auto pos = offset + curve_pos * dimension;
