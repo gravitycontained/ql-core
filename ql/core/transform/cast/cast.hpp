@@ -74,7 +74,8 @@ namespace ql
 		}
 		else if constexpr (ql::is_long_standard_string_type<U>())
 		{
-			return detail::castable_test_from_chars<T>;
+			return false;
+			//return detail::castable_test_from_chars<T>;
 		}
 		else if constexpr (ql::is_long_wstring_type<U>())
 		{
@@ -93,6 +94,8 @@ namespace ql
 			return detail::castable_test_default<T, U>;
 		}
 	}
+
+	constexpr auto test = ql::type_castable<std::string, std::string>();
 
 	template <typename T, typename Tuple>
 	constexpr bool type_castable_tuple()
