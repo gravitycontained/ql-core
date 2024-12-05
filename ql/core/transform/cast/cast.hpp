@@ -26,19 +26,23 @@ namespace ql
 		concept castable_test_default = requires(T v, U x) { v = static_cast<T>(x); };
 
 		template <typename T>
-		concept castable_test_stream = requires(T x, std::wstringstream stream) {
+		concept castable_test_stream = requires(T x, std::stringstream stream) {
 			stream << x;
 			stream >> x;
 		};
-
 		template <typename T>
-		concept castable_test_from_chars =
-				requires(T x, std::string_view sv) { std::from_chars(sv.data(), sv.data() + sv.size(), x); };
+		concept castable_test_wstream = requires(T x, std::wstringstream stream) {
+			stream << x;
+			stream >> x;
+		};
 	}	 // namespace detail
 
 	template <typename T, typename U>
 	constexpr bool type_castable()
 	{
+		if constexpr (ql::is_same<T, U>())
+			return true;
+
 		if constexpr (ql::is_container<U>() && !ql::is_long_string_type<U>())
 		{
 			if constexpr (ql::has_resize_and_access<ql::container_change_subtype<U, T>>())
@@ -74,12 +78,11 @@ namespace ql
 		}
 		else if constexpr (ql::is_long_standard_string_type<U>())
 		{
-			return false;
-			//return detail::castable_test_from_chars<T>;
+			return detail::castable_test_stream<T>;
 		}
 		else if constexpr (ql::is_long_wstring_type<U>())
 		{
-			return detail::castable_test_stream<T>;
+			return detail::castable_test_wstream<T>;
 		}
 		else if constexpr (ql::is_long_standard_string_type<T>())
 		{
@@ -95,8 +98,6 @@ namespace ql
 		}
 	}
 
-	constexpr auto test = ql::type_castable<std::string, std::string>();
-
 	template <typename T, typename Tuple>
 	constexpr bool type_castable_tuple()
 	{
@@ -110,6 +111,9 @@ namespace ql
 	requires (ql::type_castable<T, U>())
 	constexpr inline auto type_cast(U&& data)
 	{
+		if constexpr (ql::is_same<T, U>())
+			return data;
+
 		if constexpr (ql::is_container<U>() && !ql::is_long_string_type<U>())
 		{
 			typename ql::container_change_subtype<U, T> result;
