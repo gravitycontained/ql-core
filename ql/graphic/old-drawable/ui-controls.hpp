@@ -1512,7 +1512,7 @@ namespace ql
 		QL_SOURCE void stop_accepting_input();
 		QL_SOURCE void clamp_view_y(bool transition = true);
 		QL_SOURCE void set_dimension(ql::vec2f dimension);
-		QL_SOURCE void set_input_color(ql::print_color color);
+		QL_SOURCE void set_input_color(ql::color::print_color color);
 		QL_SOURCE void prepare_scroll();
 		QL_SOURCE void update_visible_rows_count();
 		QL_SOURCE void end_animation();

@@ -50,7 +50,7 @@ namespace ql
 	{
 		return ql::recursive_type_and_chain<std::tuple<Ts...>>(
 				[]<typename T>()
-				{ return ql::has_to_string<T>() || ql::detail::is_any_printable<T>() || ql::is_same_decayed<T, ql::print_color>(); }
+				{ return ql::has_to_string<T>() || ql::detail::is_any_printable<T>() || ql::is_same_decayed<T, ql::color::print_color>(); }
 		);
 	}
 }	 // namespace ql

@@ -1365,9 +1365,9 @@ namespace ql
 			/*reset*/ ql::rgba::transparent(),
 	};
 
-	constexpr ql::rgba print_color_to_rgba(ql::print_color background)
+	constexpr ql::rgba print_color_to_rgba(ql::color::print_color background)
 	{
-		if (background == ql::print_color::transparent)
+		if (background == ql::color::print_color::transparent)
 		{
 			return ql::rgba::transparent();
 		}

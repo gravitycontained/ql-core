@@ -3227,7 +3227,7 @@ namespace ql
 		this->update_cursor_position(false);
 	}
 
-	void ql::console::set_input_color(ql::print_color color)
+	void ql::console::set_input_color(ql::color::print_color color)
 	{
 		this->input_string << color;
 	}

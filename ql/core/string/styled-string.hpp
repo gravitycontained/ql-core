@@ -21,7 +21,7 @@ namespace ql
 			{
 			}
 
-			constexpr color(ql::print_color color)
+			constexpr color(ql::color::print_color color)
 			{
 				this->value = ql::print_color_to_rgba(color);
 			}
@@ -262,7 +262,7 @@ namespace ql
 			}
 		}
 
-		void add(const ql::print_color& color)
+		void add(const ql::color::print_color& color)
 		{
 			this->add(style::color(color));
 		}

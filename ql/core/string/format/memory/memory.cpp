@@ -24,7 +24,7 @@ namespace ql
 				if (converted < 1000)
 				{
 					auto length = std::floor(std::log10(converted));
-					auto precision = ql::size_cast(ql::clamp(4 - length, 1., 3.));
+					auto precision = ql::size_cast(ql::clamp(ql::isize_cast(2 - length), 0ll, 3ll));
 					return ql::to_string(ql::round(converted, precision), " ", names[i], "bytes");
 				}
 			}
@@ -41,8 +41,12 @@ namespace ql
 				converted /= 1000.0;
 				if (converted < 1000)
 				{
+					// 1.1 -> 3 precision
+					// 25.4 -> 2 precision
+					// 999.9 -> 1 precision
+
 					auto length = std::floor(std::log10(converted));
-					auto precision = ql::size_cast(ql::clamp(4 - length, 1., 3.));
+					auto precision = ql::size_cast(ql::clamp(ql::isize_cast(2 - length), 0ll, 3ll));
 					return ql::to_string(ql::round(converted, precision), " ", names[i], "bytes");
 				}
 			}

@@ -156,6 +156,18 @@ namespace ql
 			}
 			return result;
 		}
+		else if constexpr (ql::is_long_standard_string_type<T>())
+		{
+			std::ostringstream stream;
+			stream << data;
+			return stream.str();
+		}
+		else if constexpr (ql::is_long_wstring_type<T>())
+		{
+			std::wostringstream stream;
+			stream << data;
+			return stream.str();
+		}
 		else if constexpr (ql::is_long_standard_string_type<U>())
 		{
 			std::string_view sv{data};
@@ -171,18 +183,6 @@ namespace ql
 			stream >> value;
 
 			return value;
-		}
-		else if constexpr (ql::is_long_standard_string_type<T>())
-		{
-			std::ostringstream stream;
-			stream << data;
-			return stream.str();
-		}
-		else if constexpr (ql::is_long_wstring_type<T>())
-		{
-			std::wostringstream stream;
-			stream << data;
-			return stream.str();
 		}
 		else
 		{

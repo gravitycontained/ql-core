@@ -4751,8 +4751,6 @@ namespace ql
 		bool initialization_vector = true;
 	};
 
-	constexpr bool debug_print = false;
-
 	template <ql::cipher_config config>
 	struct lookup_table
 	{
@@ -4766,7 +4764,7 @@ namespace ql
 		std::array<std::array<matrix_type, config.N * config.N>, config.table_size> shuffle{};
 		ql::bitset<256 * 8u> rotation_skips{};
 
-		void seed_state(auto& engine, const std::string_view& key, bool debug_print = false)
+		void seed_state(auto& engine, const std::string_view& key)
 		{
 			constexpr auto size = 71;
 			std::array<ql::u8, size * size> state{};
@@ -4863,24 +4861,9 @@ namespace ql
 					}
 				}
 			}
-			if (debug_print)
-			{
-				ql::print("state: ");
-				for (auto& i : state)
-				{
-					ql::print(ql::hex_string(i, ""));
-				}
-				ql::println();
-			}
 
 			std::string seed = std::string{key};
 			auto sha512_hash = ql::from_hex_string(ql::mgf1(seed, 624 * 16u, ql::sha512_object));
-
-			if (debug_print)
-			{
-				ql::println("sha512 hash: ", ql::aqua, ql::hex_string(sha512_hash));
-				ql::print("engine data: ");
-			}
 
 			engine.engine.state.fill(ql::u64{0ull});
 			for (ql::size i = 0u; i < engine.engine.state.size(); ++i)
@@ -4890,26 +4873,8 @@ namespace ql
 					auto index = i * 8u + b;
 					engine.engine.state[i] |= (ql::u64_cast(state[index] ^ ql::u8_cast(sha512_hash[index])) << (b * 8u));
 				}
-				if (debug_print)
-				{
-					ql::print(ql::hex_string(engine.engine.state[i], ""));
-				}
-			}
-			if (debug_print)
-			{
-				ql::println();
 			}
 			engine.engine.put_index_end();
-
-			// engine.engine.shuffle();
-
-			// if (debug_print) {
-			//	ql::print("mt19937 state: ");
-			//	for (auto& i : engine.engine.state) {
-			//		ql::print(ql::hex_string(i, ""));
-			//	}
-			//	ql::println();
-			// }
 		}
 
 		void generate_sbox(auto& engine)
@@ -4922,8 +4887,7 @@ namespace ql
 					this->sbox[s] = sbox_bytes;
 
 					bool found = true;
-					// std::shuffle(this->sbox[s].begin(), this->sbox[s].end(), engine);
-					// std::shuffle(this->sbox[s].begin(), this->sbox[s].end(), engine.engine);
+
 					ql::shuffle(this->sbox[s], engine);
 					for (ql::size i = 0u; i < sbox_bytes.size(); ++i)
 					{
@@ -4954,7 +4918,7 @@ namespace ql
 
 					bool found = true;
 					ql::shuffle(this->shuffle[s], engine);
-					// std::shuffle(this->shuffle[s].begin(), this->shuffle[s].end(), engine);
+
 					for (ql::size i = 0u; i < shuffle_bytes.size(); ++i)
 					{
 						if (this->shuffle[s][i] == i)
@@ -4971,30 +4935,15 @@ namespace ql
 			}
 		}
 
-		void generate_mds(auto& engine, bool debug_print = false)
+		void generate_mds(auto& engine)
 		{
 			for (ql::size s = 0u; s < this->mds.size(); ++s)
 			{
 				while (true)
 				{
-					if (debug_print)
-					{
-						ql::println("### generate mds. the next numbers are: ");
-					}
-
 					for (ql::size i = 0u; i < config.N; ++i)
 					{
-						// this->mds[s][i] = engine.generate(1, 255);
-						// this->mds[s][i] = ql::u8_cast(dist(engine));
 						this->mds[s][i] = ql::u8_cast(engine.get(1u, 255u));
-						if (debug_print)
-						{
-							ql::print(ql::yellow, ql::hex_string(this->mds[s][i]), " ");
-						}
-					}
-					if (debug_print)
-					{
-						ql::println();
 					}
 
 					for (ql::size c = 1u; c < config.N; ++c)
@@ -5011,16 +4960,7 @@ namespace ql
 					auto valid_mds = nonzero && detail::check_if_mds(this->mds[s]);
 					if (valid_mds)
 					{
-						if (debug_print)
-						{
-							ql::println("### this was a valid mds!");
-						}
 						break;
-					}
-
-					if (debug_print)
-					{
-						ql::println("### this was not a valid mds: ", nonzero, " and ", detail::check_if_mds(this->mds[s]));
 					}
 				}
 			}
@@ -5030,8 +4970,6 @@ namespace ql
 		{
 			for (ql::size i = 0u; i < this->rotation_skips.size(); ++i)
 			{
-				// auto percentage = engine.generate_0_1();
-				// auto percentage = std::generate_canonical<ql::f64, std::numeric_limits<ql::f64>::digits>(engine);
 				auto percentage = engine.generate_0_1();
 				this->rotation_skips[i] = i && (percentage < config.skip_rotation_chance);
 			}
@@ -5057,60 +4995,18 @@ namespace ql
 			}
 		}
 
-		void print()
-		{
-			ql::print("sbox = ", ql::aqua);
-			this->print_array(this->sbox);
-			ql::println();
-			ql::print("sbox_inverse = ", ql::aqua);
-			this->print_array(this->sbox_inverse);
-			ql::println();
-			ql::print("shuffle = ", ql::aqua);
-			this->print_array(this->shuffle);
-			ql::println();
-			ql::print("mds = ", ql::aqua);
-			this->print_array(this->mds);
-			ql::println();
-			ql::print("mds_inverse = ", ql::aqua);
-			this->print_array(this->mds_inverse);
-			ql::println();
-			ql::print("rotation_skips = ", ql::aqua);
-			this->print_array(this->rotation_skips);
-			ql::println();
-		}
-
-		void create(const std::string_view& key, bool debug_print = false)
+		void create(const std::string_view& key)
 		{
 			ql::random_engine<64u> engine;
-			// std::mt19937_64 engine;
-			this->seed_state(engine, key, debug_print);
 
-			if (debug_print)
-			{
-				ql::print("1 the first random numbers are: ");
-				for (ql::size i = 0u; i < 1024u; ++i)
-				{
-					ql::print(ql::hex_string(engine.engine(), ""));
-				}
-				ql::println();
-				ql::print("2 the first random numbers are: ");
-				for (ql::size i = 0u; i < 1024u; ++i)
-				{
-					ql::print(ql::hex_string(engine.engine.get(0u, 255u), ""));
-				}
-				ql::println();
-			}
+			this->seed_state(engine, key);
+
 			this->generate_sbox(engine.engine);
 			this->generate_shuffle(engine.engine);
-			this->generate_mds(engine.engine, debug_print);
+			this->generate_mds(engine.engine);
 			if constexpr (config.skip_rotation_chance)
 			{
 				this->generate_rotation_skips(engine.engine);
-			}
-
-			if (debug_print)
-			{
-				this->print();
 			}
 		}
 	};
@@ -5395,53 +5291,6 @@ namespace ql
 			}
 		}
 
-		void print_iv()
-		{
-			for (ql::size i = 0u; i < this->initialization_vector.size(); ++i)
-			{
-				ql::print(ql::hex_string(this->initialization_vector[i], "", {}, true));
-			}
-			ql::print("  ");
-		}
-
-		void print_round_key()
-		{
-			for (ql::size i = 0u; i < this->round_key.size(); ++i)
-			{
-				ql::print(ql::hex_string(this->round_key[i], "", {}, true));
-			}
-			ql::print("  ");
-		}
-
-		void print_state()
-		{
-			for (ql::size i = 0u; i < this->state.size(); ++i)
-			{
-				ql::print(ql::hex_string(this->state[i], "", {}, true));
-			}
-			ql::print("  ");
-		}
-
-		void print_last_state()
-		{
-			ql::print("last_state = ");
-			for (ql::size i = 0u; i < this->last_state.size(); ++i)
-			{
-				ql::print(ql::hex_string(this->last_state[i], "", {}, true));
-			}
-			ql::println();
-		}
-
-		void print_message()
-		{
-			ql::print("message = ");
-			for (ql::size i = 0u; i < this->message.size(); ++i)
-			{
-				ql::print(ql::hex_string(this->message[i], "", {}, true));
-			}
-			ql::println();
-		}
-
 		void cipher_rotation()
 		{
 			for (ql::size round = 0u; round < this->cipher_rounds; ++round)
@@ -5480,20 +5329,12 @@ namespace ql
 			}
 		}
 
-		void add_reverse_state_rotation(bool debug_print = false)
+		void add_reverse_state_rotation()
 		{
 			for (ql::isize i = this->states - 2; i >= 0; --i)
 			{
 				this->state_ctr = ql::size_cast(i);
 
-				if (debug_print)
-				{
-					ql::print("add_reverse_state_rotation state_ctr = ", i, " ");
-					this->print_state();
-					ql::println();
-				}
-
-				// this->add_roundkey_diffuse_rows(i % this->cipher_rounds);
 				this->add_roundkey(i % this->cipher_rounds);
 				this->diffuse_rows(i % this->cipher_rounds);
 				this->sub_shuffle(i % this->cipher_rounds);
@@ -5506,15 +5347,9 @@ namespace ql
 					this->message[index + i] ^= this->state[i];
 				}
 			}
-			if (debug_print)
-			{
-				ql::print("add_reverse_state_rotation state_ctr = ", 0, " (end) ");
-				this->print_state();
-				ql::println();
-			}
 		}
 
-		void sub_reverse_state_rotation(bool debug_print = false)
+		void sub_reverse_state_rotation()
 		{
 			auto index = (this->states - 1) * this->state_size;
 			for (ql::size i = 0u; i < this->state_size; ++i)
@@ -5526,14 +5361,6 @@ namespace ql
 			{
 				this->state_ctr = ql::size_cast(i);
 
-				if (debug_print)
-				{
-					ql::print("sub_reverse_state_rotation state_ctr = ", this->state_ctr, " ");
-					this->print_state();
-					ql::println();
-				}
-
-				// this->add_roundkey_diffuse_rows(i % this->cipher_rounds);
 				this->add_roundkey(i % this->cipher_rounds);
 				this->diffuse_rows(i % this->cipher_rounds);
 				this->sub_shuffle(i % this->cipher_rounds);
@@ -5546,12 +5373,6 @@ namespace ql
 					this->message[index + i] ^= this->state[i];
 				}
 			}
-			if (debug_print)
-			{
-				ql::print("sub_reverse_state_rotation state_ctr = ", 0, " (end)", " ");
-				this->print_state();
-				ql::println();
-			}
 		}
 
 		void shuffle_state_byte()
@@ -5560,21 +5381,7 @@ namespace ql
 			this->state_byte = sbox[this->last_state[0]];
 		}
 
-		void print_decipher_state(std::string message)
-		{
-			ql::print(message, "DECIPHER state_ctr = ", this->state_ctr, " ");
-			this->print_state();
-			ql::println();
-		}
-
-		void print_cipher_state()
-		{
-			ql::print("CIPHER   state_ctr = ", this->state_ctr, " ");
-			this->print_state();
-			ql::println();
-		}
-
-		void cipher(bool debug_print = false)
+		void cipher()
 		{
 			this->last_state.fill(0u);
 			this->state_byte = 0u;
@@ -5582,35 +5389,20 @@ namespace ql
 
 			for (this->state_ctr = 0u; this->state_ctr < this->states; ++this->state_ctr)
 			{
-				// ql::println("cipher skip = ", this->table.get_diffusion_skip(this->state_ctr));
-
-				if (debug_print)
-				{
-					ql::print("state_ctr = ", this->state_ctr);
-					this->print_state();
-					ql::println(" state_byte = ", ql::gray, ql::hex_string(this->state_byte));
-				}
-
 				this->input_cipher_state();
 				this->cipher_rotation();
 				this->output_cipher_state();
 				this->shuffle_state_byte();
 			}
-			if (debug_print)
-			{
-				ql::print("state_ctr = ", this->state_ctr);
-				this->print_state();
-				ql::println(" state_byte = ", ql::gray, ql::hex_string(this->state_byte));
-			}
 
 			if constexpr (this->bidirectional)
 			{
 				this->state_byte = 0u;
-				this->add_reverse_state_rotation(debug_print);
+				this->add_reverse_state_rotation();
 			}
 		}
 
-		void decipher(bool debug_print = false)
+		void decipher()
 		{
 			this->state.fill(0u);
 			this->last_state.fill(0u);
@@ -5618,7 +5410,7 @@ namespace ql
 			if constexpr (this->bidirectional)
 			{
 				this->state_byte = 0u;
-				this->sub_reverse_state_rotation(debug_print);
+				this->sub_reverse_state_rotation();
 			}
 			this->state_byte = 0u;
 
@@ -5626,29 +5418,14 @@ namespace ql
 
 			for (this->state_ctr = 0u; this->state_ctr < this->states; ++this->state_ctr)
 			{
-				// ql::println("decipher skip = ", this->table.get_diffusion_skip(this->state_ctr));
-
-				if (debug_print)
-				{
-					ql::print("state_ctr = ", this->state_ctr);
-					this->print_state();
-					ql::println(" state_byte = ", ql::gray, ql::hex_string(this->state_byte));
-				}
-
 				this->input_decipher_state();
 				this->decipher_rotation();
 				this->output_decipher_state();
 				this->shuffle_state_byte();
 			}
-			if (debug_print)
-			{
-				ql::print("state_ctr = ", this->state_ctr);
-				this->print_state();
-				ql::println(" state_byte = ", ql::gray, ql::hex_string(this->state_byte));
-			}
 		}
 
-		void create_round_key(const std::string_view& key, bool debug_print)
+		void create_round_key(const std::string_view& key)
 		{
 			std::array<ql::u8, this->key_size> full_key{};
 			std::array<ql::u8, this->state_size> last_key_state{};
@@ -5659,15 +5436,7 @@ namespace ql
 				full_key[i] = ql::u8_cast(key[i]);
 			}
 
-			if (debug_print)
-			{
-				ql::println(ql::yellow, " create_round_key !");
-			}
 			auto sha512 = ql::from_hex_string(ql::mgf1(key, this->round_key_size * 2u, ql::sha512_object));
-			if (debug_print)
-			{
-				ql::println("sha512 = ", ql::aqua, ql::hex_string(sha512));
-			}
 
 			for (ql::size round = 0u; round < this->cipher_rounds; ++round)
 			{
@@ -5686,13 +5455,6 @@ namespace ql
 				const auto& sbox = this->table.sbox[sbox_index];
 				const auto& mds = this->table.mds[mds_index];
 				const auto& shuffle = this->table.shuffle[shuffle_index];
-
-				if (debug_print)
-				{
-					ql::println("sbox_index = ", ql::aqua, ql::size_cast(sbox_index));
-					ql::println("mds_index = ", ql::aqua, ql::size_cast(mds_index));
-					ql::println("shuffle_index = ", ql::aqua, ql::size_cast(shuffle_index));
-				}
 
 				auto copy = key_state;
 				for (ql::size i = 0u; i < this->state_size; ++i)
@@ -5717,11 +5479,6 @@ namespace ql
 					{
 						auto index = c * this->N + i;
 						key_state[index] = row[i];
-
-						if (debug_print)
-						{
-							ql::println("1 key_state[", index, "] = ", ql::aqua, ql::hex_string(this->round_key[index]));
-						}
 					}
 				}
 				for (ql::size c = 0u; c < this->N; ++c)
@@ -5742,22 +5499,12 @@ namespace ql
 					{
 						auto index = i * this->N + c;
 						key_state[index] = col[i];
-
-						if (debug_print)
-						{
-							ql::println("2 key_state[", index, "] = ", ql::aqua, ql::hex_string(this->round_key[index]));
-						}
 					}
 				}
 				for (ql::size i = 0u; i < this->state_size; ++i)
 				{
 					auto index = round_index + i;
 					this->round_key[index] = key_state[i] ^ last_key_state[i] ^ ql::u8_cast(sha512[i]);
-
-					if (debug_print)
-					{
-						ql::println("this->round_key[", index, "] = ", ql::aqua, ql::hex_string(this->round_key[index]));
-					}
 				}
 				last_key_state = key_state;
 			}
@@ -5805,30 +5552,15 @@ namespace ql
 			this->message = message;
 		}
 
-		void set_key(const std::string_view& key, bool debug_print = false)
+		void set_key(const std::string_view& key)
 		{
 			if (this->key == key)
 			{
 				return;
 			}
-			this->table.create(key, debug_print);
-			this->create_round_key(key, debug_print);
+			this->table.create(key);
+			this->create_round_key(key);
 			this->key = key;
-
-			if (debug_print)
-			{
-				ql::println("key = ", ql::hex_string(key));
-				ql::print("round_key = ");
-				this->print_round_key();
-				ql::println();
-
-				if constexpr (this->use_initialization_vector)
-				{
-					ql::print(ql::yellow, "HAS iv = ");
-					this->print_iv();
-					ql::println();
-				}
-			}
 		}
 
 		void clear()
@@ -5836,7 +5568,7 @@ namespace ql
 			this->key.clear();
 		}
 
-		void encrypt(std::string& message, bool debug_print)
+		void encrypt(std::string& message)
 		{
 			using matrix_type = lookup_table<config>::matrix_type;
 
@@ -5849,7 +5581,7 @@ namespace ql
 				this->add_initialization_vector();
 			}
 
-			this->cipher(debug_print);
+			this->cipher();
 			auto output_size = this->states * this->state_size;
 			auto delta = output_size - message_length;
 
@@ -5868,14 +5600,14 @@ namespace ql
 			}
 		}
 
-		void encrypt(std::string& message, const std::string_view& key, bool reset_key = true, bool debug_print = false)
+		void encrypt(std::string& message, const std::string_view& key, bool reset_key = true)
 		{
 			if constexpr (this->use_initialization_vector)
 			{
 				this->create_initialization_vector();
 			}
-			this->set_key(key, debug_print);
-			this->encrypt(message, debug_print);
+			this->set_key(key);
+			this->encrypt(message);
 			if (reset_key)
 			{
 				this->clear();
@@ -5889,7 +5621,7 @@ namespace ql
 			return copy;
 		}
 
-		void decrypt(std::string& message, bool debug_print = false)
+		void decrypt(std::string& message)
 		{
 			using matrix_type = lookup_table<config>::matrix_type;
 
@@ -5910,7 +5642,7 @@ namespace ql
 
 			message.resize(message_size, ql::u8{0});
 			this->set_input(message);
-			this->decipher(debug_print);
+			this->decipher();
 
 			if constexpr (this->use_initialization_vector)
 			{
@@ -5921,14 +5653,14 @@ namespace ql
 			message.resize(output_size, ql::u8{0});
 		}
 
-		void decrypt(std::string& message, const std::string_view& key, bool reset_key = true, bool debug_print = false)
+		void decrypt(std::string& message, const std::string_view& key, bool reset_key = true)
 		{
 			if constexpr (this->use_initialization_vector)
 			{
 				this->read_initialization_vector(message);
 			}
-			this->set_key(key, debug_print);
-			this->decrypt(message, debug_print);
+			this->set_key(key);
+			this->decrypt(message);
 			if (reset_key)
 			{
 				this->clear();
@@ -5944,8 +5676,8 @@ namespace ql
 
 		std::string encrypted_debug(const std::string& message, const std::string_view& key, bool reset_key = true)
 		{
-			ql::println("message = ", ql::aqua, ql::hex_string(message));
-			ql::println("key = ", ql::aqua, ql::hex_string(key));
+			ql::println("message = ", ql::color::aqua, ql::hex_string(message));
+			ql::println("key = ", ql::color::aqua, ql::hex_string(key));
 			auto copy = message;
 			this->encrypt(copy, key, reset_key, true);
 			return copy;
@@ -5953,8 +5685,8 @@ namespace ql
 
 		std::string decrypted_debug(const std::string& message, const std::string_view& key, bool reset_key = true)
 		{
-			ql::println("message = ", ql::aqua, ql::hex_string(message));
-			ql::println("key = ", ql::aqua, ql::hex_string(key));
+			ql::println("message = ", ql::color::aqua, ql::hex_string(message));
+			ql::println("key = ", ql::color::aqua, ql::hex_string(key));
 			auto copy = message;
 			this->decrypt(copy, key, reset_key, true);
 			return copy;

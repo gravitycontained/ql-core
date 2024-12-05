@@ -19,10 +19,10 @@ namespace ql
 	requires (ql::is_printable<T>())
 	void single_print(const T& value)
 	{
-		if constexpr (ql::is_same<T, ql::print_color>())
+		if constexpr (ql::is_same<T, ql::color::print_color>())
 		{
 			ql::detail::printed_color = true;
-			std::cout << ql::to_termcolor(value);
+			std::cout << ql::color::to_termcolor(value);
 			return;
 		}
 		else
@@ -44,7 +44,7 @@ namespace ql
 
 			if (ql::detail::printed_color)
 			{
-				ql::single_print(ql::reset);
+				ql::single_print(ql::color::reset);
 				ql::detail::printed_color = false;
 			}
 		}
