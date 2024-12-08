@@ -2421,7 +2421,7 @@ namespace ql
 		this->animation.reset_and_start_reverse();
 	}
 
-	void ql::transition_overlay::update(const ql::event_manager& event)
+	void ql::transition_overlay::update(const ql::event& event)
 	{
 		this->animation.update(event.frame_time_f());
 		if (this->animation.is_running())
@@ -4203,30 +4203,30 @@ namespace ql
 		this->use_y_axis = true;
 	}
 
-	void ql::vgraph::update(const event_manager& event_manager)
+	void ql::vgraph::update(const event& event)
 	{
 		if (this->empty())
 		{
 			return;
 		}
-		if (event_manager.left_mouse_clicked())
+		if (event.left_mouse_clicked())
 		{
 			ql::vrectangle rect(this->position, this->true_graph_dimension());
 			rect.position.x += ql::f32_cast(this->y_axis_text_space);
 
-			if (rect.collides(event_manager.mouse_position()))
+			if (rect.collides(event.mouse_position()))
 			{
 				this->drag = true;
-				this->click_position = event_manager.mouse_position();
+				this->click_position = event.mouse_position();
 			}
 		}
 
-		this->mouse_position = event_manager.mouse_position();
-		if (event_manager.mouse_moved())
+		this->mouse_position = event.mouse_position();
+		if (event.mouse_moved())
 		{
 			if (this->drag && this->allow_dragging)
 			{
-				auto diff = this->click_position - event_manager.mouse_position();
+				auto diff = this->click_position - event.mouse_position();
 
 				auto size = this->visible_element_size();
 				auto index_f = (diff.x / this->true_graph_width()) * size;
@@ -4234,7 +4234,7 @@ namespace ql
 
 				if (index_delta)
 				{
-					this->click_position = event_manager.mouse_position();
+					this->click_position = event.mouse_position();
 					this->click_position.x += ql::f32_cast(((index_f - index_delta) / size) * this->true_graph_width());
 
 					this->index_start = ql::size_cast(ql::max(ql::i64_cast(0), ql::i64_cast(this->visible_index_start()) + index_delta));
@@ -4262,7 +4262,7 @@ namespace ql
 
 			auto visible_size = this->visible_element_size() - 1;
 			auto offset = this->position.x + this->y_axis_text_space;
-			auto progress = (event_manager.mouse_position().x - offset) / this->true_graph_width();
+			auto progress = (event.mouse_position().x - offset) / this->true_graph_width();
 			auto index = visible_size * progress;
 			auto int_index = ql::size_cast(index);
 			auto left_over = index - int_index;
@@ -4313,7 +4313,7 @@ namespace ql
 					y_progress = ql::clamp((1.0 - y_progress) * (1.0 - this->height_delta) + (this->height_delta) / 2);
 					auto pos_y = this->position.y + this->dimension.y * y_progress;
 
-					auto distance = ql::abs(pos_y - event_manager.mouse_position().y);
+					auto distance = ql::abs(pos_y - event.mouse_position().y);
 
 					if (min_distance > distance && distance < this->closest_graph_at_cursor_distance)
 					{
@@ -4360,7 +4360,7 @@ namespace ql
 					y_progress = ql::clamp((1.0 - y_progress) * (1.0 - this->height_delta) + (this->height_delta) / 2);
 					auto pos_y = this->position.y + this->dimension.y * y_progress;
 
-					auto distance = ql::abs(pos_y - event_manager.mouse_position().y);
+					auto distance = ql::abs(pos_y - event.mouse_position().y);
 
 					if (min_distance > distance && distance < this->closest_graph_at_cursor_distance)
 					{
@@ -4407,7 +4407,7 @@ namespace ql
 					y_progress = ql::clamp((1.0 - y_progress) * (1.0 - this->height_delta) + (this->height_delta) / 2);
 					auto pos_y = this->position.y + this->dimension.y * y_progress;
 
-					auto distance = ql::abs(pos_y - event_manager.mouse_position().y);
+					auto distance = ql::abs(pos_y - event.mouse_position().y);
 
 					if (min_distance > distance && distance < this->closest_graph_at_cursor_distance)
 					{
@@ -4424,19 +4424,19 @@ namespace ql
 				}
 			}
 		}
-		if (event_manager.left_mouse_released())
+		if (event.left_mouse_released())
 		{
 			this->drag = false;
 			this->enable_last_n_when_dragging_right_lock = false;
 		}
-		if (event_manager.scrolled_up())
+		if (event.scrolled_up())
 		{
 			ql::vrectangle rect(this->position, this->true_graph_dimension());
 			rect.position.x += ql::f32_cast(this->y_axis_text_space);
 
-			if (rect.collides(event_manager.mouse_position()))
+			if (rect.collides(event.mouse_position()))
 			{
-				auto progress = (event_manager.mouse_position().x - rect.position.x) / rect.dimension.x;
+				auto progress = (event.mouse_position().x - rect.position.x) / rect.dimension.x;
 				auto change = this->visible_element_size();
 				auto start = ql::i64_cast(this->visible_index_start());
 				auto end = ql::i64_cast(this->visible_index_end());
@@ -4465,14 +4465,14 @@ namespace ql
 				this->check_x_axis();
 			}
 		}
-		if (event_manager.scrolled_down())
+		if (event.scrolled_down())
 		{
 			ql::vrectangle rect(this->position, this->true_graph_dimension());
 			rect.position.x += ql::f32_cast(this->y_axis_text_space);
 
-			if (rect.collides(event_manager.mouse_position()))
+			if (rect.collides(event.mouse_position()))
 			{
-				auto progress = (event_manager.mouse_position().x - rect.position.x) / rect.dimension.x;
+				auto progress = (event.mouse_position().x - rect.position.x) / rect.dimension.x;
 				auto change = this->visible_element_size();
 				auto start = ql::i64_cast(this->visible_index_start());
 				auto end = ql::i64_cast(this->visible_index_end());

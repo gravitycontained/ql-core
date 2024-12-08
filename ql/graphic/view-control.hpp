@@ -160,7 +160,7 @@ namespace ql
 			}
 		}
 
-		void update(const ql::event_manager& event)
+		void update(const ql::event& event)
 		{
 			if (!this->hitbox_set)
 			{

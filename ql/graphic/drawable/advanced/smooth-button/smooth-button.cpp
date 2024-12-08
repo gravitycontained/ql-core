@@ -286,7 +286,7 @@ namespace ql
 		return this->clicked;
 	}
 
-	void ql::smooth_button::update(const ql::event_manager& event)
+	void ql::smooth_button::update(const ql::event& event)
 	{
 		this->create_check();
 		if (this->simple_hitbox)

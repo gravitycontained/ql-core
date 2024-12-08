@@ -29,4 +29,8 @@ namespace ql
 	template <typename T>
 	requires (ql::is_string_type<T>())
 	using string_underlying_type = decltype(ql::detail::string_underlying_type(ql::declval<T>()));
+
+	template <typename T>
+	requires (ql::is_string_type<T>())
+	using string_type = typename std::basic_string<ql::string_underlying_type<T>>;
 }	 // namespace ql

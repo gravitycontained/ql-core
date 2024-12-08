@@ -95,7 +95,7 @@ namespace ql
 		QL_SOURCE bool is_hovering() const;
 		QL_SOURCE bool is_clicked() const;
 
-		QL_SOURCE void update(const ql::event_manager& event);
+		QL_SOURCE void update(const ql::event& event);
 
 		QL_SOURCE void create_check() const;
 		QL_SOURCE void draw(sf::RenderTarget& window, sf::RenderStates states = sf::RenderStates::Default) const;

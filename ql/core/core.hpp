@@ -13,5 +13,6 @@
 #include <ql/core/transform/transform.hpp>
 #include <ql/core/type/type.hpp>
 #include <ql/core/random/random.hpp>
+#include <ql/core/serialize/serialize.hpp>
 #include <ql/core/string/string.hpp>
 #include <ql/core/system/system.hpp>

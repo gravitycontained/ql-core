@@ -34,7 +34,7 @@ namespace ql
 		QL_SOURCE void update(ql::f64 frame_time);
 
 #if defined QL_GRAPHIC
-		QL_SOURCE void update(const ql::event_manager& event);
+		QL_SOURCE void update(const ql::event& event);
 #endif
 
 		QL_SOURCE bool is_running() const;

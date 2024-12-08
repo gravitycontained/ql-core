@@ -3,6 +3,7 @@
 #if defined QL_GRAPHIC
 
 #include <ql/graphic/state/base-state/base-state.hpp>
+#include <ql/core/advanced-type/functional/signal/signal.hpp>
 
 #if defined QL_GLEW
 #include <ql/QGL/glew.hpp>
@@ -34,6 +35,15 @@ namespace ql
 		#endif
 	}
 
+	void state_manager::pop_last_state()
+	{
+		if (this->states.size())
+		{
+			this->states.back()->is_pop_this_state = true;
+		}
+	
+	}
+
 	void state_manager::draw_call()
 	{
 		if (this->states.back()->is_clear_allowed())
@@ -58,7 +68,7 @@ namespace ql
 	{
 		if (this->states.size() && !this->states.back()->is_initalized)
 		{
-			this->states.back()->init();
+			this->states.back()->initializing();
 			this->states.back()->is_initalized = true;
 			if (this->call_resize_call_on_init && this->states.back()->call_resize_call_on_init)
 			{
@@ -114,8 +124,9 @@ namespace ql
 
 			this->states.back()->call_on_resize();
 		}
+
 		ql::update_sounds();
-		ql::update_tasks();
+		//ql::update_tasks();
 		auto focus_before = this->focus;
 		auto focus = this->window.hasFocus();
 		this->focus = focus;
@@ -147,6 +158,7 @@ namespace ql
 			this->state_size_before = this->states.size();
 		}
 
+		ql::reset_signal_listeners();
 		if (this->update_if_no_focus || this->focus || (focus_before != this->focus))
 		{
 			this->states.back()->updating();
@@ -172,6 +184,12 @@ namespace ql
 				this->states.back()->call_on_resize();
 			}
 		}
+
+		if (this->states.size())
+		{
+			this->states.back()->post_updating();
+		}
+
 		if (allow_draw)
 		{
 			this->draw_call();

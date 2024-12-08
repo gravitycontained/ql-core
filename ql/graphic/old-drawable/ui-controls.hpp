@@ -44,14 +44,14 @@ namespace ql
 		QL_SOURCE void centerize_text();
 		QL_SOURCE bool is_hovering() const;
 		QL_SOURCE bool is_clicked() const;
-		QL_SOURCE void update(const event_manager& event_manager);
+		QL_SOURCE void update(const event& event);
 		QL_SOURCE void set_text_alpha(ql::u8 alpha);
 		QL_SOURCE void set_background_alpha(ql::u8 alpha);
 
 		template <typename T>
-		void update(const event_manager& event_manager)
+		void update(const event& event)
 		{
-			auto pos = event_manager.mouse_position();
+			auto pos = event.mouse_position();
 
 			auto new_hovering = this->background.collides(pos);
 			if (new_hovering != this->hovering)
@@ -84,7 +84,7 @@ namespace ql
 
 			this->hovering = new_hovering;
 
-			this->clicked = this->hovering && event_manager.left_mouse_clicked();
+			this->clicked = this->hovering && event.left_mouse_clicked();
 		}
 
 		QL_SOURCE void draw(sf::RenderTarget& window, sf::RenderStates states = sf::RenderStates::Default) const;
@@ -140,13 +140,13 @@ namespace ql
 		QL_SOURCE void centerize_text();
 		QL_SOURCE bool is_hovering() const;
 		QL_SOURCE bool is_clicked() const;
-		QL_SOURCE void update(const event_manager& event_manager);
-		QL_SOURCE void update(const event_manager& event_manager, bool& hovering);
+		QL_SOURCE void update(const event& event);
+		QL_SOURCE void update(const event& event, bool& hovering);
 
 		template <typename T>
-		void update(const event_manager& event_manager)
+		void update(const event& event)
 		{
-			auto pos = event_manager.mouse_position();
+			auto pos = event.mouse_position();
 
 			auto new_hovering = this->background.get_hitbox().collides(pos);
 			if (new_hovering != this->hovering)
@@ -179,7 +179,7 @@ namespace ql
 
 			this->hovering = new_hovering;
 
-			this->clicked = this->hovering && event_manager.left_mouse_clicked();
+			this->clicked = this->hovering && event.left_mouse_clicked();
 		}
 
 		bool outline_on_hover = true;
@@ -300,9 +300,9 @@ namespace ql
 		QL_SOURCE void move_cursor_right();
 		QL_SOURCE void update_cursor();
 		QL_SOURCE void update_selection_rectangles();
-		QL_SOURCE void update_mouse_events(const ql::event_manager& event);
+		QL_SOURCE void update_mouse_events(const ql::event& event);
 
-		QL_SOURCE void update(const ql::event_manager& event);
+		QL_SOURCE void update(const ql::event& event);
 		QL_SOURCE void draw(ql::render& draw) const;
 
 		QL_SOURCE std::pair<ql::vector2s, ql::vector2s> get_sorted_selection_range() const;
@@ -972,7 +972,7 @@ namespace ql
 			this->background_hover_outline_thickness = value;
 		}
 
-		void update(const ql::event_manager& event)
+		void update(const ql::event& event)
 		{
 			auto pos = event.mouse_position();
 			this->hovering_over_background = false;
@@ -1247,7 +1247,7 @@ namespace ql
 			return this->active_value;
 		}
 
-		void update(const ql::event_manager& event)
+		void update(const ql::event& event)
 		{
 			this->value_modified = false;
 			if (this->background.get_hitbox().collides(event.mouse_position()) && event.left_mouse_clicked())
@@ -1376,7 +1376,7 @@ namespace ql
 
 		QL_SOURCE void update_entered_text();
 
-		QL_SOURCE void update(const ql::event_manager& event);
+		QL_SOURCE void update(const ql::event& event);
 		QL_SOURCE void draw(ql::render& draw) const;
 	};
 
@@ -1425,9 +1425,9 @@ namespace ql
 		QL_SOURCE void set_progress(ql::f32 progress);
 		QL_SOURCE void set_knob_height(ql::f32 height);
 		QL_SOURCE void set_knob_range(ql::f32 range);
-		QL_SOURCE void update_hover(const ql::event_manager& event);
-		QL_SOURCE void update_background_hover(const ql::event_manager& event);
-		QL_SOURCE void update(const ql::event_manager& event);
+		QL_SOURCE void update_hover(const ql::event& event);
+		QL_SOURCE void update_background_hover(const ql::event& event);
+		QL_SOURCE void update(const ql::event& event);
 		QL_SOURCE void draw(ql::render& draw) const;
 	};
 
@@ -1553,10 +1553,10 @@ namespace ql
 		QL_SOURCE void add(const ql::styled_string<std::u32string>& string);
 		QL_SOURCE void create(const ql::styled_string<std::u32string>& string);
 		QL_SOURCE void paste_from_clipboard();
-		QL_SOURCE void update_key_input(const ql::event_manager& event);
-		QL_SOURCE void update_selection_rectangle(const ql::event_manager& event);
+		QL_SOURCE void update_key_input(const ql::event& event);
+		QL_SOURCE void update_selection_rectangle(const ql::event& event);
 		QL_SOURCE void update_cursor();
-		QL_SOURCE void update(const ql::event_manager& event);
+		QL_SOURCE void update(const ql::event& event);
 		QL_SOURCE void draw(ql::render& draw) const;
 	};
 }	 // namespace ql

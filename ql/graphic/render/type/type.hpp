@@ -27,10 +27,10 @@ namespace ql
 		}
 
 		template <typename T>
-		requires (ql::has_any_draw<T>() || ql::is_container<T>())
+		requires (ql::has_draw<T>() || ql::is_container<T>())
 		void final_draw(const T& object)
 		{
-			if constexpr (ql::has_any_draw<T>())
+			if constexpr (ql::has_draw<T>())
 			{
 				if constexpr (ql::is_render_texture<T>())
 				{
@@ -84,7 +84,7 @@ namespace ql
 		}
 
 		template <typename T, typename U>
-		requires (ql::has_any_draw<T>() || ql::is_container<T>())
+		requires (ql::has_draw<T>() || ql::is_container<T>())
 		void draw(const T& object, const ql::view_type<U>& view)
 		{
 			auto copy = this->states;
@@ -94,7 +94,7 @@ namespace ql
 		}
 
 		template <typename T>
-		requires (ql::has_any_draw<T>() || ql::is_container<T>())
+		requires (ql::has_draw<T>() || ql::is_container<T>())
 		void draw(const T& object)
 		{
 			if constexpr (ql::has_view<T>())
@@ -111,14 +111,14 @@ namespace ql
 		}
 
 		template <typename T>
-		requires (ql::has_any_draw<T>() || ql::is_container<T>())
+		requires (ql::has_draw<T>() || ql::is_container<T>())
 		void draw(const T& object, sf::RenderStates states)
 		{
 			if constexpr (ql::has_view<T>())
 			{
 				object.auto_view.apply_to(states);
 			}
-			if constexpr (ql::has_any_draw<T>())
+			if constexpr (ql::has_draw<T>())
 			{
 				if constexpr (ql::is_render_texture<T>())
 				{

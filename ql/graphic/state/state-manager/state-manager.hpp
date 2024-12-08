@@ -75,6 +75,8 @@ namespace ql
 			}
 		}
 
+		QL_SOURCE void pop_last_state();
+
 		QL_SOURCE void draw_call();
 		QL_SOURCE void init_back();
 
@@ -166,7 +168,7 @@ namespace ql
 		QL_SOURCE void set_icon(std::string path, std::string name = "icon");
 
 		std::vector<std::unique_ptr<ql::base_state>> states;
-		ql::event_manager event;
+		ql::event event;
 		sf::RenderWindow window;
 		std::unordered_map<std::string, ql::render_texture> render_textures;
 		sf::ContextSettings context_settings;

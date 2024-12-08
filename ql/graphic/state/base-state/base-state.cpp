@@ -56,11 +56,6 @@ namespace ql
 		this->state_manager->display();
 	}
 
-	bool ql::base_state::game_loop_segment()
-	{
-		return this->state_manager->game_loop_segment();
-	}
-
 	void ql::base_state::set_antialising_level(ql::u32 antialising)
 	{
 		this->state_manager->context_settings.antialiasingLevel = antialising;
@@ -434,12 +429,12 @@ namespace ql
 		return this->state_manager->run_time();
 	}
 
-	const ql::event_manager& ql::base_state::event() const
+	const ql::event& ql::base_state::event() const
 	{
 		return this->state_manager->event;
 	}
 
-	ql::event_manager& ql::base_state::event()
+	ql::event& ql::base_state::event()
 	{
 		return this->state_manager->event;
 	}

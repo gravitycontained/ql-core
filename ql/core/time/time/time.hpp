@@ -7,7 +7,7 @@
 #if defined QL_GRAPHIC
 namespace ql
 {
-	struct event_manager;
+	struct event;
 }
 #endif
 

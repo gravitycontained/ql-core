@@ -93,7 +93,7 @@ namespace ql
 		QL_SOURCE void cap_max_velocity();
 
 #if defined QL_GRAPHIC
-		QL_SOURCE void update(const ql::event_manager& event);
+		QL_SOURCE void update(const ql::event& event);
 		QL_SOURCE sf::RenderStates get_render_states() const;
 #endif
 

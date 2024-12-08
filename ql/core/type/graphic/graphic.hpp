@@ -59,7 +59,7 @@ namespace ql
 													 std::is_base_of_v<sf::Drawable, C>;
 
 	template <typename C>
-	constexpr bool has_any_draw()
+	constexpr bool has_draw()
 	{
 		return has_any_draw_c<C>;
 	}

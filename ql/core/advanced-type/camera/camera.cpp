@@ -406,7 +406,7 @@ namespace ql
 
 #if defined ql_INTERN_SFML_USE
 
-	void ql::camera::update(const ql::event_manager& event)
+	void ql::camera::update(const ql::event& event)
 	{
 		if (this->allow_looking)
 		{

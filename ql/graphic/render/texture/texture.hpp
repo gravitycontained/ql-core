@@ -54,7 +54,7 @@ namespace ql
 		QL_SOURCE void unbind_shader();
 
 		template <typename T>
-		requires (ql::has_any_draw<T>())
+		requires (ql::has_draw<T>())
 		void draw(const T& object)
 		{
 			if constexpr (ql::is_render_texture<T>())
@@ -81,7 +81,7 @@ namespace ql
 		}
 
 		template <typename T>
-		requires (ql::has_any_draw<T>())
+		requires (ql::has_draw<T>())
 		void draw(const T& object, sf::RenderStates states)
 		{
 			if constexpr (ql::is_render_texture<T>())

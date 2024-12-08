@@ -91,7 +91,7 @@ namespace ql
 		this->progress_before = this->progress;
 	}
 #if defined QL_GRAPHIC
-	void ql::animation::update(const ql::event_manager& event)
+	void ql::animation::update(const ql::event& event)
 	{
 		this->update(event.frame_time_f());
 	}

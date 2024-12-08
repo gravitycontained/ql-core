@@ -63,6 +63,11 @@ namespace ql
 			this->from_oklch(rgb);
 		}
 
+		constexpr bool operator==(const ql::oklch& other) const
+		{
+			return this->l == other.l && this->c == other.c && this->h == other.h && this->a == other.a;
+		}
+
 		std::string to_string() const
 		{
 			return ql::to_string(

@@ -9,6 +9,9 @@
 #include <ql/graphic/drawable/drawable.hpp>
 #include <ql/graphic/render/render.hpp>
 
+#include <ql/graphic/interactive/interactive.hpp>
+#include <ql/graphic/update/update.hpp>
+
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 
@@ -16,7 +19,7 @@ namespace ql
 {
 
 	/* TO OVERLOAD:
-		void init() override {
+		void initializing() override {
 
 		}
 		void updating() override {
@@ -30,8 +33,9 @@ namespace ql
 	{
 		virtual ~base_state() = default;
 
-		virtual void init() = 0;
+		virtual void initializing() = 0;
 		virtual void updating() = 0;
+		virtual void post_updating() = 0;
 		virtual void drawing() = 0;
 
 		QL_SOURCE virtual void clear();
@@ -43,7 +47,6 @@ namespace ql
 
 		QL_SOURCE void draw_call();
 		QL_SOURCE void display();
-		QL_SOURCE bool game_loop_segment();
 
 		QL_SOURCE void set_antialising_level(ql::u32 antialising);
 		QL_SOURCE void set_sRGB(bool srgb);
@@ -69,7 +72,36 @@ namespace ql
 		QL_SOURCE void reset_view();
 
 		template <typename T>
-		requires (ql::has_any_draw<T>() || (ql::is_container<T>() && ql::has_any_draw<ql::container_deepest_subtype<T>>()))
+		void interactive_init(T& object)
+		{
+			ql::init_state state{this->dimension()};
+			ql::interactive_init(object, state);
+		}
+
+		template <typename T>
+		void interactive_update(T& object)
+		{
+
+			ql::update update{this->event(), *this->state_manager};
+			ql::interactive_update(object, update);
+		}
+
+		template <typename T>
+		void interactive_post_update(T& object)
+		{
+			ql::interactive_post_update(object);
+		}
+
+		template <typename T>
+		void interactive_draw(T& object)
+		{
+			ql::render render(this->state_manager->window, this->render_states);
+			ql::interactive_draw(object, render);
+		}
+
+		/*
+		template <typename T>
+		requires (ql::has_draw<T>() || (ql::is_container<T>() && ql::has_draw<ql::container_deepest_subtype<T>>()))
 		void final_draw(const T& drawable, sf::RenderStates states)
 		{
 			if constexpr (ql::has_view<T>())
@@ -138,10 +170,10 @@ namespace ql
 		}
 
 		template <typename T>
-		requires (ql::has_any_draw<T>() || (ql::is_container<T>() && ql::has_any_draw<ql::container_deepest_subtype<T>>()))
+		requires (ql::has_draw<T>() || (ql::is_container<T>() && ql::has_draw<ql::container_deepest_subtype<T>>()))
 		void draw(const T& drawable, sf::RenderStates states)
 		{
-			if constexpr (ql::has_any_draw<T>())
+			if constexpr (ql::has_draw<T>())
 			{
 				if constexpr (ql::is_render_texture<T>())
 				{
@@ -162,10 +194,10 @@ namespace ql
 		}
 
 		template <typename T>
-		requires (ql::has_any_draw<T>() || (ql::is_container<T>() && ql::has_any_draw<ql::container_deepest_subtype<T>>()))
+		requires (ql::has_draw<T>() || (ql::is_container<T>() && ql::has_draw<ql::container_deepest_subtype<T>>()))
 		void draw(const T& drawable)
 		{
-			if constexpr (ql::has_any_draw<T>())
+			if constexpr (ql::has_draw<T>())
 			{
 				if constexpr (ql::is_render_texture<T>())
 				{
@@ -186,14 +218,14 @@ namespace ql
 		}
 
 		template <typename T, typename V>
-		requires (ql::has_any_draw<T>() || (ql::is_container<T>() && ql::has_any_draw<ql::container_deepest_subtype<T>>()))
+		requires (ql::has_draw<T>() || (ql::is_container<T>() && ql::has_draw<ql::container_deepest_subtype<T>>()))
 		void draw(const T& drawable, ql::view_type<V> view)
 		{
 			this->draw(drawable, view.get_render_states());
 		}
 
 		template <typename T, typename V>
-		requires (ql::has_any_draw<T>() || (ql::is_container<T>() && ql::has_any_draw<ql::container_deepest_subtype<T>>()))
+		requires (ql::has_draw<T>() || (ql::is_container<T>() && ql::has_draw<ql::container_deepest_subtype<T>>()))
 		void draw(const T& drawable, ql::view_control_t<V> view)
 		{
 			if (!view.enabled)
@@ -201,7 +233,7 @@ namespace ql
 				this->draw(drawable);
 				return;
 			}
-			if constexpr (ql::has_any_draw<T>())
+			if constexpr (ql::has_draw<T>())
 			{
 				sf::RenderStates states = view.get_render_states();
 				this->draw(drawable, states);
@@ -216,10 +248,10 @@ namespace ql
 		}
 
 		template <typename T>
-		requires (ql::has_any_draw<T>() || (ql::is_container<T>() && ql::has_any_draw<ql::container_deepest_subtype<T>>()))
+		requires (ql::has_draw<T>() || (ql::is_container<T>() && ql::has_draw<ql::container_deepest_subtype<T>>()))
 		void draw(const T& drawable, const ql::camera& camera)
 		{
-			if constexpr (ql::has_any_draw<T>())
+			if constexpr (ql::has_draw<T>())
 			{
 				sf::RenderStates states = camera.get_render_states();
 				this->draw(drawable, states);
@@ -234,10 +266,10 @@ namespace ql
 		}
 
 		template <typename T>
-		requires (ql::has_any_draw<T>() || (ql::is_container<T>() && ql::has_any_draw<ql::container_deepest_subtype<T>>()))
+		requires (ql::has_draw<T>() || (ql::is_container<T>() && ql::has_draw<ql::container_deepest_subtype<T>>()))
 		void draw_into(const std::string& name, const T& drawable)
 		{
-			if constexpr (ql::has_any_draw<T>())
+			if constexpr (ql::has_draw<T>())
 			{
 				this->get_render(name).draw(drawable, this->render_states);
 			}
@@ -251,10 +283,10 @@ namespace ql
 		}
 
 		template <typename T>
-		requires (ql::has_any_draw<T>() || (ql::is_container<T>() && ql::has_any_draw<ql::container_deepest_subtype<T>>()))
+		requires (ql::has_draw<T>() || (ql::is_container<T>() && ql::has_draw<ql::container_deepest_subtype<T>>()))
 		void draw_into(const std::string& name, const T& drawable, sf::RenderStates states)
 		{
-			if constexpr (ql::has_any_draw<T>())
+			if constexpr (ql::has_draw<T>())
 			{
 				this->get_render(name).draw(drawable, states);
 			}
@@ -268,7 +300,7 @@ namespace ql
 		}
 
 		template <typename T, typename V>
-		requires (ql::has_any_draw<T>() || (ql::is_container<T>() && ql::has_any_draw<ql::container_deepest_subtype<T>>()))
+		requires (ql::has_draw<T>() || (ql::is_container<T>() && ql::has_draw<ql::container_deepest_subtype<T>>()))
 		void draw_into(const std::string& name, const T& drawable, ql::view_control_t<V> view)
 		{
 			if (!view.enabled)
@@ -276,7 +308,7 @@ namespace ql
 				this->draw_into(name, drawable);
 				return;
 			}
-			if constexpr (ql::has_any_draw<T>())
+			if constexpr (ql::has_draw<T>())
 			{
 				sf::RenderStates states = view.get_render_states();
 				this->get_render(name).draw(drawable, states);
@@ -291,10 +323,10 @@ namespace ql
 		}
 
 		template <typename T>
-		requires (ql::has_any_draw<T>() || (ql::is_container<T>() && ql::has_any_draw<ql::container_deepest_subtype<T>>()))
+		requires (ql::has_draw<T>() || (ql::is_container<T>() && ql::has_draw<ql::container_deepest_subtype<T>>()))
 		void draw_with_shader(const T& drawable, const std::string& name)
 		{
-			if constexpr (ql::has_any_draw<T>())
+			if constexpr (ql::has_draw<T>())
 			{
 				sf::RenderStates states = this->render_states;
 				states.shader = &ql::get_shader(name);
@@ -310,10 +342,10 @@ namespace ql
 		}
 
 		template <typename T>
-		requires (ql::has_any_draw<T>() || (ql::is_container<T>() && ql::has_any_draw<ql::container_deepest_subtype<T>>()))
+		requires (ql::has_draw<T>() || (ql::is_container<T>() && ql::has_draw<ql::container_deepest_subtype<T>>()))
 		void draw_with_shader(const T& drawable, sf::Shader& shader)
 		{
-			if constexpr (ql::has_any_draw<T>())
+			if constexpr (ql::has_draw<T>())
 			{
 				sf::RenderStates states = this->render_states;
 				states.shader = &shader;
@@ -329,10 +361,10 @@ namespace ql
 		}
 
 		template <typename T>
-		requires (ql::has_any_draw<T>() || (ql::is_container<T>() && ql::has_any_draw<ql::container_deepest_subtype<T>>()))
+		requires (ql::has_draw<T>() || (ql::is_container<T>() && ql::has_draw<ql::container_deepest_subtype<T>>()))
 		void draw_with_shader_into(const std::string& render_name, const T& drawable, const std::string& shader_name)
 		{
-			if constexpr (ql::has_any_draw<T>())
+			if constexpr (ql::has_draw<T>())
 			{
 				sf::RenderStates states = this->render_states;
 				states.shader = &ql::get_shader(shader_name);
@@ -348,10 +380,10 @@ namespace ql
 		}
 
 		template <typename T>
-		requires (ql::has_any_draw<T>() || (ql::is_container<T>() && ql::has_any_draw<ql::container_deepest_subtype<T>>()))
+		requires (ql::has_draw<T>() || (ql::is_container<T>() && ql::has_draw<ql::container_deepest_subtype<T>>()))
 		void draw_with_shader_into(const std::string& render_name, const T& drawable, sf::Shader& shader)
 		{
-			if constexpr (ql::has_any_draw<T>())
+			if constexpr (ql::has_draw<T>())
 			{
 				sf::RenderStates states = this->render_states;
 				states.shader = &shader;
@@ -473,7 +505,7 @@ namespace ql
 			this->event().m_mouse_position = before;
 			this->event().m_delta_mouse_position = before_delta;
 		}
-
+		*/
 		QL_SOURCE void create();
 		QL_SOURCE bool is_open() const;
 		QL_SOURCE void update_close_window();
@@ -550,8 +582,8 @@ namespace ql
 		QL_SOURCE ql::time frame_time() const;
 		QL_SOURCE ql::f64 frame_time_f() const;
 		QL_SOURCE ql::time run_time() const;
-		QL_SOURCE const ql::event_manager& event() const;
-		QL_SOURCE ql::event_manager& event();
+		QL_SOURCE const ql::event& event() const;
+		QL_SOURCE ql::event& event();
 
 		ql::state_manager* state_manager = nullptr;
 

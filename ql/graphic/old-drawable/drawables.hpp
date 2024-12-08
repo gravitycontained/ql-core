@@ -52,7 +52,7 @@ namespace ql
 	struct vgraph;
 	struct graph;
 
-	struct event_manager;
+	struct event;
 
 	namespace detail
 	{
@@ -933,7 +933,7 @@ namespace ql
 		QL_SOURCE void set_duration(ql::f64 duration);
 		QL_SOURCE void make_disappear();
 		QL_SOURCE void make_appear();
-		QL_SOURCE void update(const ql::event_manager& event);
+		QL_SOURCE void update(const ql::event& event);
 		QL_SOURCE bool just_finished_disappearing() const;
 		QL_SOURCE bool just_finished_appearing() const;
 		QL_SOURCE void draw(ql::render& draw) const;
@@ -2574,7 +2574,7 @@ namespace ql
 		QL_SOURCE void enable_track_new_entries();
 		QL_SOURCE void disable_track_new_entries();
 		QL_SOURCE void enable_axis_info();
-		QL_SOURCE void update(const event_manager& event_manager);
+		QL_SOURCE void update(const event& event);
 		QL_SOURCE void copy_visible_range(const vgraph& other);
 		QL_SOURCE void set_visible_range(ql::size begin, ql::size end);
 		QL_SOURCE void set_visible_range_max();
