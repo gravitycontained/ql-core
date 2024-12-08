@@ -92,11 +92,11 @@ namespace ql
 		{
 			if (i.first == sorted.front().first && sorted.size() >= 2u)
 			{
-				ql::print(ql::bright_green);
+				ql::print(ql::color::bright_green);
 			}
 			else if (i.first == sorted.back().first && sorted.size() >= 3u)
 			{
-				ql::print(ql::bright_red);
+				ql::print(ql::color::bright_red);
 			}
 			auto f = i.second.elapsed().nsecs_f() / sum.nsecs_f();
 
@@ -134,11 +134,11 @@ namespace ql
 			{
 				if (i.first == sorted.front().first && sorted.size() >= 2u)
 				{
-					ql::print(ql::bright_green);
+					ql::print(ql::color::bright_green);
 				}
 				else if (i.first == sorted.back().first && sorted.size() >= 3u)
 				{
-					ql::print(ql::bright_red);
+					ql::print(ql::color::bright_red);
 				}
 
 				auto f = i.second.elapsed().nsecs_f() / sum.nsecs_f();
