@@ -10,20 +10,20 @@ namespace ql
 {
 
 	template <typename C>
-	concept has_post_update_c = requires(C x) { x.post_update(); };
+	concept has_update_phase_signal_c = requires(C x) { x.update_phase_signal(); };
 
 	template <typename C>
-	constexpr bool has_post_update()
+	constexpr bool has_update_phase_signal()
 	{
-		return has_post_update_c<C>;
+		return has_update_phase_signal_c<C>;
 	}
 
 	template <typename T>
 	requires (ql::is_or_has_interactive<T>())
-	void interactive_post_update(T& object)
+	void interactive_update_phase_signal(T& object)
 	{
-		if constexpr (ql::has_post_update<decltype(object)>())
-			object.post_update();
+		if constexpr (ql::has_update_phase_signal<decltype(object)>())
+			object.update_phase_signal();
 
 		auto iterate = [&](auto& tuple)
 		{
@@ -31,11 +31,11 @@ namespace ql
 					tuple,
 					[&](auto& member)
 					{
-						if constexpr (ql::has_post_update<decltype(member)>())
-							member.post_update();
+						if constexpr (ql::has_update_phase_signal<decltype(member)>())
+							object.update_phase_signal();
 
 						if constexpr (ql::is_or_has_interactive<decltype(member)>())
-							ql::interactive_post_update(member);
+							ql::interactive_update_phase_signal(member);
 					}
 			);
 		};

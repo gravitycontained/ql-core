@@ -13,4 +13,10 @@ namespace ql
 		detail::signal_listeners.clear();
 	}
 
+	void reset_signal_count()
+	{
+		detail::signal_index = 0u;
+	}
+
+
 }	 // namespace ql	

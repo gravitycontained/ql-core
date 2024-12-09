@@ -35,7 +35,7 @@ namespace ql
 
 		virtual void initializing() = 0;
 		virtual void updating() = 0;
-		virtual void post_updating() = 0;
+		virtual void updating_phase_signal() = 0;
 		virtual void drawing() = 0;
 
 		QL_SOURCE virtual void clear();
@@ -87,9 +87,9 @@ namespace ql
 		}
 
 		template <typename T>
-		void interactive_post_update(T& object)
+		void updating_phase_signal(T& object)
 		{
-			ql::interactive_post_update(object);
+			ql::interactive_update_phase_signal(object);
 		}
 
 		template <typename T>

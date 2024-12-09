@@ -1,7 +1,7 @@
 #pragma once
 #include <ql/graphic/interactive/draw.hpp>
 #include <ql/graphic/interactive/init.hpp>
-#include <ql/graphic/interactive/post-update.hpp>
+#include <ql/graphic/interactive/update-signal.hpp>
 #include <ql/graphic/interactive/update.hpp>
 #include <ql/graphic/interactive/type.hpp>
 
@@ -16,9 +16,9 @@
 		this->interactive_update(param);      \
 	}                                       \
 																					\
-	void post_updating() override           \
+	void updating_phase_signal() override   \
 	{																			  \
-		this->interactive_post_update(param); \
+		this->interactive_update_phase_signal(param); \
 	}                                       \
                                           \
 	void drawing() override                 \

@@ -16,6 +16,7 @@ namespace ql
 	}	 // namespace detail
 
 	QL_SOURCE void reset_signal_listeners();
+	QL_SOURCE void reset_signal_count();
 
 	template <typename T>
 	struct signal
@@ -128,7 +129,7 @@ namespace ql
 			this->fire_next_time = true;
 		}
 
-		void post_update()
+		void update_phase_signal()
 		{
 			if constexpr (ql::is_same<T, ql::empty_type>())
 			{
