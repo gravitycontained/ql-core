@@ -13,22 +13,25 @@ namespace ql
 {
 	struct state_manager;
 
-	template <typename C>
-	concept has_update_new_c = requires(C x, ql::update& update) { x.update(update); };
-
-	template <typename C>
-	constexpr bool has_update_new()
+	namespace detail
 	{
-		return has_update_new_c<C>;
-	}
+		template <typename C>
+		concept has_update_full_c = requires(C x, ql::update& update) { x.update(update); };
 
-	template <typename C>
-	concept has_update_no_parameter_c = requires(C x) { x.update(); };
+		template <typename C>
+		constexpr bool has_update_full()
+		{
+			return has_update_full_c<C>;
+		}
 
-	template <typename C>
-	constexpr bool has_update_no_parameter()
-	{
-		return has_update_no_parameter_c<C>;
+		template <typename C>
+		concept has_update_no_parameter_c = requires(C x) { x.update(); };
+
+		template <typename C>
+		constexpr bool has_update_no_parameter()
+		{
+			return has_update_no_parameter_c<C>;
+		}
 	}
 
 	template <typename T>
@@ -36,12 +39,12 @@ namespace ql
 	void interactive_update(T& object, ql::update& update)
 	{
 		if constexpr (ql::has_update<decltype(object)>())
-			object.update(update.event.get());
+			object.update(update.event);
 
-		if constexpr (ql::has_update_new<decltype(object)>())
+		if constexpr (ql::detail::has_update_full<decltype(object)>())
 			object.update(update);
 
-		if constexpr (ql::has_update_no_parameter<decltype(object)>())
+		if constexpr (ql::detail::has_update_no_parameter<decltype(object)>())
 			object.update();
 
 		auto iterate = [&](auto& tuple)
@@ -51,12 +54,12 @@ namespace ql
 					[&](auto& member)
 					{
 						if constexpr (ql::has_update<decltype(member)>())
-							member.update(update.event.get());
+							member.update(update.event);
 
-						if constexpr (ql::has_update_new<decltype(member)>())
+						if constexpr (ql::detail::has_update_full<decltype(member)>())
 							member.update(update);
 
-						if constexpr (ql::has_update_no_parameter<decltype(member)>())
+						if constexpr (ql::detail::has_update_no_parameter<decltype(member)>())
 							member.update();
 
 						if constexpr (ql::is_or_has_interactive<decltype(member)>())

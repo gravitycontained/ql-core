@@ -13,6 +13,8 @@
 #include <ql/graphic/event/event.hpp>
 #include <ql/graphic/resources/resources.hpp>
 
+#include <ql/core/advanced-type/signal/signal.hpp>
+
 namespace ql
 {
 
@@ -169,6 +171,8 @@ namespace ql
 
 		std::vector<std::unique_ptr<ql::base_state>> states;
 		ql::event event;
+		ql::signal_update_manager signal_update_manager;
+
 		sf::RenderWindow window;
 		std::unordered_map<std::string, ql::render_texture> render_textures;
 		sf::ContextSettings context_settings;

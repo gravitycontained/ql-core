@@ -5,24 +5,39 @@
 #include <ql/core/type/type.hpp>
 
 #include <ql/graphic/interactive/type.hpp>
+#include <ql/core/advanced-type/signal/signal.hpp>
 
 namespace ql
 {
-
-	template <typename C>
-	concept has_update_phase_signal_c = requires(C x) { x.update_phase_signal(); };
-
-	template <typename C>
-	constexpr bool has_update_phase_signal()
+	namespace detail
 	{
-		return has_update_phase_signal_c<C>;
+		template <typename C>
+		concept has_update_phase_signal_c = requires(C x, ql::signal_update_manager& update) { x.update_phase_signal(update); };
+
+		template <typename C>
+		constexpr bool has_update_phase_signal()
+		{
+			return has_update_phase_signal_c<C>;
+		}
+
+		template <typename C>
+		concept has_update_phase_signal_no_parameter_c = requires(C x) { x.update_phase_signal(); };
+
+		template <typename C>
+		constexpr bool has_update_phase_signal_no_parameter()
+		{
+			return has_update_phase_signal_no_parameter_c<C>;
+		}
 	}
 
 	template <typename T>
 	requires (ql::is_or_has_interactive<T>())
-	void interactive_update_phase_signal(T& object)
+	void interactive_update_phase_signal(T& object, ql::signal_update_manager& update)
 	{
-		if constexpr (ql::has_update_phase_signal<decltype(object)>())
+		if constexpr (ql::detail::has_update_phase_signal<decltype(object)>())
+			object.update_phase_signal(update);
+
+		if constexpr (ql::detail::has_update_phase_signal_no_parameter<decltype(object)>())
 			object.update_phase_signal();
 
 		auto iterate = [&](auto& tuple)
@@ -31,11 +46,14 @@ namespace ql
 					tuple,
 					[&](auto& member)
 					{
-						if constexpr (ql::has_update_phase_signal<decltype(member)>())
-							object.update_phase_signal();
+						if constexpr (ql::detail::has_update_phase_signal<decltype(member)>())
+							member.update_phase_signal(update);
+
+						if constexpr (ql::detail::has_update_phase_signal_no_parameter<decltype(member)>())
+							member.update_phase_signal();
 
 						if constexpr (ql::is_or_has_interactive<decltype(member)>())
-							ql::interactive_update_phase_signal(member);
+							ql::interactive_update_phase_signal(member, update);
 					}
 			);
 		};

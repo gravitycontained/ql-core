@@ -3,7 +3,6 @@
 
 #include <ql/core/definition/definition.hpp>
 #include <ql/core/constexpr/index.hpp>
-#include <ql/core/functional/auto-tie.hpp>
 
 #include <ql/core/type/recursive/recursive.hpp>
 

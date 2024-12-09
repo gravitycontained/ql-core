@@ -1,7 +1,7 @@
 #pragma once
 
 #include <ql/core/definition/definition.hpp>
-#include <ql/core/advanced-type/functional/signal/signal.hpp>
+#include <ql/core/advanced-type/signal/signal.hpp>
 
 namespace ql
 {

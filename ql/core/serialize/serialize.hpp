@@ -9,9 +9,16 @@ namespace ql
 		template <ql::size>
 		struct anything
 		{
+			//template <class T>
+			//operator T() const;
+
 			template <class T>
-			operator T() const;
+			operator T&() const;
+			//
+			//template <class T>
+			//operator T&&() const;
 		};
+
 		template <class T, ql::size... Ints>
 		concept is_constructible_c = requires { T{anything<Ints>{}...}; };
 	}	 // namespace detail

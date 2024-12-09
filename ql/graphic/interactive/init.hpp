@@ -8,9 +8,9 @@
 
 namespace ql
 {
-	template <typename C>
-	concept has_init_c = requires(C x) { x.init(); };
 
+	template <typename C>
+	concept has_init_c = requires(C x, ql::init_state& state) { x.init(state); };
 
 	template <typename C>
 	constexpr bool has_init()
@@ -18,13 +18,16 @@ namespace ql
 		return has_init_c<C>;
 	}
 
-	template <typename C>
-	concept has_init_with_state_c = requires(C x, ql::init_state& state) { x.init(state); };
-
-	template <typename C>
-	constexpr bool has_init_with_state()
+	namespace detail
 	{
-		return has_init_with_state_c<C>;
+		template <typename C>
+		concept has_init_no_parameter_c = requires(C x) { x.init(); };
+
+		template <typename C>
+		constexpr bool has_init_no_parameter()
+		{
+			return has_init_no_parameter_c<C>;
+		}
 	}
 
 	template <typename T>
@@ -40,10 +43,10 @@ namespace ql
 					if constexpr (ql::is_or_has_interactive<decltype(member)>())
 						ql::interactive_init(member, state);
 
-					if constexpr (ql::has_init_with_state<decltype(member)>())
+					if constexpr (ql::has_init<decltype(member)>())
 						member.init(state);
 
-					else if constexpr (ql::has_init<decltype(member)>())
+					else if constexpr (ql::detail::has_init_no_parameter<decltype(member)>())
 						member.init();
 				}
 			);
@@ -61,10 +64,10 @@ namespace ql
 			iterate(tuple);
 		}
 
-		if constexpr (ql::has_init_with_state<decltype(object)>())
+		if constexpr (ql::has_init<decltype(object)>())
 			object.init(state);
 
-		else if constexpr (ql::has_init<decltype(object)>())
+		else if constexpr (ql::detail::has_init_no_parameter<decltype(object)>())
 			object.init();
 
 	}

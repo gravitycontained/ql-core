@@ -34,8 +34,10 @@ namespace ql
 		virtual ~base_state() = default;
 
 		virtual void initializing() = 0;
+		virtual void initializing_interaction() = 0;
 		virtual void updating() = 0;
-		virtual void updating_phase_signal() = 0;
+		virtual void updating_phase_signal_run() = 0;
+		virtual void updating_phase_signal_detect() = 0;
 		virtual void drawing() = 0;
 
 		QL_SOURCE virtual void clear();
@@ -72,31 +74,57 @@ namespace ql
 		QL_SOURCE void reset_view();
 
 		template <typename T>
+		void interactive_init_interaction(T& object)
+		{
+			ql::init_state init_state{this->dimension()};
+			ql::render render(this->state_manager->window, this->render_states);
+			ql::update update{this->event(), *this->state_manager, this->state_manager->signal_update_manager, render, init_state};
+			ql::interactive_init_interaction(object, update);
+		}
+		template <typename T>
 		void interactive_init(T& object)
 		{
-			ql::init_state state{this->dimension()};
-			ql::interactive_init(object, state);
+			ql::init_state init_state{this->dimension()};
+			ql::render render(this->state_manager->window, this->render_states);
+			ql::update update{this->event(), *this->state_manager, this->state_manager->signal_update_manager, render, init_state};
+			ql::interactive_init(object, update);
 		}
 
 		template <typename T>
 		void interactive_update(T& object)
 		{
-
-			ql::update update{this->event(), *this->state_manager};
+			ql::init_state init_state{this->dimension()};
+			ql::render render(this->state_manager->window, this->render_states);
+			ql::update update{this->event(), *this->state_manager, this->state_manager->signal_update_manager, render, init_state};
 			ql::interactive_update(object, update);
 		}
 
 		template <typename T>
-		void updating_phase_signal(T& object)
+		void interactive_update_phase_signal_run(T& object)
 		{
-			ql::interactive_update_phase_signal(object);
+			ql::init_state init_state{this->dimension()};
+			ql::render render(this->state_manager->window, this->render_states);
+			ql::update update{this->event(), *this->state_manager, this->state_manager->signal_update_manager, render, init_state};
+			ql::interactive_update_phase_signal_run(object, update);
 		}
+
+		template <typename T>
+		void interactive_update_phase_signal_detect(T& object)
+		{
+			ql::init_state init_state{this->dimension()};
+			ql::render render(this->state_manager->window, this->render_states);
+			ql::update update{this->event(), *this->state_manager, this->state_manager->signal_update_manager, render, init_state};
+			ql::interactive_update_phase_signal_detect(object, update);
+		}
+
 
 		template <typename T>
 		void interactive_draw(T& object)
 		{
+			ql::init_state init_state{this->dimension()};
 			ql::render render(this->state_manager->window, this->render_states);
-			ql::interactive_draw(object, render);
+			ql::update update{this->event(), *this->state_manager, this->state_manager->signal_update_manager, render, init_state};
+			ql::interactive_draw(object, update);
 		}
 
 		/*

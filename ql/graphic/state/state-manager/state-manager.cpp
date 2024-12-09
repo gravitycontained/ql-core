@@ -3,7 +3,7 @@
 #if defined QL_GRAPHIC
 
 #include <ql/graphic/state/base-state/base-state.hpp>
-#include <ql/core/advanced-type/functional/signal/signal.hpp>
+#include <ql/core/advanced-type/signal/signal.hpp>
 
 #if defined QL_GLEW
 #include <ql/QGL/glew.hpp>
@@ -68,6 +68,7 @@ namespace ql
 	{
 		if (this->states.size() && !this->states.back()->is_initalized)
 		{
+			this->states.back()->initializing_interaction();
 			this->states.back()->initializing();
 			this->states.back()->is_initalized = true;
 			if (this->call_resize_call_on_init && this->states.back()->call_resize_call_on_init)
@@ -157,8 +158,10 @@ namespace ql
 			this->states.back()->call_on_activate();
 			this->state_size_before = this->states.size();
 		}
+		
+		this->signal_update_manager.clear_list();
+		this->signal_update_manager.reset_active();
 
-		ql::reset_signal_listeners();
 		if (this->update_if_no_focus || this->focus || (focus_before != this->focus))
 		{
 			this->states.back()->updating();
@@ -187,8 +190,27 @@ namespace ql
 
 		if (this->states.size())
 		{
-			this->states.back()->post_updating();
+			this->states.back()->updating_phase_signal_run();
+			this->states.back()->updating_phase_signal_detect();
+
+			for (ql::size ctr = 0u; this->signal_update_manager.active; ++ctr)
+			{
+				if (ctr > 1000u)
+				{
+					ql::println(ql::color::bright_yellow, ql::to_string("updating signals > 1000 cycles, breaking loop"));
+					break;
+				}
+				ql::println("signals cycle ", ctr, " size: ", this->signal_update_manager.next_list.size());
+
+				this->signal_update_manager.clear_list();
+				this->signal_update_manager.reset_active();
+
+				this->states.back()->updating_phase_signal_run();
+				this->states.back()->updating_phase_signal_detect();
+			}
+
 		}
+
 
 		if (allow_draw)
 		{

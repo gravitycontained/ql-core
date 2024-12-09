@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ql/core/definition/definition.hpp>
+#include <ql/core/advanced-type/signal/signal-update-manager/signal-update-manager.hpp>
 
 #include <ql/core/type/type.hpp>
 
@@ -8,16 +9,6 @@
 
 namespace ql
 {
-
-	namespace detail
-	{
-		QL_SOURCE extern std::unordered_set<ql::size> signal_listeners;
-		QL_SOURCE extern ql::size signal_index;
-	}	 // namespace detail
-
-	QL_SOURCE void reset_signal_listeners();
-	QL_SOURCE void reset_signal_count();
-
 	template <typename T>
 	struct signal
 	{
@@ -26,6 +17,8 @@ namespace ql
 
 		std::vector<std::pair<ql::size, std::function<void(const T&)>>> listeners;
 		std::vector<std::pair<ql::size, std::function<void(void)>>> voidListeners;
+
+		ql::signal_update_manager* update_manager = nullptr;
 
 		bool fire_next_time = false;
 
@@ -39,35 +32,30 @@ namespace ql
 			return this->value;
 		}
 
-		constexpr auto operator()() const
+		constexpr const auto& operator()() const
 		{
 			return this->value;
 		}
 
-		void check_id()
+		constexpr auto& operator()()
 		{
-			if (this->id == ql::size_max)
-			{
-				this->id = detail::signal_index++;
-			}
+			return this->value;
 		}
 
 		constexpr void runListeners() const
 		{
 			for (const auto& [index, listener] : this->voidListeners)
 			{
-				if (detail::signal_listeners.find(index) == detail::signal_listeners.cend())
+				if (this->update_manager && this->update_manager->cycle_allowed_store(index))
 				{
-					detail::signal_listeners.insert(index);
 					listener();
 				}
 			}
 
 			for (const auto& [index, listener] : this->listeners)
 			{
-				if (detail::signal_listeners.find(index) == detail::signal_listeners.cend())
+				if (this->update_manager && this->update_manager->cycle_allowed_store(index))
 				{
-					detail::signal_listeners.insert(index);
 					listener(this->value);
 				}
 			}
@@ -114,14 +102,30 @@ namespace ql
 			return *this;
 		}
 
+		void init_interaction(ql::signal_update_manager& update)
+		{
+			if (this->update_manager == nullptr)
+			{
+				this->update_manager = &update;
+			}
+		}
+
 		void addListener(const std::function<void(const T&)>& listener)
 		{
-			this->listeners.push_back(std::make_pair(ql::detail::signal_index++, listener));
+			if (this->update_manager)
+			{
+				auto index = this->update_manager->advance_count();
+				this->listeners.push_back(std::make_pair(index, listener));
+			}
 		}
 
 		void addListener(const std::function<void(void)>& listener)
 		{
-			this->voidListeners.push_back(std::make_pair(ql::detail::signal_index++, listener));
+			if (this->update_manager)
+			{
+				auto index = this->update_manager->advance_count();
+				this->voidListeners.push_back(std::make_pair(index, listener));
+			}
 		}
 
 		void emit()
@@ -129,7 +133,7 @@ namespace ql
 			this->fire_next_time = true;
 		}
 
-		void update_phase_signal()
+		void update_phase_signal_run()
 		{
 			if constexpr (ql::is_same<T, ql::empty_type>())
 			{
@@ -146,6 +150,17 @@ namespace ql
 					this->runListeners();
 					this->value_before = this->value;
 					this->fire_next_time = false;
+				}
+			}
+		}
+
+		void update_phase_signal_detect()
+		{
+			if (this->update_manager)
+			{
+				if (this->value != this->value_before)
+				{
+					this->update_manager->active = true;
 				}
 			}
 		}
