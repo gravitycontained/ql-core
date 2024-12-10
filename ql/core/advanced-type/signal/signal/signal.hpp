@@ -158,9 +158,19 @@ namespace ql
 		{
 			if (this->update_manager)
 			{
-				if (this->value != this->value_before)
+				if constexpr (ql::is_same<T, ql::empty_type>())
 				{
-					this->update_manager->active = true;
+					if (this->fire_next_time)
+					{
+						this->update_manager->active = true;
+					}
+				}
+				else
+				{
+					if (this->fire_next_time || this->value != this->value_before)
+					{
+						this->update_manager->active = true;
+					}
 				}
 			}
 		}
