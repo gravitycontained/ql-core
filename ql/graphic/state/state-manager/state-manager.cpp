@@ -200,7 +200,6 @@ namespace ql
 					ql::println(ql::color::bright_yellow, ql::to_string("updating signals > 1000 cycles, breaking loop"));
 					break;
 				}
-				ql::println("signals cycle ", ctr, " size: ", this->signal_update_manager.next_list.size());
 
 				this->signal_update_manager.clear_list();
 				this->signal_update_manager.reset_active();
