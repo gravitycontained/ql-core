@@ -41,7 +41,7 @@ namespace ql
 			this->connected = (status == sf::Socket::Done);
 			if (this->connected)
 			{
-				ql::println(" done");
+				ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", " done");
 			}
 			else
 			{
@@ -54,7 +54,7 @@ namespace ql
 	{
 		if (this->socket.send(data.c_str(), data.size()) != sf::Socket::Done)
 		{
-			ql::println("ql::socket::send: error sending");
+			ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "ql::socket::send: error sending");
 		}
 	}
 
@@ -64,7 +64,7 @@ namespace ql
 		this->socket.send(data.c_str(), data.size(), sent);
 		if (sent != data.size())
 		{
-			ql::println("ql::socket::send: trying to send ", data.size(), " bytes but only ", sent, " bytes arrived");
+			ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "ql::socket::send: trying to send ", data.size(), " bytes but only ", sent, " bytes arrived");
 		}
 	}
 
@@ -72,7 +72,7 @@ namespace ql
 	{
 		if (this->listener.listen(port, address) != sf::Socket::Done)
 		{
-			ql::println("ql::socket::listen(", address.toString(), ", ", port, ") : error listening");
+			ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "ql::socket::listen(", address.toString(), ", ", port, ") : error listening");
 			return false;
 		}
 		return true;
@@ -82,7 +82,7 @@ namespace ql
 	{
 		if (this->listener.accept(other.socket) != sf::Socket::Done)
 		{
-			ql::println("ql::socket::accept(", other.ip_address.toString(), ") : error accepting");
+			ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "ql::socket::accept(", other.ip_address.toString(), ") : error accepting");
 			return false;
 		}
 		return true;

@@ -1,6 +1,7 @@
 #pragma once
 
-#include <ql/core/core.hpp>
+#include <ql/graphic/drawable/basic/text/text.hpp>
+#include <ql/graphic/drawable/advanced/smooth-rectangle/smooth-rectangle.hpp>
 
 #ifdef QL_GRAPHIC
 

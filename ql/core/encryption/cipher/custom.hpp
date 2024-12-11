@@ -5676,8 +5676,8 @@ namespace ql
 
 		std::string encrypted_debug(const std::string& message, const std::string_view& key, bool reset_key = true)
 		{
-			ql::println("message = ", ql::color::aqua, ql::hex_string(message));
-			ql::println("key = ", ql::color::aqua, ql::hex_string(key));
+			ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "message = ", ql::color::aqua, ql::hex_string(message));
+			ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "key = ", ql::color::aqua, ql::hex_string(key));
 			auto copy = message;
 			this->encrypt(copy, key, reset_key, true);
 			return copy;
@@ -5685,8 +5685,8 @@ namespace ql
 
 		std::string decrypted_debug(const std::string& message, const std::string_view& key, bool reset_key = true)
 		{
-			ql::println("message = ", ql::color::aqua, ql::hex_string(message));
-			ql::println("key = ", ql::color::aqua, ql::hex_string(key));
+			ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "message = ", ql::color::aqua, ql::hex_string(message));
+			ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "key = ", ql::color::aqua, ql::hex_string(key));
 			auto copy = message;
 			this->decrypt(copy, key, reset_key, true);
 			return copy;

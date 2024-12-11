@@ -28,7 +28,7 @@ namespace ql
 				{
 					stream << ql::to_string(" (= ", convert, ") ");
 				}
-				ql::println(stream.str());
+				ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", stream.str());
 				throw std::exception(stream.str().c_str());
 			}
 		}

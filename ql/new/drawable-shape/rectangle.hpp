@@ -28,7 +28,7 @@ namespace qldev
 
 		void update_polygon()
 		{
-			//ql::println("update polygon: ", this->hitbox.position(), " and ", this->hitbox.dimension(), " size: ", this->hitbox.polygon.size());
+			//ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "update polygon: ", this->hitbox.position(), " and ", this->hitbox.dimension(), " size: ", this->hitbox.polygon.size());
 			this->shape.create(this->hitbox.polygon);
 		}
 	};

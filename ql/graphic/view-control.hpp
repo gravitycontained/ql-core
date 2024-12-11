@@ -164,7 +164,7 @@ namespace ql
 		{
 			if (!this->hitbox_set)
 			{
-				ql::println("update: hitbox of view_control was not set");
+				ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "update: hitbox of view_control was not set");
 				return;
 			}
 

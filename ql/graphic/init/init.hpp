@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ql/core/core.hpp>
+#include <ql/core/advanced-type/advanced-type.hpp>
 
 #ifdef QL_GRAPHIC
 

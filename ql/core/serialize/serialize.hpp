@@ -2,6 +2,8 @@
 
 #include <ql/core/definition/definition.hpp>
 
+#include <ql/core/type/tuple/is-tuple.hpp>
+
 namespace ql
 {
 	namespace detail
@@ -1263,4 +1265,14 @@ namespace ql
 	{
 		return ql::detail::struct_to_tuple<T, ql::struct_member_size<T>()>(value);
 	}
-}	 // namespace ql
+
+
+	template <typename T>
+	concept is_struct_to_tuple_convertible_c = requires(T& x) { ql::is_tuple<decltype(ql::struct_to_tuple(x))>(); };
+
+	template <typename T>
+	constexpr bool is_struct_to_tuple_convertible()
+	{
+		return is_struct_to_tuple_convertible_c<T>;
+	}
+}	 // namespace qlw

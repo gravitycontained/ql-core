@@ -1,6 +1,8 @@
+
 #pragma once
 
-#include <ql/core/core.hpp>
+#include <ql/core/advanced-type/advanced-type.hpp>
+
 #if defined QL_GRAPHIC
 
 #include <ql/graphic/drawable/drawable.hpp>
@@ -121,6 +123,8 @@ namespace ql
 		QL_SOURCE void add_render(const std::string& name, bool smooth);
 		QL_SOURCE ql::render_texture& get_render(const std::string& name);
 		QL_SOURCE const ql::render_texture& get_render(const std::string& name) const;
+
+		QL_SOURCE void provide();
 
 		QL_SOURCE void play_sound(const std::string& name, ql::f32 volume, ql::f32 speed);
 		QL_SOURCE void add_font(const std::string& name, const std::string& path);

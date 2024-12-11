@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ql/core/definition/definition.hpp>
+
 #if defined QL_GRAPHIC
 
 #include <SFML/Graphics.hpp>

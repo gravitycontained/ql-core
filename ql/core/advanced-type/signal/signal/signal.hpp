@@ -27,6 +27,12 @@ namespace ql
 			return this->value;
 		}
 
+		constexpr T& operator=(const T& newValue)
+		{
+			this->value = newValue;
+			return *this;
+		}
+
 		constexpr operator const T&() const
 		{
 			return this->value;
@@ -59,12 +65,6 @@ namespace ql
 					listener(this->value);
 				}
 			}
-		}
-
-		constexpr signal& operator=(const T& newValue)
-		{
-			this->value = newValue;
-			return *this;
 		}
 
 		constexpr void set(const T& newValue)
@@ -108,6 +108,11 @@ namespace ql
 			{
 				this->update_manager = &update;
 			}
+		}
+
+		void update(ql::signal_update_manager& update)
+		{
+			this->init_interaction(update);
 		}
 
 		void addListener(const std::function<void(const T&)>& listener)

@@ -1,6 +1,7 @@
 #pragma once
 
-#include <ql/core/core.hpp>
+#include <ql/core/advanced-type/advanced-type.hpp>
+#include <ql/core/time/time.hpp>
 
 #if defined QL_GRAPHIC
 

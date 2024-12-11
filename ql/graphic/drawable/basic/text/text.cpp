@@ -4,6 +4,7 @@
 
 #include <ql/graphic/resources/resources.hpp>
 #include <ql/graphic/drawable/virtual-draw-object/vdo.hpp>
+#include <ql/core/system/exception/exception.hpp>
 
 #include <cwctype>
 

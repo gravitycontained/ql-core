@@ -48,7 +48,7 @@ namespace ql
 
 	ql::recursive_value_iterate(
 			[](auto value)
-			{ ql::println(", value: ", value); },
+			{ ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ", value: ", value); },
 			tuple
 	);
 	*/

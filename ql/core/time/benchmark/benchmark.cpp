@@ -145,7 +145,7 @@ namespace ql
 				if (i.first != sorted.back().first && sorted.size() >= 2u)
 				{
 					auto p = ql::size_cast(sorted.back().second / i.second.elapsed_f());
-					ql::println(ql::to_string(
+					ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::to_string(
 							sub.first, ": ", ql::string_left_spaced(i.first, length_max + 1), " - ",
 							ql::string_left_spaced(ql::string_precision(7, ql::size_cast(f * 100)), 14),
 							"% time usage : ", i.second.elapsed().string(), " [ ", ql::string_precision(3, p), "x ]"
@@ -153,7 +153,7 @@ namespace ql
 				}
 				else
 				{
-					ql::println(ql::to_string(
+					ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::to_string(
 							sub.first, ": ", ql::string_left_spaced(i.first, length_max + 1), " - ",
 							ql::string_left_spaced(ql::string_precision(7, ql::size_cast(f * 100)), 14),
 							"% time usage : ", i.second.elapsed().string()
@@ -165,6 +165,6 @@ namespace ql
 
 	void print_benchmark(const std::string& name)
 	{
-		ql::println(name, " took ", ql::detail::benchmark_clocks[name].elapsed_reset().string());
+		ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", name, " took ", ql::detail::benchmark_clocks[name].elapsed_reset().string());
 	}
 }	 // namespace ql

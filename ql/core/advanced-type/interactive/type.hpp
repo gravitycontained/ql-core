@@ -7,6 +7,7 @@ namespace ql
 {
 	struct declare_interactive
 	{
+		bool initialized = false;
 	};
 
 	template <typename C>

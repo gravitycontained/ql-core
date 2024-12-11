@@ -1404,7 +1404,7 @@ namespace ql
 				}
 				this->next_position.x += spacing;
 			}
-			// ql::println("for ", string, " - spacing = ", spacing, " position.x = ", this->next_position.x);
+			// ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "for ", string, " - spacing = ", spacing, " position.x = ", this->next_position.x);
 
 			this->elements.push_back({*this});
 			auto& element = this->elements.back();
@@ -1847,7 +1847,7 @@ namespace ql
 		{
 			if (!this->texture_ptr_set)
 			{
-				ql::println("tile_map::create: texture_ptr not set");
+				ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "tile_map::create: texture_ptr not set");
 				return;
 			}
 
@@ -2010,7 +2010,7 @@ namespace ql
 		{
 			if (!this->texture_ptr)
 			{
-				ql::println("small_tile_map::create: texture_ptr not set");
+				ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "small_tile_map::create: texture_ptr not set");
 				return;
 			}
 
@@ -2113,7 +2113,7 @@ namespace ql
 		{
 			if (!this->texture_ptr)
 			{
-				ql::println("small_tile_map::create: texture_ptr not set");
+				ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "small_tile_map::create: texture_ptr not set");
 				return;
 			}
 
@@ -2160,7 +2160,7 @@ namespace ql
 		{
 			if (!this->texture_ptr)
 			{
-				ql::println("small_tile_map::create: texture_ptr not set");
+				ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "small_tile_map::create: texture_ptr not set");
 				return;
 			}
 

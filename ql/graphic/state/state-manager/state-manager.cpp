@@ -57,19 +57,26 @@ namespace ql
 				}
 			}
 		}
-		this->states.back()->drawing();
+		this->states.back()->call_draw();
 		if (this->states.back()->is_display_allowed())
 		{
 			this->window.display();
 		}
 	}
 
+	void state_manager::provide()
+	{
+		if (this->states.size())
+			this->states.back()->call_provide();
+	}
+
 	void state_manager::init_back()
 	{
 		if (this->states.size() && !this->states.back()->is_initalized)
 		{
-			this->states.back()->initializing_interaction();
-			this->states.back()->initializing();
+			this->states.back()->call_init_interaction();
+			this->states.back()->call_provide();
+			this->states.back()->call_init();
 			this->states.back()->is_initalized = true;
 			if (this->call_resize_call_on_init && this->states.back()->call_resize_call_on_init)
 			{
@@ -164,7 +171,9 @@ namespace ql
 
 		if (this->update_if_no_focus || this->focus || (focus_before != this->focus))
 		{
-			this->states.back()->updating();
+			this->states.back()->call_update();
+			this->states.back()->call_update_injection();
+			this->states.back()->call_update_new();
 			this->states.back()->last_dimension = this->dimension;
 			++this->states.back()->frame_ctr;
 		}
@@ -190,22 +199,22 @@ namespace ql
 
 		if (this->states.size())
 		{
-			this->states.back()->updating_phase_signal_run();
-			this->states.back()->updating_phase_signal_detect();
+			this->states.back()->call_phase_signal_run();
+			this->states.back()->call_phase_signal_detect();
 
 			for (ql::size ctr = 0u; this->signal_update_manager.active; ++ctr)
 			{
 				if (ctr > 1000u)
 				{
-					ql::println(ql::color::bright_yellow, ql::to_string("updating signals > 1000 cycles, breaking loop"));
+					ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_yellow, ql::to_string("updating signals > 1000 cycles, breaking loop"));
 					break;
 				}
 
 				this->signal_update_manager.clear_list();
 				this->signal_update_manager.reset_active();
 
-				this->states.back()->updating_phase_signal_run();
-				this->states.back()->updating_phase_signal_detect();
+				this->states.back()->call_phase_signal_run();
+				this->states.back()->call_phase_signal_detect();
 			}
 
 		}
