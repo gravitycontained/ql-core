@@ -1,0 +1,18 @@
+#pragma once
+
+#include <ql/core/definition/definition.hpp>
+
+#include <ql/core/advanced-type/signal/signal.hpp>
+#include <ql/core/advanced-type/fundamental/vector.hpp>
+
+namespace qldev
+{
+	template <typename T>
+	struct circle_t
+	{
+		ql::signal<ql::vector2<T>> position = {};
+		ql::signal<T> radius = 0;
+	};
+
+	using circle = circle_t<ql::f32>;
+}

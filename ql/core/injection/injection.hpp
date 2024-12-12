@@ -31,7 +31,7 @@ namespace ql
 			if (this->value == nullptr)
 			{
 				ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "update injection! ", ql::color::aqua, this);
-				manager.provide();
+				manager.last_state_provide();
 			}
 		}
 

@@ -202,8 +202,8 @@ namespace ql
 		constexpr bool collides(ql::vector2<T> position) const
 		{
 			return (
-					position.x > this->position.x && position.x < (this->position.x + this->dimension.x) && position.y > this->position.y &&
-					position.y < (this->position.y + this->dimension.y)
+				position.x > this->position.x && position.x < (this->position.x + this->dimension.x) &&
+				position.y > this->position.y && position.y < (this->position.y + this->dimension.y)
 			);
 		}
 

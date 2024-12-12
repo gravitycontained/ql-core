@@ -1,7 +1,8 @@
 
 #pragma once
 
-#include <ql/core/advanced-type/advanced-type.hpp>
+#include <ql/core/definition/definition.hpp>
+#include <ql/core/advanced-type/signal/signal-update-manager/signal-update-manager.hpp>
 
 #if defined QL_GRAPHIC
 
@@ -14,8 +15,6 @@
 
 #include <ql/graphic/event/event.hpp>
 #include <ql/graphic/resources/resources.hpp>
-
-#include <ql/core/advanced-type/signal/signal.hpp>
 
 namespace ql
 {
@@ -124,7 +123,8 @@ namespace ql
 		QL_SOURCE ql::render_texture& get_render(const std::string& name);
 		QL_SOURCE const ql::render_texture& get_render(const std::string& name) const;
 
-		QL_SOURCE void provide();
+		QL_SOURCE void last_state_provide();
+		QL_SOURCE void last_state_initialize();
 
 		QL_SOURCE void play_sound(const std::string& name, ql::f32 volume, ql::f32 speed);
 		QL_SOURCE void add_font(const std::string& name, const std::string& path);

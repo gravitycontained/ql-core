@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ql/core/core.hpp>
+#include <ql/core/definition/definition.hpp>
 
 #include <ql/graphic/event/event.hpp>
 

@@ -1,6 +1,8 @@
 #pragma once
 
-#include <ql/core/advanced-type/advanced-type.hpp>
+#include <ql/core/definition/definition.hpp>
+#include <ql/core/advanced-type/color/color.hpp>
+#include <ql/core/advanced-type/fundamental/vector.hpp>
 #include <ql/core/time/time.hpp>
 
 #if defined QL_GRAPHIC

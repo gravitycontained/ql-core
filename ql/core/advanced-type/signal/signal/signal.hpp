@@ -7,6 +7,8 @@
 
 #include <ql/core/system/print/print.hpp>
 
+#include <ql/core/injection/injection.hpp>
+
 namespace ql
 {
 	template <typename T>

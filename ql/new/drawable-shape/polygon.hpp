@@ -20,7 +20,7 @@ namespace qldev
 			}
 		}
 
-		void set_color(const ql::oklch& color)
+		void set_color(const ql::rgba& color)
 		{
 			this->shape.setFillColor(color);
 		}

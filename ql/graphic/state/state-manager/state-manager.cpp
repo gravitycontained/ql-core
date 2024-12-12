@@ -64,10 +64,16 @@ namespace ql
 		}
 	}
 
-	void state_manager::provide()
+	void state_manager::last_state_provide()
 	{
 		if (this->states.size())
 			this->states.back()->call_provide();
+	}
+
+	void state_manager::last_state_initialize()
+	{
+		if (this->states.size())
+			this->states.back()->call_init();
 	}
 
 	void state_manager::init_back()

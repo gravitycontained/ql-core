@@ -15,7 +15,7 @@ namespace qldev
 
 		qldev::rectangle hitbox;
 		qldev::polygon_shape shape;
-		ql::signal<ql::oklch> color;
+		ql::signal<ql::rgba> color;
 
 		void init()
 		{
@@ -28,7 +28,6 @@ namespace qldev
 
 		void update_polygon()
 		{
-			//ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "update polygon: ", this->hitbox.position(), " and ", this->hitbox.dimension(), " size: ", this->hitbox.polygon.size());
 			this->shape.create(this->hitbox.polygon);
 		}
 	};

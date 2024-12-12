@@ -20,15 +20,17 @@ namespace ql
 			if constexpr (ql::is_interactive<T>())
 				if (!object.declare_interactive.initialized)
 				{
-
 					if (!provided)
 					{
 						ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "manager.provide() called");
-						manager.provide();
+						manager.last_state_provide();
 						provided = true;
 					}
 
-					ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "apply_update_new actually initialized the object ", ql::color::aqua, &object);
+					ql::println(
+							ql::color::bright_yellow, "core ", ql::color::bright_gray,
+							":: ", "apply_update_new actually initialized the object ", ql::color::aqua, &object
+					);
 					ql::interactive_init(object);
 					object.declare_interactive.initialized = true;
 				}
