@@ -9,24 +9,36 @@
 
 #include <ql/core/injection/injection.hpp>
 
+#include <ql/core/encryption/encryption.hpp>
+
+#include <ql/graphic/sync/type.hpp>
+
 namespace ql
 {
 	template <typename T>
 	struct signal
 	{
+		struct
+		{
+			ql_sync;
+			ql::injectable<ql::signal_update_manager> update_manager;
+		} sync;
+
 		T value;
 		T value_before;
 
 		std::vector<std::pair<ql::size, std::function<void(const T&)>>> listeners;
 		std::vector<std::pair<ql::size, std::function<void(void)>>> voidListeners;
 
-		ql::signal_update_manager* update_manager = nullptr;
 
 		bool fire_next_time = false;
 
-		constexpr operator T&()
+		~signal()
 		{
-			return this->value;
+			ql::println(
+				ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::string_left_spaced("destruct signal ", 24),
+				ql::color::aqua, this, " ", ql::color::bright_blue, ql::type_name<T>()
+			);
 		}
 
 		constexpr T& operator=(const T& newValue)
@@ -35,7 +47,42 @@ namespace ql
 			return *this;
 		}
 
-		constexpr operator const T&() const
+		constexpr signal() = default;
+
+		constexpr signal(const signal<T>& other)
+		{
+			auto message = ql::to_string("ql::signal<", ql::type_name<T>(), ">: avoid signal copies");
+			//throw std::runtime_error(message);
+			ql::println(message);
+
+			*this = other;
+		}
+
+		signal<T>& operator=(const signal<T>& other)
+		{
+			auto message = ql::to_string("ql::signal<", ql::type_name<T>(), ">: avoid signal copies");
+			//throw std::runtime_error(message);
+			ql::println(message);
+
+			this->value = other.value;
+			return *this;
+		}
+
+		constexpr signal(signal<T>&& other) = default;
+		constexpr signal& operator=(signal<T>&& other) = default;
+
+		constexpr signal& operator=(T&& newValue)
+		{
+			this->value = std::move(newValue);
+			return *this;
+		}
+
+		constexpr T& get()
+		{
+			return this->value;
+		}
+
+		constexpr const T& get() const
 		{
 			return this->value;
 		}
@@ -50,11 +97,11 @@ namespace ql
 			return this->value;
 		}
 
-		constexpr void runListeners() const
+		constexpr void runListeners()
 		{
 			for (const auto& [index, listener] : this->voidListeners)
 			{
-				if (this->update_manager && this->update_manager->cycle_allowed_store(index))
+				if (this->sync.update_manager && this->sync.update_manager().cycle_allowed_store(index))
 				{
 					listener();
 				}
@@ -62,7 +109,7 @@ namespace ql
 
 			for (const auto& [index, listener] : this->listeners)
 			{
-				if (this->update_manager && this->update_manager->cycle_allowed_store(index))
+				if (this->sync.update_manager && this->sync.update_manager().cycle_allowed_store(index))
 				{
 					listener(this->value);
 				}
@@ -77,6 +124,18 @@ namespace ql
 		constexpr signal& operator+=(const T& value)
 		{
 			this->value += value;
+			return *this;
+		}
+
+		constexpr signal& operator++()
+		{
+			++this->value;
+			return *this;
+		}
+
+		constexpr signal& operator--()
+		{
+			--this->value;
 			return *this;
 		}
 
@@ -104,33 +163,20 @@ namespace ql
 			return *this;
 		}
 
-		void init_interaction(ql::signal_update_manager& update)
-		{
-			if (this->update_manager == nullptr)
-			{
-				this->update_manager = &update;
-			}
-		}
-
-		void update(ql::signal_update_manager& update)
-		{
-			this->init_interaction(update);
-		}
-
 		void addListener(const std::function<void(const T&)>& listener)
 		{
-			if (this->update_manager)
+			if (this->sync.update_manager)
 			{
-				auto index = this->update_manager->advance_count();
+				auto index = this->sync.update_manager->advance_count();
 				this->listeners.push_back(std::make_pair(index, listener));
 			}
 		}
 
 		void addListener(const std::function<void(void)>& listener)
 		{
-			if (this->update_manager)
+			if (this->sync.update_manager)
 			{
-				auto index = this->update_manager->advance_count();
+				auto index = this->sync.update_manager->advance_count();
 				this->voidListeners.push_back(std::make_pair(index, listener));
 			}
 		}
@@ -146,14 +192,23 @@ namespace ql
 			{
 				if (this->fire_next_time)
 				{
+					ql::println(
+						ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_gray,
+						ql::string_left_spaced("signal run ", 24), ql::color::aqua, this, " ", ql::color::bright_blue, ql::type_name<T>()
+					);
 					this->runListeners();
 					this->fire_next_time = false;
 				}
 			}
 			else
 			{
+
 				if (this->fire_next_time || this->value != this->value_before)
 				{
+					ql::println(
+						ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_gray,
+						ql::string_left_spaced("signal run ", 24), ql::color::aqua, this, " ", ql::color::bright_blue, ql::type_name<T>()
+					);
 					this->runListeners();
 					this->value_before = this->value;
 					this->fire_next_time = false;
@@ -163,20 +218,28 @@ namespace ql
 
 		void update_phase_signal_detect()
 		{
-			if (this->update_manager)
+			if (this->sync.update_manager)
 			{
 				if constexpr (ql::is_same<T, ql::empty_type>())
 				{
 					if (this->fire_next_time)
 					{
-						this->update_manager->active = true;
+						ql::println(
+							ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_gray,
+							ql::string_left_spaced("signal fire ", 24), ql::color::aqua, this, " ", ql::color::bright_blue, ql::type_name<T>()
+						);
+						this->sync.update_manager->active = true;
 					}
 				}
 				else
 				{
 					if (this->fire_next_time || this->value != this->value_before)
 					{
-						this->update_manager->active = true;
+						ql::println(
+							ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_gray,
+							ql::string_left_spaced("signal fire ", 24), ql::color::aqua, this, " ", ql::color::bright_blue, ql::type_name<T>()
+						);
+						this->sync.update_manager->active = true;
 					}
 				}
 			}
