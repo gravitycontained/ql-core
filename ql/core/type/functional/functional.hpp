@@ -7,7 +7,8 @@
 
 #include <ql/core/type/declval.hpp>
 #include <ql/core/type/compare/compare.hpp>
-#include <ql/core/type/tuple/tuple.hpp>
+#include <ql/core/type/tuple/is-tuple.hpp>
+#include <ql/core/type/tuple/size.hpp>
 #include <functional>
 #include <type_traits>
 
