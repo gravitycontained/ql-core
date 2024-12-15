@@ -11,7 +11,7 @@ namespace qldev
 {
 	struct rectangle_shape
 	{
-		ql_declare_interactive;
+		ql_sync;
 
 		qldev::rectangle hitbox;
 		qldev::polygon_shape shape;
@@ -20,10 +20,16 @@ namespace qldev
 		void init()
 		{
 			ql::effect(
-					this->hitbox.position, this->hitbox.dimension, this->hitbox.border_radius, [this]() { this->update_polygon(); }
+				this->hitbox.position, this->hitbox.dimension, this->hitbox.border_radius, [this]() { this->update_polygon(); }
 			);
 
-			ql::effect(this->color, [this]() { this->shape.set_color(this->color()); });
+			ql::effect(
+				this->color,
+				[this]()
+				{
+					this->shape.set_color(this->color());
+				}
+			);
 		}
 
 		void update_polygon()

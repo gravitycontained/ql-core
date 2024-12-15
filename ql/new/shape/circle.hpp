@@ -10,8 +10,10 @@ namespace qldev
 	template <typename T>
 	struct circle_t
 	{
+		ql_sync;
+
 		ql::signal<ql::vector2<T>> position = {};
-		ql::signal<T> radius = 0;
+		ql::signal<T> radius;
 	};
 
 	using circle = circle_t<ql::f32>;

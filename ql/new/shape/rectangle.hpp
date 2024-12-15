@@ -12,12 +12,12 @@ namespace qldev
 	requires (ql::is_arithmetic<T>())
 	struct rectangle_t
 	{
-		ql_declare_interactive;
+		ql_sync;
 
-		ql::signal<ql::vector2<T>> position = {};
-		ql::signal<ql::vector2<T>> dimension = {};
+		ql::signal<ql::vector2<T>> position;
+		ql::signal<ql::vector2<T>> dimension;
 
-		ql::signal<ql::f32> border_radius = 0.f;
+		ql::signal<ql::f32> border_radius;
 		qldev::polygon_t<T> polygon;
 
 		void init()
