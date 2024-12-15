@@ -125,6 +125,7 @@ namespace ql
 
 		QL_SOURCE void last_state_provide();
 		QL_SOURCE void last_state_initialize();
+		QL_SOURCE void last_state_update_injection();
 
 		QL_SOURCE void play_sound(const std::string& name, ql::f32 volume, ql::f32 speed);
 		QL_SOURCE void add_font(const std::string& name, const std::string& path);

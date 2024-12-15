@@ -27,6 +27,10 @@ namespace ql
 
 	state_manager::~state_manager()
 	{
+		ql::println(
+			ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::string_left_spaced("state_manager", 24),
+			"destructed"
+		);
 		#if defined QL_GLEW
 			if (this->created_gl)
 			{
@@ -76,11 +80,17 @@ namespace ql
 			this->states.back()->call_init();
 	}
 
+	void state_manager::last_state_update_injection()
+	{
+		if (this->states.size())
+			this->states.back()->call_update_injection();
+	}
+
 	void state_manager::init_back()
 	{
 		if (this->states.size() && !this->states.back()->is_initalized)
 		{
-			this->states.back()->call_init_interaction();
+			this->states.back()->init_before();
 			this->states.back()->call_provide();
 			this->states.back()->call_init();
 			this->states.back()->is_initalized = true;
@@ -178,7 +188,6 @@ namespace ql
 		if (this->update_if_no_focus || this->focus || (focus_before != this->focus))
 		{
 			this->states.back()->call_update();
-			this->states.back()->call_update_injection();
 			this->states.back()->call_update_new();
 			this->states.back()->last_dimension = this->dimension;
 			++this->states.back()->frame_ctr;
