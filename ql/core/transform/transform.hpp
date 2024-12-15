@@ -5,6 +5,7 @@
 #include <ql/core/transform/container/container.hpp>
 #include <ql/core/transform/interpolate/interpolate.hpp>
 #include <ql/core/transform/memory/memory.hpp>
+#include <ql/core/transform/modal-apply.hpp>
 #include <ql/core/transform/limit.hpp>
 #include <ql/core/transform/round.hpp>
 #include <ql/core/transform/shuffle.hpp>
