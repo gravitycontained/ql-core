@@ -194,7 +194,7 @@ namespace ql
 		std::u32string m_u32_text_entered;
 		std::wstring m_text_entered_total;
 
-		bool m_moved_direction;
+		bool m_moved_direction = false;
 		ql::vec2 m_move_direction;
 		ql::vector2i m_resized_size;
 		mutable ql::vec2 m_mouse_position;
