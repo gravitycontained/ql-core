@@ -7,7 +7,9 @@
 
 namespace ql
 {
-
+	void ql::base_state::init_before()
+	{
+	}
 	void ql::base_state::clear()
 	{
 #if defined QL_GLEW

@@ -9,7 +9,11 @@
 #include <ql/graphic/drawable/drawable.hpp>
 #include <ql/graphic/render/render.hpp>
 
-#include <ql/graphic/interactive/interactive.hpp>
+#include <ql/graphic/sync/type.hpp>
+#include <ql/graphic/sync/list.hpp>
+#include <ql/graphic/sync/update-new.hpp>
+#include <ql/graphic/sync/provide.hpp>
+
 #include <ql/graphic/update/update.hpp>
 
 #include <SFML/Graphics.hpp>
@@ -34,7 +38,6 @@ namespace ql
 		virtual ~base_state() = default;
 
 		virtual void call_init() = 0;
-		virtual void call_init_interaction() = 0;
 		virtual void call_provide() = 0;
 		virtual void call_update() = 0;
 		virtual void call_update_new() = 0;
@@ -43,6 +46,7 @@ namespace ql
 		virtual void call_phase_signal_detect() = 0;
 		virtual void call_draw() = 0;
 
+		QL_SOURCE virtual void init_before();
 		QL_SOURCE virtual void clear();
 		QL_SOURCE virtual void call_on_resize();
 		QL_SOURCE virtual void call_before_create();
@@ -77,63 +81,66 @@ namespace ql
 		QL_SOURCE void reset_view();
 
 		template <typename T>
-		void interactive_init_interaction(T& object)
-		{
-			ql::interactive_init_interaction(object, this->state_manager->signal_update_manager);
-		}
-		template <typename T>
-		void interactive_init(T& object)
+		void sync_init(T& object)
 		{
 			ql::init_state init_state{this->dimension()};
-			ql::interactive_init(object, init_state);
+			ql::sync_init(object, init_state);
+			ql::sync_init(object, *this->state_manager);
 		}
 
 		template <typename T>
-		void interactive_provide(T& object)
+		void sync_provide(T& object)
 		{
-			ql::interactive_provide(object);
+			ql::provide(object, std::ref(this->state_manager->signal_update_manager));
+			ql::sync_provide(object);
 		}
 
 		template <typename T>
-		void interactive_update(T& object)
+		void sync_init_before(T& object)
+		{
+			ql::sync_init_before(object, *this->state_manager);
+		}
+
+		template <typename T>
+		void sync_update(T& object)
 		{
 			ql::init_state init_state{this->dimension()};
 			ql::render render(this->state_manager->window, this->render_states);
 			ql::update update{this->event(), *this->state_manager, this->state_manager->signal_update_manager, render, init_state};
-			ql::interactive_update(object, update, this->event(), *this->state_manager);
+			ql::sync_update(object, update, this->event(), *this->state_manager);
 		}
 
 		template <typename T>
-		void interactive_update_injection(T& object)
+		void sync_update_injection(T& object)
 		{
-			ql::interactive_update_injection(object, *this->state_manager);
+			ql::sync_update_injection(object, *this->state_manager);
 		}
 
 		template <typename T>
-		void interactive_update_new(T& object)
+		void sync_update_new(T& object)
 		{
-			ql::interactive_update_new(object, *this->state_manager);
+			ql::sync_update_new(object, *this->state_manager);
 		}
 
 
 		template <typename T>
-		void interactive_update_phase_signal_run(T& object)
+		void sync_update_phase_signal_run(T& object)
 		{
-			ql::interactive_update_phase_signal_run(object);
+			ql::sync_update_phase_signal_run(object);
 		}
 
 		template <typename T>
-		void interactive_update_phase_signal_detect(T& object)
+		void sync_update_phase_signal_detect(T& object)
 		{
-			ql::interactive_update_phase_signal_detect(object);
+			ql::sync_update_phase_signal_detect(object);
 		}
 
 
 		template <typename T>
-		void interactive_draw(T& object)
+		void sync_draw(T& object)
 		{
 			ql::render render(this->state_manager->window, this->render_states);
-			ql::interactive_draw(object, render);
+			ql::sync_draw(object, render);
 		}
 
 		/*
