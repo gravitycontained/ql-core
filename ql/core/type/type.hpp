@@ -5,6 +5,7 @@
 #include <ql/core/type/compare/compare.hpp>
 #include <ql/core/type/container/container.hpp>
 #include <ql/core/type/graphic/graphic.hpp>
+#include <ql/core/type/pointer/pointer.hpp>
 #include <ql/core/type/recursive/recursive.hpp>
 #include <ql/core/type/reference.hpp>
 #include <ql/core/type/signal.hpp>
@@ -16,4 +17,5 @@
 #include <ql/core/type/conditional.hpp>
 #include <ql/core/type/declval.hpp>
 #include <ql/core/type/identity.hpp>
+#include <ql/core/type/modal-decay.hpp>
 #include <ql/core/type/numeric.hpp>
