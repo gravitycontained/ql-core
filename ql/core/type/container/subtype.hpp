@@ -10,7 +10,7 @@ namespace ql
 {
 	template <typename C>
 	requires (ql::is_container<C>())
-	using container_subtype = std::decay_t<decltype(*(ql::declval<C>().begin()))>;
+	using container_subtype = typename std::iterator_traits<decltype(std::declval<C>().begin())>::value_type;
 
 	namespace detail
 	{
