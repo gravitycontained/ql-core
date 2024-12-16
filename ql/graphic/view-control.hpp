@@ -4,6 +4,8 @@
 #if defined QL_GRAPHIC
 
 #include <SFML/Graphics/RenderStates.hpp>
+
+#include <ql/graphic/render/type/type.hpp>
 #include <ql/graphic/state/base-state/base-state.hpp>
 
 namespace ql
@@ -162,81 +164,107 @@ namespace ql
 
 		void update(const ql::event& event)
 		{
-			if (!this->hitbox_set)
-			{
-				ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "update: hitbox of view_control was not set");
+			if (!this->enabled)
 				return;
-			}
 
-			this->smooth_zoom_animation.update(event);
-			if (this->smooth_zoom_animation.is_running() && this->use_smooth_zoom)
+			if (this->interactive)
 			{
-				auto p = this->smooth_zoom_animation.get_curve_progress(this->smooth_zoom_slope);
-
-				this->scale = ql::linear_interpolation(this->animation_scale_a, this->animation_scale_b, p);
-				this->position = ql::linear_interpolation(this->animation_position_a, this->animation_position_b, p);
-				this->dimension = ql::linear_interpolation(this->animation_dimension_a, this->animation_dimension_b, p);
-			}
-
-			this->changed = false;
-			this->zoomed = false;
-			this->mouse_position = this->position + event.mouse_position() * this->scale;
-
-			this->hovering = this->hitbox.collides(event.mouse_position());
-
-			if (!this->allow_dragging)
-			{
-				this->dragging = false;
-			}
-			if (this->hovering)
-			{
-				auto mouse_relative = event.mouse_position() - this->hitbox.position;
-
-				if (event.mouse_button_clicked(this->drag_mouse_button))
+				if (!this->hitbox_set)
 				{
-					this->dragging = true;
-					this->click_position = this->position;
-					this->click_mouse_position = mouse_relative;
+					ql::println(
+						ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "update: hitbox of view_control was not set"
+					);
+					return;
 				}
 
-				if (this->allow_dragging && this->dragging && event.mouse_moved())
+				this->smooth_zoom_animation.update(event);
+				if (this->smooth_zoom_animation.is_running() && this->use_smooth_zoom)
 				{
-					auto delta = (this->click_mouse_position - mouse_relative);
-					this->position = this->click_position + delta * this->scale;
-					if (delta != ql::vec(0.f, 0.f))
+					auto p = this->smooth_zoom_animation.get_curve_progress(this->smooth_zoom_slope);
+
+					this->scale = ql::linear_interpolation(this->animation_scale_a, this->animation_scale_b, p);
+					this->position = ql::linear_interpolation(this->animation_position_a, this->animation_position_b, p);
+					this->dimension = ql::linear_interpolation(this->animation_dimension_a, this->animation_dimension_b, p);
+				}
+
+				this->changed = false;
+				this->zoomed = false;
+				this->mouse_position = this->position + event.mouse_position() * this->scale;
+
+				this->hovering = this->hitbox.collides(event.mouse_position());
+
+				if (!this->allow_dragging)
+				{
+					this->dragging = false;
+				}
+				if (this->hovering)
+				{
+					auto mouse_relative = event.mouse_position() - this->hitbox.position;
+
+					if (event.mouse_button_clicked(this->drag_mouse_button))
 					{
-						this->changed = true;
-					}
-				}
-
-				if (event.scrolled_down())
-				{
-					this->zoom_out(event.mouse_position());
-					this->changed = true;
-					this->zoomed = true;
-				}
-				if (event.scrolled_up())
-				{
-					this->zoom_in(event.mouse_position());
-					this->changed = true;
-					this->zoomed = true;
-				}
-
-				if (this->zoomed)
-				{
-					if (this->dragging)
-					{
+						this->dragging = true;
 						this->click_position = this->position;
 						this->click_mouse_position = mouse_relative;
 					}
+
+					if (this->allow_dragging && this->dragging && event.mouse_moved())
+					{
+						auto delta = (this->click_mouse_position - mouse_relative);
+						this->position = this->click_position + delta * this->scale;
+
+						if (delta != ql::vec(0.f, 0.f))
+						{
+							this->changed = true;
+						}
+					}
+
+					if (event.scrolled_down())
+					{
+						this->zoom_out(event.mouse_position());
+						this->changed = true;
+						this->zoomed = true;
+					}
+					if (event.scrolled_up())
+					{
+						this->zoom_in(event.mouse_position());
+						this->changed = true;
+						this->zoomed = true;
+					}
+
+					if (this->zoomed)
+					{
+						if (this->dragging)
+						{
+							this->click_position = this->position;
+							this->click_mouse_position = mouse_relative;
+						}
+					}
+				}
+
+				if (this->allow_dragging && event.mouse_button_released(this->drag_mouse_button))
+				{
+					this->dragging = false;
+					this->click_position = this->position;
+					this->click_mouse_position = event.mouse_position() - this->hitbox.position;
 				}
 			}
 
-			if (this->allow_dragging && event.mouse_button_released(this->drag_mouse_button))
+			event.apply_view(*this);
+
+		}
+
+		void draw(ql::render& render) const
+		{
+			if (!this->hitbox_set)
 			{
-				this->dragging = false;
-				this->click_position = this->position;
-				this->click_mouse_position = event.mouse_position() - this->hitbox.position;
+				ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "draw: hitbox of view_control was not set");
+				return;
+			}
+
+			if (this->enabled)
+			{
+				this->apply_to(render.states);
 			}
 		}
 
@@ -261,7 +289,6 @@ namespace ql
 		}
 
 		ql::hitbox hitbox;
-		ql::view_type<T> view;
 		ql::vector2<T> dimension;
 		ql::vector2<T> mouse_position;
 
@@ -288,6 +315,7 @@ namespace ql
 		bool ignore_input = false;
 		bool changed = false;
 		bool zoomed = false;
+		bool interactive = true;
 	};
 
 	using view_control = view_control_t<ql::f64>;
