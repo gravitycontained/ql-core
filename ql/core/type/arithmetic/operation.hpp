@@ -83,6 +83,10 @@ namespace ql
 				T,
 				ql::if_true<(ql::is_floating_point<U>())>,
 				U,
+				ql::if_true<(ql::is_signed<T>() && !ql::is_signed<U>())>,
+				T,
+				ql::if_true<(!ql::is_signed<T>() && ql::is_signed<U>())>,
+				U,
 				ql::if_true<(ql::bit_count_of_max_value<T>() < ql::bit_count_of_max_value<U>())>,
 				U,
 				T>;
@@ -112,24 +116,18 @@ namespace ql
 
 	template <typename T, typename U>
 	using promote_superior_type_classic = ql::conditional<
-			ql::if_true<(ql::bytes_in_type<T>() == 8u || ql::bytes_in_type<U>() == 8u)>,
-			ql::f64,
-			ql::conditional<
-					ql::if_true<(ql::is_floating_point<ql::superior_arithmetic_type<T, U>>())>,
-					ql::superior_arithmetic_type<T, U>,
-					ql::conditional<
-							ql::if_true<(ql::bit_count_of_max_value<ql::superior_arithmetic_type<T, U>>() < ql::bit_count_of_max_value<ql::i16>())>,
-							std::conditional_t<ql::is_signed<ql::superior_arithmetic_type<T, U>>(), ql::i16, ql::u16>,
-							ql::conditional<
-									ql::if_true<
-											(ql::bit_count_of_max_value<ql::superior_arithmetic_type<T, U>>() < ql::bit_count_of_max_value<ql::i32>())>,
-									std::conditional_t<ql::is_signed<ql::superior_arithmetic_type<T, U>>(), ql::i32, ql::u32>,
-									ql::conditional<
-											ql::if_true<
-													(ql::bit_count_of_max_value<ql::superior_arithmetic_type<T, U>>() < ql::bit_count_of_max_value<ql::i64>())>,
-											std::conditional_t<ql::is_signed<ql::superior_arithmetic_type<T, U>>(), ql::i64, ql::u64>,
-											ql::default_type,
-											ql::f64>>>>>;
+		ql::if_true<(ql::bytes_in_type<T>() == 8u || ql::bytes_in_type<U>() == 8u)>,
+		ql::f64,
+		ql::if_true<(ql::is_floating_point<ql::superior_arithmetic_type<T, U>>())>,
+		ql::superior_arithmetic_type<T, U>,
+		ql::if_true<(ql::bit_count_of_max_value<ql::superior_arithmetic_type<T, U>>() < ql::bit_count_of_max_value<ql::i16>())>,
+		std::conditional_t<ql::is_signed<ql::superior_arithmetic_type<T, U>>(), ql::i16, ql::u16>,
+		ql::if_true<(ql::bit_count_of_max_value<ql::superior_arithmetic_type<T, U>>() < ql::bit_count_of_max_value<ql::i32>())>,
+		std::conditional_t<ql::is_signed<ql::superior_arithmetic_type<T, U>>(), ql::i32, ql::u32>,
+		ql::if_true<(ql::bit_count_of_max_value<ql::superior_arithmetic_type<T, U>>() < ql::bit_count_of_max_value<ql::i64>())>,
+		std::conditional_t<ql::is_signed<ql::superior_arithmetic_type<T, U>>(), ql::i64, ql::u64>,
+		ql::default_type, ql::f64
+	>;
 
 	template <typename T, typename U, typename R = promote_superior_type_classic<T, U>>
 	constexpr R safe_addition(T a, U b)
