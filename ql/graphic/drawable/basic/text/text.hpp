@@ -137,6 +137,8 @@ namespace ql
 		QL_SOURCE ql::f32 get_letter_advance_and_spacing(ql::wchar_type c) const;
 		QL_SOURCE ql::f32 get_letter_width(ql::wchar_type c) const;
 
+		QL_SOURCE void set_scale(ql::vec2 scale);
+
 		std::string m_font;
 		sf::Text m_text;
 	};

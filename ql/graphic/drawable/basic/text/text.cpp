@@ -732,6 +732,11 @@ namespace ql
 				this->get_sf_font().getGlyph(c, this->get_character_size(), this->is_bold(), this->get_outline_thickness());
 		return glyph.bounds.width;
 	}
+
+	void ql::text::set_scale(ql::vec2 scale)
+	{
+		this->m_text.setScale(scale);
+	}
 }	 // namespace ql
 
 #endif
