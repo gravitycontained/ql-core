@@ -46,16 +46,24 @@ namespace ql
 	}
 
 	template <typename C>
-	concept has_draw_sf_c = requires(const C x, sf::RenderTarget& render, sf::RenderStates states) { x.draw(render, states); };
+	concept has_draw_sf_c = requires(const C & x, sf::RenderTarget render, sf::RenderStates states) { x.draw(render, states); };
+	template <typename C>
+	concept has_draw_sf_reverse_c = requires(const C& x, sf::RenderTarget render, sf::RenderStates states) { render.draw(x, states); };
 
 	template <typename C>
 	constexpr bool has_draw_sf()
 	{
-		return has_draw_sf_c<C>;
+		return has_draw_sf_c<C> || has_draw_sf_reverse_c<C>;
+	}
+	template <typename C>
+	constexpr bool has_draw_sf_reverse()
+	{
+		return has_draw_sf_reverse_c<C>;
 	}
 
+
 	template <typename C>
-	concept has_any_draw_c = ql::is_render_texture_c<C> || ql::has_draw_sf_c<C> || ql::has_render<C>() || ql::has_render_gl<C>() ||
+	concept has_any_draw_c = ql::is_render_texture_c<C> || ql::has_draw_sf_c<C> || has_draw_sf_reverse_c<C> || ql::has_render<C>() || ql::has_render_gl<C>() ||
 													 std::is_base_of_v<sf::Drawable, C>;
 
 	template <typename C>
