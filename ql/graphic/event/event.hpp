@@ -8,6 +8,10 @@
 
 #include <ql/core/advanced-type/view/view.hpp>
 #include <ql/core/time/clock/clock.hpp>
+#include <ql/core/system/print/print.hpp>
+
+#include <ql/core/transform/modal-apply.hpp>
+
 
 #include <set>
 
@@ -16,12 +20,12 @@ namespace ql
 	struct event;
 
 	template <typename C, typename... Args>
-	concept has_update_c = requires(C x, const event& event, Args... args) { x.update(event, args...); };
+	concept has_event_update_c = requires(C x, const event & event, Args... args) { x.update(event, args...); };
 
 	template <typename C, typename... Args>
-	constexpr bool has_update()
+	constexpr bool has_event_update()
 	{
-		return has_update_c<C, Args...>;
+		return has_event_update_c<C, Args...>;
 	}
 
 	struct event
@@ -103,8 +107,11 @@ namespace ql
 		template <typename T>
 		void apply_view(const ql::view_type<T>& view) const
 		{
+			//ql::println("view: ", view.position, " and ", view.scale);
+			//ql::println("before: ", this->m_mouse_position);
 			this->m_mouse_position = view.transform_point(this->m_mouse_position);
 			this->m_delta_mouse_position = view.transform_point_no_offset(this->m_delta_mouse_position);
+			//ql::println("after: ", this->m_mouse_position);
 		}
 
 		QL_SOURCE bool text_entered(char c) const;
@@ -120,43 +127,39 @@ namespace ql
 		QL_SOURCE std::string all_text_entered_str() const;
 
 		template <typename T, typename... Args>
-		requires (
-				ql::has_update<T, Args...>() || (ql::is_container<T>() && ql::has_update<ql::container_deepest_subtype<T>, Args...>())
-		)
-		void update(T& updatable, Args&&... args) const
+		requires (ql::has_event_update<ql::modal_decay<T>, Args...>())
+		void update(T& object, Args&&... args) const
 		{
-			if constexpr (ql::has_update<T, Args...>())
-			{
-				if constexpr (ql::has_view<T>())
+			ql::modal_apply(object,
+				[this](auto& updatable)
 				{
-					if (updatable.auto_view.is_default_view())
+					using U = decltype(updatable);
+					if constexpr (ql::has_event_update<U, Args...>())
 					{
-						updatable.update(*this, args...);
-					}
-					else
-					{
-						auto before = this->m_mouse_position;
-						auto before_delta = this->m_delta_mouse_position;
-						this->apply_view(updatable.auto_view);
+						if constexpr (ql::is_view<U>())
+						{
+							if (updatable.is_default_view())
+							{
+								updatable.update(*this, std::forward<Args>(args)...);
+							}
+							else
+							{
+								auto before = this->m_mouse_position;
+								auto before_delta = this->m_delta_mouse_position;
 
-						updatable.update(*this, args...);
+								updatable.update(*this, std::forward<Args>(args)...);
 
-						this->m_mouse_position = before;
-						this->m_delta_mouse_position = before_delta;
+								this->m_mouse_position = before;
+								this->m_delta_mouse_position = before_delta;
+							}
+						}
+						else
+						{
+							updatable.update(*this, std::forward<Args>(args)...);
+						}
 					}
 				}
-				else
-				{
-					updatable.update(*this, args...);
-				}
-			}
-			else
-			{
-				for (auto& i : updatable)
-				{
-					this->update(i, args...);
-				}
-			}
+			);
 		}
 
 		bool m_mouse_clicked = false;
