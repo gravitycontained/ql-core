@@ -1,7 +1,5 @@
 #pragma once
 
-#include <ql/graphic/update/update.hpp>
-
 #include <ql/core/constexpr/constexpr.hpp>
 #include <ql/core/type/type.hpp>
 
@@ -22,7 +20,7 @@ namespace detail																																																							 \
 																																																															 \
 		return ql::constexpr_or_chain<ql::variadic_size<Args...>()>([&](auto index)																								 \
 			{																																																												 \
-				return has_##function##_c<T, ql::variadic_type<index, Args...>>;																											 \
+				return has_##function##_c<ql::variadic_type<index, Args...>, T> || has_##function##_c<T, ql::variadic_type<index, Args...>>;																											 \
 			});																																																											 \
 	}																																																														 \
 																																																															 \
@@ -37,7 +35,10 @@ namespace detail																																																							 \
 			ql::constexpr_iterate<ql::variadic_size<Args...>()>(																																		 \
 				[&](auto index)																																																				 \
 				{																																																											 \
-					if constexpr (has_##function##_c<T, ql::variadic_type<index, Args...>>)																							 \
+					if constexpr (has_##function##_c<ql::variadic_type<index, Args...>, T>)																							 \
+						ql::tuple_value<index>(ql::auto_tie(std::forward<Args>(args)...)).##function##(object);														 \
+																																																															 \
+					else if constexpr (has_##function##_c<T, ql::variadic_type<index, Args...>>)																				 \
 						object.##function##(ql::tuple_value<index>(ql::auto_tie(std::forward<Args>(args)...)));														 \
 				}																																																											 \
 			);																																																											 \

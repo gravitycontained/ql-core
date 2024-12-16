@@ -12,11 +12,6 @@
 		this->sync_init(param);                        \
 	}                                                \
                                                    \
-	void call_update_new() override                  \
-	{                                                \
-		this->sync_update_new(param);                  \
-	}                                                \
-                                                   \
 	void call_update() override                      \
 	{                                                \
 		this->sync_update(param);                      \

@@ -51,11 +51,12 @@ namespace ql
 	requires (ql::is_or_has_sync<ql::modal_decay<T>>() || detail::has_function_inject<ql::modal_decay<T>, Args...>())
 	void provide(T& object, Args&&... args)
 	{
+		constexpr bool order = true;
+
 		ql::modal_apply(
 			object,
 			[&](auto& check)
 			{
-				constexpr bool order = true;
 				auto iterate = [&](auto& tuple)
 				{
 					constexpr auto N = ql::tuple_find_index_of_type<decltype(tuple), ql::declare_unsync>();

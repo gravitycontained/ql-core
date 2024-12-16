@@ -5,5 +5,4 @@
 #include <ql/graphic/sync/init.hpp>
 #include <ql/graphic/sync/type.hpp>
 #include <ql/graphic/sync/state.hpp>
-#include <ql/graphic/sync/update-new.hpp>
 #include <ql/graphic/sync/provide.hpp>

@@ -6,6 +6,8 @@
 #include <ql/core/constexpr/constexpr.hpp>
 #include <ql/core/type/type.hpp>
 
+#include <ql/core/system/print/print.hpp>
+
 namespace ql
 {
 	namespace detail
@@ -14,7 +16,13 @@ namespace ql
 		concept has_draw_no_parameter_c = requires(T x) { x.draw(); };
 
 		template <typename T>
-		constexpr void apply_draw(T& object, ql::render& render)
+		constexpr bool has_sync_draw()
+		{
+			return detail::has_draw_no_parameter_c<T> || ql::has_draw<T>();
+		};
+
+		template <typename T>
+		constexpr void apply_draw(const T& object, ql::render& render)
 		{
 			if constexpr (has_draw_no_parameter_c<T>)
 				object.draw();
@@ -25,15 +33,15 @@ namespace ql
 	}	 // namespace detail
 
 	template <typename T>
-	requires (ql::is_or_has_sync<ql::modal_decay<T>>() || detail::has_draw_no_parameter_c<ql::modal_decay<T>> || ql::has_draw<ql::modal_decay<T>>())
+	requires (ql::is_or_has_sync<ql::modal_decay<T>>() || detail::has_sync_draw<ql::modal_decay<T>>())
 	void sync_draw(T& object, ql::render& render)
 	{
 		ql::modal_apply(
 			object,
 			[&](auto& check)
 			{
-				constexpr bool order = false;
-				detail::apply_draw(object, render);
+				constexpr bool order = true;
+
 				auto iterate = [&](auto& tuple)
 				{
 					constexpr auto N = ql::tuple_find_index_of_type<decltype(tuple), ql::declare_unsync>();
@@ -42,8 +50,7 @@ namespace ql
 						{
 							auto&& tuple_element = ql::tuple_value<i>(tuple);
 							if constexpr (ql::is_or_has_sync<ql::modal_decay<decltype(tuple_element)>>() ||
-								detail::has_draw_no_parameter_c<ql::modal_decay<decltype(tuple_element)>> ||
-								ql::has_draw<ql::modal_decay<decltype(tuple_element)>>()
+								detail::has_sync_draw<ql::modal_decay<decltype(tuple_element)>>()
 							)
 								sync_draw(tuple_element, render);
 						}
@@ -56,7 +63,7 @@ namespace ql
 						apply_check,
 						[&](auto& value)
 						{
-							if constexpr (detail::has_draw_no_parameter_c<decltype(value)> || ql::has_draw<decltype(value)>())
+							if constexpr (detail::has_sync_draw<decltype(value)>())
 								detail::apply_draw(value, render);
 						}
 					);

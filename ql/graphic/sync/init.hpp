@@ -3,8 +3,6 @@
 #include <ql/graphic/sync/macro.hpp>
 #include <ql/graphic/sync/type.hpp>
 
-#include <ql/graphic/update/update.hpp>
-
 #include <ql/core/constexpr/constexpr.hpp>
 #include <ql/core/type/type.hpp>
 
