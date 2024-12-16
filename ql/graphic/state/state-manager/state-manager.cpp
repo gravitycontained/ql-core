@@ -188,7 +188,6 @@ namespace ql
 		if (this->update_if_no_focus || this->focus || (focus_before != this->focus))
 		{
 			this->states.back()->call_update();
-			this->states.back()->call_update_new();
 			this->states.back()->last_dimension = this->dimension;
 			++this->states.back()->frame_ctr;
 		}

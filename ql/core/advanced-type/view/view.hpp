@@ -7,6 +7,8 @@
 #include <ql/core/advanced-type/fundamental/hitbox.hpp>
 #include <SFML/Graphics.hpp>
 
+#include <ql/core/system/print/print.hpp>
+
 namespace ql
 {
 	template <typename T>
@@ -18,7 +20,7 @@ namespace ql
 
 		sf::Transform get_transform() const
 		{
-			sf::Transform transform;
+			sf::Transform transform;     
 			transform.rotate(ql::f32_cast(this->rotation)).scale(1 / ql::vec2(this->scale)).translate(-ql::vec2(this->position));
 			// transform.rotate(ql::f32_cast(this->rotation)).scale(ql:vec2(this->scale)).translate(ql:vec2(this->position));
 			return transform;

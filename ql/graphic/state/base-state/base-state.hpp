@@ -9,9 +9,10 @@
 #include <ql/graphic/drawable/drawable.hpp>
 #include <ql/graphic/render/render.hpp>
 
+#include <ql/graphic/init/init.hpp>
+
 #include <ql/graphic/sync/type.hpp>
 #include <ql/graphic/sync/list.hpp>
-#include <ql/graphic/sync/update-new.hpp>
 #include <ql/graphic/sync/provide.hpp>
 
 #include <ql/graphic/update/update.hpp>
@@ -40,7 +41,6 @@ namespace ql
 		virtual void call_init() = 0;
 		virtual void call_provide() = 0;
 		virtual void call_update() = 0;
-		virtual void call_update_new() = 0;
 		virtual void call_update_injection() = 0;
 		virtual void call_phase_signal_run() = 0;
 		virtual void call_phase_signal_detect() = 0;
@@ -104,10 +104,10 @@ namespace ql
 		template <typename T>
 		void sync_update(T& object)
 		{
-			ql::init_state init_state{this->dimension()};
+			ql::init_state init_state{ this->dimension() };
 			ql::render render(this->state_manager->window, this->render_states);
-			ql::update update{this->event(), *this->state_manager, this->state_manager->signal_update_manager, render, init_state};
-			ql::sync_update(object, update, this->event(), *this->state_manager);
+			ql::update_manager update{ this->event(), *this->state_manager, this->state_manager->signal_update_manager, render, init_state };
+			ql::sync_update(object, *this->state_manager, update);
 		}
 
 		template <typename T>
@@ -115,13 +115,6 @@ namespace ql
 		{
 			ql::sync_update_injection(object, *this->state_manager);
 		}
-
-		template <typename T>
-		void sync_update_new(T& object)
-		{
-			ql::sync_update_new(object, *this->state_manager);
-		}
-
 
 		template <typename T>
 		void sync_update_phase_signal_run(T& object)
