@@ -141,22 +141,18 @@ namespace ql
 	namespace detail
 	{
 		template <typename T>
-		constexpr auto view_signature(ql::view_type<T>)
-		{
-			return std::true_type{};
-		}
+		struct view_signature : std::false_type
+		{};
 
 		template <typename T>
-		constexpr auto view_signature(T)
-		{
-			return std::false_type{};
-		}
+		struct view_signature<ql::view_type<T>> : std::true_type
+		{};
 	}	 // namespace detail
 
 	template <typename T>
 	constexpr bool is_view()
 	{
-		return decltype(ql::detail::view_signature(ql::declval<T>())){};
+		return detail::view_signature<T>{};
 	}
 
 	template <typename T>

@@ -92,7 +92,8 @@ namespace ql
 		{
 			this->states.back()->init_before();
 			this->states.back()->call_provide();
-			this->states.back()->call_init();
+			this->last_state_initialize();
+			this->states.back()->call_provide();
 			this->states.back()->is_initalized = true;
 			if (this->call_resize_call_on_init && this->states.back()->call_resize_call_on_init)
 			{
@@ -220,7 +221,8 @@ namespace ql
 			{
 				if (ctr > 1000u)
 				{
-					ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_yellow, ql::to_string("updating signals > 1000 cycles, breaking loop"));
+					
+					(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_yellow, ql::to_string("updating signals > 1000 cycles, breaking loop"));
 					break;
 				}
 
