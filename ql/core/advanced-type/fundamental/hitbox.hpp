@@ -95,6 +95,11 @@ namespace ql
 			return ql::to_string(std::array{this->position, this->dimension});
 		}
 
+		constexpr bool operator==(const ql::hitbox_t<T>& other) const
+		{
+			return this->position == other.position && this->dimension == other.dimension;
+		}
+
 		constexpr void increase(T delta)
 		{
 			this->position -= ql::vector2<T>(delta, delta);
