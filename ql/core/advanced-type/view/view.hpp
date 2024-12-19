@@ -15,13 +15,16 @@ namespace ql
 	struct view_type
 	{
 		ql::vector2<T> position = {T{0}, T{0}};
+		ql::vector2<T> delta = {T{0}, T{0}};
 		ql::vector2<T> scale = {T{1}, T{1}};
 		T rotation = T{0};
 
 		sf::Transform get_transform() const
 		{
 			sf::Transform transform;     
-			transform.rotate(ql::f32_cast(this->rotation)).scale(1 / ql::vec2(this->scale)).translate(-ql::vec2(this->position));
+			transform.rotate(ql::f32_cast(this->rotation))
+				.scale(1 / ql::vec2(this->scale))
+				.translate(-ql::vec2(this->get_position_with_delta()));
 			// transform.rotate(ql::f32_cast(this->rotation)).scale(ql:vec2(this->scale)).translate(ql:vec2(this->position));
 			return transform;
 		}
@@ -29,7 +32,7 @@ namespace ql
 		sf::Transform get_transform_no_offset() const
 		{
 			sf::Transform transform;
-			transform.rotate(ql::f32_cast(this->rotation)).scale(1 / ql::vec2(this->scale));
+			transform.rotate(ql::f32_cast(this->rotation)).scale(1 / ql::vec2(this->get_position_with_delta()));
 			// transform.rotate(ql::f32_cast(this->rotation)).scale(ql:vec2(this->scale));
 			return transform;
 		}
@@ -91,7 +94,8 @@ namespace ql
 
 		constexpr bool is_default_view() const
 		{
-			return this->position == ql::vector2<T>{T{0}, T{0}} && this->scale == ql::vector2<T>{T{1}, T{1}} && this->rotation == T{0};
+			return this->position == ql::vector2<T>{T{0}, T{0}} && this->scale == ql::vector2<T>{T{1}, T{1}} &&
+						 this->rotation == T{0} && this->delta == ql::vector2<T>{T{0}, T{0}};
 		}
 
 		constexpr T get_rotation() const
@@ -102,6 +106,11 @@ namespace ql
 		constexpr ql::vector2<T> get_position() const
 		{
 			return this->position;
+		}
+
+		constexpr ql::vector2<T> get_position_with_delta() const
+		{
+			return this->position + this->delta;
 		}
 
 		constexpr ql::vector2<T> get_scale() const
