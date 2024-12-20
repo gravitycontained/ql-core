@@ -1352,10 +1352,7 @@ namespace ql
 		constexpr auto angle() const
 		requires (N == 2)
 		{
-			auto atan = ql::f64_cast(std::atan2(ql::f64_cast(this->y), -ql::f64_cast(this->x)));
-			if (atan < 0)
-				atan = 2 * ql::pi + atan;
-			return atan;
+			return std::atan2(this->y, this->x);
 		}
 
 		constexpr void set_rotation(ql::f64 angle)
