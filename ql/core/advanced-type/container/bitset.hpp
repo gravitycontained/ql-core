@@ -623,7 +623,7 @@ namespace ql
 			}
 		}
 
-		std::string string() const
+		std::string to_string() const
 		{
 			if constexpr (is_array())
 			{
@@ -642,7 +642,7 @@ namespace ql
 			}
 		}
 
-		std::string string_full() const
+		std::string to_string_full() const
 		{
 			if constexpr (is_array())
 			{
@@ -660,7 +660,7 @@ namespace ql
 			}
 		}
 
-		std::string hex_string_full(bool seperated = false) const
+		std::string to_hex_string_full(bool seperated = false) const
 		{
 			if constexpr (is_array())
 			{
