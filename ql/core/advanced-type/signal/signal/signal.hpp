@@ -11,7 +11,7 @@
 
 #include <ql/core/encryption/encryption.hpp>
 
-#include <ql/graphic/sync/type.hpp>
+#include <ql/graphic/sync/type/type.hpp>
 
 namespace ql
 {
@@ -36,7 +36,7 @@ namespace ql
 		~signal()
 		{
 			ql::println(
-				ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::string_left_spaced("destruct signal ", 24),
+				ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_gray, ql::string_left_spaced("destruct signal ", 24),
 				ql::color::aqua, this, " ", ql::color::bright_blue, ql::type_name<T>()
 			);
 		}
@@ -192,27 +192,16 @@ namespace ql
 			{
 				if (this->fire_next_time)
 				{
-					ql::println(
-						ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_gray,
-						ql::string_left_spaced("signal run ", 24), ql::color::aqua, this, " ", ql::color::bright_blue, ql::type_name<T>()
-					);
 					this->runListeners();
 					this->fire_next_time = false;
 				}
 			}
-			else
-			{
 
-				if (this->fire_next_time || this->value != this->value_before)
-				{
-					ql::println(
-						ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_gray,
-						ql::string_left_spaced("signal run ", 24), ql::color::aqua, this, " ", ql::color::bright_blue, ql::type_name<T>()
-					);
-					this->runListeners();
-					this->value_before = this->value;
-					this->fire_next_time = false;
-				}
+			else if (this->fire_next_time || this->value != this->value_before)
+			{
+				this->runListeners();
+				this->value_before = this->value;
+				this->fire_next_time = false;
 			}
 		}
 
@@ -223,25 +212,11 @@ namespace ql
 				if constexpr (ql::is_same<T, ql::empty_type>())
 				{
 					if (this->fire_next_time)
-					{
-						ql::println(
-							ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_gray,
-							ql::string_left_spaced("signal fire ", 24), ql::color::aqua, this, " ", ql::color::bright_blue, ql::type_name<T>()
-						);
 						this->sync.update_manager->active = true;
-					}
 				}
 				else
-				{
 					if (this->fire_next_time || this->value != this->value_before)
-					{
-						ql::println(
-							ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_gray,
-							ql::string_left_spaced("signal fire ", 24), ql::color::aqua, this, " ", ql::color::bright_blue, ql::type_name<T>()
-						);
 						this->sync.update_manager->active = true;
-					}
-				}
 			}
 		}
 	};
