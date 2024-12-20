@@ -29,7 +29,7 @@ namespace ql
 	{
 		ql::println(
 			ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::string_left_spaced("state_manager", 24),
-			"destructed"
+			ql::color::bright_gray, "destructed"
 		);
 		#if defined QL_GLEW
 			if (this->created_gl)
@@ -68,22 +68,28 @@ namespace ql
 		}
 	}
 
-	void state_manager::last_state_provide()
+	void state_manager::provide()
 	{
 		if (this->states.size())
 			this->states.back()->call_provide();
 	}
 
-	void state_manager::last_state_initialize()
+	void state_manager::initialize()
 	{
 		if (this->states.size())
 			this->states.back()->call_init();
 	}
 
-	void state_manager::last_state_update_injection()
+	void state_manager::update_injection()
 	{
 		if (this->states.size())
 			this->states.back()->call_update_injection();
+	}
+
+	void state_manager::check_uninitialized()
+	{
+		if (this->states.size())
+			this->states.back()->call_check_uninitialized();
 	}
 
 	void state_manager::init_back()
@@ -92,7 +98,7 @@ namespace ql
 		{
 			this->states.back()->init_before();
 			this->states.back()->call_provide();
-			this->last_state_initialize();
+			this->initialize();
 			this->states.back()->call_provide();
 			this->states.back()->is_initalized = true;
 			if (this->call_resize_call_on_init && this->states.back()->call_resize_call_on_init)
@@ -160,10 +166,12 @@ namespace ql
 		if (this->lost_focus)
 		{
 			this->no_focus_timer.reset();
+			this->event = {};
 		}
 		if (this->gained_focus)
 		{
 			this->no_focus_time = this->no_focus_timer.elapsed();
+			this->event = {};
 		}
 	}
 
@@ -221,8 +229,8 @@ namespace ql
 			{
 				if (ctr > 1000u)
 				{
-					
-					(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_yellow, ql::to_string("updating signals > 1000 cycles, breaking loop"));
+					ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_yellow,
+						ql::to_string("updating signals > 1000 cycles, breaking loop");
 					break;
 				}
 

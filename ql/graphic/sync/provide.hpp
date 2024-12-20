@@ -5,7 +5,7 @@
 #include <ql/core/constexpr/constexpr.hpp>
 #include <ql/core/transform/modal-apply.hpp>
 
-#include <ql/graphic/sync/type.hpp>
+#include <ql/graphic/sync/type/type.hpp>
 
 namespace ql
 {

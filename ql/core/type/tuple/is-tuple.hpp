@@ -39,20 +39,9 @@ namespace ql
 	}
 
 	template <typename T>
-	constexpr bool is_pair(T tuple)
-	{
-		return ql::is_pair<T>();
-	}
-
-	template <typename T>
 	constexpr bool is_tuple()
 	{
 		return ql::is_pair<T>() || decltype(ql::detail::tuple_signature(ql::declval<T>())){};
 	}
 
-	template <typename T>
-	constexpr bool is_tuple(T tuple)
-	{
-		return ql::is_tuple<T>();
-	}
 }	 // namespace ql

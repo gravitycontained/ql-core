@@ -166,6 +166,12 @@ namespace ql
 		this->text.set_center(this->smooth_layout.get_center());
 	}
 
+	void ql::smooth_button::move(ql::vec2 delta)
+	{
+		this->smooth_layout.move(delta);
+		this->layout_changed = true;
+	}
+
 	ql::vec2 ql::smooth_button::get_hitbox_increase() const
 	{
 		return this->hitbox_increase;

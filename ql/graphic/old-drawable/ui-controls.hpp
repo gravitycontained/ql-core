@@ -316,6 +316,7 @@ namespace ql
 		QL_SOURCE void find_closest_cursor_position();
 		QL_SOURCE bool just_changed() const;
 		QL_SOURCE void update_all_changes();
+		QL_SOURCE void set_scale(ql::vec2 scale);
 
 		ql::vtext text_layout;
 		mutable ql::hitbox hitbox;
@@ -352,6 +353,7 @@ namespace ql
 
 		ql::vec2f minimum_dimension = {0, 0};
 		ql::vec2f maximum_dimension = {ql::f64_max, ql::f64_max};
+		ql::vec2 scale = {1, 1};
 
 		ql::size line_limit = ql::size_max;
 

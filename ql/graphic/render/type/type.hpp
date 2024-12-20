@@ -36,15 +36,7 @@ namespace ql
 					using U = decltype(value);
 					if constexpr (ql::has_draw<U>())
 					{
-						if constexpr (ql::is_view<T>())
-						{
-							auto before = this->states;
-
-							value.draw(*this);
-
-							this->states = before;
-						}
-						else if constexpr (ql::is_render_texture<U>())
+						if constexpr (ql::is_render_texture<U>())
 						{
 							if (this->window)
 							{
@@ -115,10 +107,6 @@ namespace ql
 		requires (ql::has_draw<T>() || ql::is_container<T>())
 		void draw(const T& object, sf::RenderStates states)
 		{
-			if constexpr (ql::has_view<T>())
-			{
-				object.auto_view.apply_to(states);
-			}
 			if constexpr (ql::has_draw<T>())
 			{
 				if constexpr (ql::is_render_texture<T>())
@@ -145,10 +133,9 @@ namespace ql
 				}
 				else if constexpr (ql::has_render<T>())
 				{
-					auto copy = this->states;
-					this->states = states;
+					//this->store_states();
+
 					object.draw(*this);
-					this->states = copy;
 				}
 				else if constexpr (ql::has_draw_sf<T>())
 				{
@@ -171,9 +158,38 @@ namespace ql
 			}
 		}
 
+		void push_view(ql::view view)
+		{
+			if (this->views.empty())
+				this->states_before = this->states;
+
+			this->views.push_back(view);
+			this->apply_view();
+		}
+
+		void pop_view()
+		{
+			if (!this->views.empty())
+			{
+				this->views.pop_back();
+				this->apply_view();
+			}
+		}
+
+		void apply_view()
+		{
+			if (!this->views.empty())
+			{
+				this->states = this->states_before;
+				this->views.back().apply_to(this->states);
+			}
+		}
+
 		sf::RenderWindow* window;
 		sf::RenderTexture* texture;
-		sf::RenderStates states;
+		mutable sf::RenderStates states;
+		mutable sf::RenderStates states_before;
+		mutable std::vector<ql::view> views;
 	};
 
 	using render = render_type<false>;

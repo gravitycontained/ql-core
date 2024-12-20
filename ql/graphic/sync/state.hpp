@@ -7,6 +7,11 @@
 		this->sync_init_before(param);                 \
 	}                                                \
                                                    \
+	void call_check_uninitialized() override         \
+	{                                                \
+		this->sync_check_uninitialized(param);         \
+	}                                                \
+                                                   \
 	void call_init() override                        \
 	{                                                \
 		this->sync_init(param);                        \

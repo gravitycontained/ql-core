@@ -969,6 +969,7 @@ namespace ql
 		line.text.set_string(current_str.substr(this->cursor_position.x));
 		line.text.set_position(pos);
 		line.calculate_hitboxes();
+		line.text.set_scale(this->scale);
 		line.mouse_hitboxes_changed = true;
 		this->text_mouse_hitboxes_changed = true;
 		this->whole_string_changed = true;
@@ -2113,6 +2114,12 @@ namespace ql
 		this->changed = true;
 		this->hitbox.dimension = ql::vec(ql::f32_max, ql::f32_max);
 		this->internal_update();
+	}
+	void ql::text_field::set_scale(ql::vec2 scale)
+	{
+		this->scale = scale;
+		for (auto& i : this->lines)
+			i.text.set_scale(scale);
 	}
 
 	void ql::color_picker::init()

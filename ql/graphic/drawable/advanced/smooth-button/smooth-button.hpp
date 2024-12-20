@@ -72,6 +72,7 @@ namespace ql
 		QL_SOURCE void set_text_string(const std::string& string);
 		QL_SOURCE void set_text_string(const std::wstring& string);
 		QL_SOURCE void centerize_text();
+		QL_SOURCE void move(ql::vec2 delta);
 
 		QL_SOURCE ql::vec2 get_hitbox_increase() const;
 		QL_SOURCE ql::vec2 get_dimension() const;

@@ -2,7 +2,6 @@
 
 #if defined QL_GRAPHIC
 
-#include <ql/graphic/view-control.hpp>
 #include <ql/graphic/resources/resources.hpp>
 
 namespace ql

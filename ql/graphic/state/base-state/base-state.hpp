@@ -11,9 +11,10 @@
 
 #include <ql/graphic/init/init.hpp>
 
-#include <ql/graphic/sync/type.hpp>
+#include <ql/graphic/sync/type/type.hpp>
 #include <ql/graphic/sync/list.hpp>
 #include <ql/graphic/sync/provide.hpp>
+#include <ql/graphic/sync/check-uninitialized/check-uninitialized.hpp>
 
 #include <ql/graphic/update/update.hpp>
 
@@ -39,6 +40,7 @@ namespace ql
 		virtual ~base_state() = default;
 
 		virtual void call_init() = 0;
+		virtual void call_check_uninitialized() = 0;
 		virtual void call_provide() = 0;
 		virtual void call_update() = 0;
 		virtual void call_update_injection() = 0;
@@ -81,24 +83,33 @@ namespace ql
 		QL_SOURCE void reset_view();
 
 		template <typename T>
+		void sync_check_uninitialized(T& object)
+		{
+			ql::sync_check_uninitialized(*this->state_manager);
+		}
+		template <typename T>
 		void sync_init(T& object)
 		{
 			ql::init_state init_state{this->dimension()};
-			ql::sync_init(object, init_state);
-			ql::sync_init(object, *this->state_manager);
+			ql::sync_init(object, *this->state_manager, init_state);
+			ql::sync_init(object, *this->state_manager, *this->state_manager);
+			this->sync_check_uninitialized(*this->state_manager);
 		}
 
 		template <typename T>
 		void sync_provide(T& object)
 		{
 			ql::provide(object, std::ref(this->state_manager->signal_update_manager));
+			ql::provide(object, *this->state_manager);
 			ql::sync_provide(object);
+			this->sync_check_uninitialized(*this->state_manager);
 		}
 
 		template <typename T>
 		void sync_init_before(T& object)
 		{
 			ql::sync_init_before(object, *this->state_manager);
+			this->sync_check_uninitialized(*this->state_manager);
 		}
 
 		template <typename T>
@@ -108,18 +119,21 @@ namespace ql
 			ql::render render(this->state_manager->window, this->render_states);
 			ql::update_manager update{ this->event(), *this->state_manager, this->state_manager->signal_update_manager, render, init_state };
 			ql::sync_update(object, *this->state_manager, update);
+			this->sync_check_uninitialized(*this->state_manager);
 		}
 
 		template <typename T>
 		void sync_update_injection(T& object)
 		{
 			ql::sync_update_injection(object, *this->state_manager);
+			this->sync_check_uninitialized(*this->state_manager);
 		}
 
 		template <typename T>
 		void sync_update_phase_signal_run(T& object)
 		{
 			ql::sync_update_phase_signal_run(object);
+			this->sync_check_uninitialized(*this->state_manager);
 		}
 
 		template <typename T>
@@ -134,6 +148,7 @@ namespace ql
 		{
 			ql::render render(this->state_manager->window, this->render_states);
 			ql::sync_draw(object, render);
+			this->sync_check_uninitialized(*this->state_manager);
 		}
 
 		/*

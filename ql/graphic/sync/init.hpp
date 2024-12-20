@@ -1,10 +1,8 @@
 #pragma once
 
-#include <ql/graphic/sync/macro.hpp>
-#include <ql/graphic/sync/type.hpp>
-
-#include <ql/core/constexpr/constexpr.hpp>
-#include <ql/core/type/type.hpp>
+#include <ql/graphic/sync/type/type.hpp>
+#include <ql/graphic/state/state-manager/state-manager.hpp>
+#include <ql/graphic/sync/check-uninitialized/check-uninitialized.hpp>
 
 namespace ql
 {
@@ -70,7 +68,7 @@ namespace ql
 
 	template <typename T, typename... Args>
 	requires (ql::is_or_has_sync<ql::modal_decay<T>>() || detail::has_function_init<ql::modal_decay<T>, Args...>())
-	void sync_init(T& object, Args&&... args)
+	void sync_init(T& object, ql::state_manager& manager, Args&&... args)
 	{
 		ql::modal_apply(
 			object,
@@ -89,7 +87,7 @@ namespace ql
 								ql::is_or_has_sync<ql::modal_decay<decltype(tuple_element)>>() ||
 								detail::has_function_init<ql::modal_decay<decltype(tuple_element)>, Args...>()
 							)
-								sync_init(tuple_element, std::forward<Args>(args)...);
+								sync_init(tuple_element, manager, std::forward<Args>(args)...);
 						}
 					);
 				};
@@ -102,6 +100,8 @@ namespace ql
 						{
 							if constexpr (ql::is_sync<decltype(value)>() || detail::has_function_init<decltype(value), Args...>())
 								detail::apply_init(value, std::forward<Args>(args)...);
+
+							ql::sync_check_uninitialized(manager);
 						}
 					);
 				};

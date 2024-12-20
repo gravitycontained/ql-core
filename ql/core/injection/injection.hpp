@@ -4,7 +4,7 @@
 
 #ifdef QL_GRAPHIC
 
-#include <ql/graphic/sync/type.hpp>
+#include <ql/graphic/sync/type/type.hpp>
 #include <ql/graphic/state/state-manager/state-manager.hpp>
 
 namespace ql
@@ -19,7 +19,7 @@ namespace ql
 		~injectable()
 		{
 			ql::println(
-				ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_blue,
+				ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_gray,
 				ql::string_left_spaced("destruct injectable ", 24), ql::color::aqua, this, " ", ql::color::bright_blue, ql::type_name<T>()
 			);
 			this->value = nullptr;
@@ -30,7 +30,7 @@ namespace ql
 			if (!this->value)
 			{
 				ql::println(
-					ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_blue,
+					ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_gray,
 					ql::string_left_spaced("received injection! ", 24), ql::color::aqua, this, " ", ql::color::bright_blue,
 					ql::type_name<T>()
 				);
@@ -47,7 +47,7 @@ namespace ql
 					ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_blue,
 					ql::string_left_spaced("update injection ", 24), ql::color::aqua, this, " ", ql::color::bright_blue, ql::type_name<T>()
 				);
-				manager.last_state_provide();
+				manager.provide();
 			}
 		}
 

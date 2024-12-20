@@ -14,4 +14,4 @@
 #include <ql/graphic/old-drawable/drawables.hpp>
 #include <ql/graphic/old-drawable/ui-controls.hpp>
 
-#include <ql/graphic/view-control.hpp>
+#include <ql/graphic/view/view.hpp>

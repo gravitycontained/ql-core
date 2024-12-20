@@ -1,76 +1,38 @@
 #pragma once
 
-#include <ql/core/definition/definition.hpp>
 #include <ql/core/type/type.hpp>
-#include <ql/graphic/sync/type.hpp>
-#include <ql/graphic/sync/macro.hpp>
+#include <ql/graphic/sync/type/type.hpp>
+#include <ql/graphic/sync/check-uninitialized/check-uninitialized.hpp>
 
 #include <ql/graphic/update/update.hpp>
 
 namespace ql
 {
-	struct sync_update_info
-	{
-		bool needs_provide_and_initialize = false;
-	}; 
-
 	namespace detail
 	{
-		template <typename T, typename U>
-		concept has_update_c = requires(T x, U arg) { x.update(arg); };
-
-		template <typename T, typename U>
-		constexpr bool has_update()
-		{
-			return has_update_c<T, U>;
-		}
-
 		template <typename T>
 		concept has_update_no_parameter_c = requires(T x) { x.update(); };
-
-
-		template <typename T>
-		constexpr bool has_update_for_manager()
-		{
-			return (
-				ql::has_event_update<ql::modal_decay<T>>() || ql::has_update<T, ql::update_manager>() ||
-				ql::has_update<T, ql::state_manager>()
-			);
-		}
 
 		template <typename T, typename... Args>
 		constexpr bool has_function_update()
 		{
-			if constexpr (has_update_no_parameter_c<T>)
-				return true;
-			return ql::constexpr_or_chain<ql::variadic_size<Args...>()>(
-				[&](auto index)
-				{ return has_update_c<ql::variadic_type<index, Args...>, T>; }
-			);
+			return has_update_no_parameter_c<T> || ql::has_update_for_manager<T>();
 		}
 
-		template <typename T, typename... Args>
-		constexpr void apply_update(T& object, Args&&... args)
+		template <typename T>
+		constexpr void apply_update(T& object, ql::update_manager& update)
 		{
-			if constexpr (detail::has_function_update<T, Args...>())
-			{
-				if constexpr (has_update_no_parameter_c<T>)
-					object.update();
-				ql::constexpr_iterate<ql::variadic_size<Args...>()>(
-					[&](auto index)
-					{
-						using check_type = ql::variadic_type<index, Args...>;
-						if constexpr (has_update_for_manager<T>())
-							ql::tuple_value<index>(ql::auto_tie(std::forward<Args>(args)...)).update(object);
-					}
-				);
-			}
+			if constexpr (has_update_no_parameter_c<T>)
+				object.update();
+
+				if constexpr (!ql::is_view<T>() && ql::has_update_for_manager<T>())
+					update.update(object);
 		}
 	}	 // namespace detail
 
-	template <typename T, typename... Args>
-	requires (ql::is_or_has_sync<ql::modal_decay<T>>() || detail::has_function_update<ql::modal_decay<T>, Args...>())
-	void sync_update_helper(T& object, sync_update_info& info, Args&&... args)
+	template <typename T>
+	requires (ql::is_or_has_sync<ql::modal_decay<T>>() || detail::has_function_update<ql::modal_decay<T>>())
+	void sync_update(T& object, ql::state_manager& state, ql::update_manager& update)
 	{
 		ql::modal_apply(
 			object,
@@ -79,16 +41,30 @@ namespace ql
 				constexpr bool order = true;
 				auto iterate = [&](auto& tuple)
 				{
+					bool found_view = false;
+
 					constexpr auto N = ql::tuple_find_index_of_type<decltype(tuple), ql::declare_unsync>();
 					ql::constexpr_iterate<N>(
 						[&](auto i)
 						{
 							auto&& tuple_element = ql::tuple_value<i>(tuple);
+							if constexpr (ql::is_view<decltype(tuple_element)>())
+							{
+								if constexpr (ql::has_update_for_manager<decltype(tuple_element)>())
+									update.update(tuple_element);
+
+								update.event.push_view(tuple_element);
+								found_view = true;
+							}
+
 							if constexpr (ql::is_or_has_sync<ql::modal_decay<decltype(tuple_element)>>() ||
-														detail::has_function_update<ql::modal_decay<decltype(tuple_element)>, Args...>())
-								sync_update_helper(tuple_element, info, std::forward<Args>(args)...);
+														detail::has_function_update<ql::modal_decay<decltype(tuple_element)>>())
+								sync_update(tuple_element, state, update);
 						}
 					);
+
+					if (found_view)
+						update.event.pop_view();
 				};
 				auto check_apply_on_object = [&](auto& apply_check)
 				{
@@ -96,22 +72,22 @@ namespace ql
 						apply_check,
 						[&](auto& value)
 						{
-							if constexpr (ql::is_sync<decltype(value)>())
-							{
-								if (!value.declare_sync.initialized)
-								{
-									info.needs_provide_and_initialize = true;
-									ql::println(
-										ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_gray,
-										ql::string_left_spaced("uninitialized object ", 24), ql::color::aqua, &value, " ", ql::color::bright_blue, ql::type_name<decltype(value)>()
-									);
-								}
-							}
-							if constexpr (detail::has_function_update<decltype(value), Args...>())
-								detail::apply_update(value, std::forward<Args>(args)...);
+							if constexpr (detail::has_function_update<decltype(value)>())
+								detail::apply_update(value, update);
+
+							ql::sync_check_uninitialized(state);
 						}
 					);
 				};
+
+				if constexpr (ql::is_sync<decltype(check)>())
+					if (!check.declare_sync.active || !check.declare_sync.update)
+						return;
+
+				if constexpr (ql::has_sync<decltype(check)>())
+					if (!check.sync.declare_sync.active || !check.sync.declare_sync.update)
+						return;
+
 				if constexpr (order)
 				{
 					check_apply_on_object(check);
@@ -138,19 +114,5 @@ namespace ql
 				}
 			}
 		);
-	}
-
-	template <typename T, typename ... Args>
-	requires (ql::is_or_has_sync<T>())
-	void sync_update(T& object, ql::state_manager& manager, Args&&... args)
-	{
-		sync_update_info info;
-		sync_update_helper(object, info, std::forward<Args>(args)...);
-
-		if (info.needs_provide_and_initialize)
-		{
-			manager.last_state_provide();
-			manager.last_state_initialize();
-		}
 	}
 }	 // namespace ql
