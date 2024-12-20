@@ -19,6 +19,9 @@ namespace ql
 {
 	struct event;
 
+	template <typename T>
+	struct view_control_t;
+
 	template <typename C, typename... Args>
 	concept has_event_update_c = requires(C x, const event & event, Args... args) { x.update(event, args...); };
 
@@ -119,12 +122,19 @@ namespace ql
 		QL_SOURCE bool text_entered(std::string c) const;
 		QL_SOURCE bool text_entered(std::wstring c) const;
 
+		QL_SOURCE bool modified_key_holding() const;
+
 		QL_SOURCE bool is_text_entered() const;
 		QL_SOURCE std::wstring text_entered() const;
 		QL_SOURCE std::u32string u32_text_entered() const;
 		QL_SOURCE std::string text_entered_str() const;
 		QL_SOURCE std::wstring all_text_entered() const;
 		QL_SOURCE std::string all_text_entered_str() const;
+
+		QL_SOURCE void push_view(ql::view view);
+		QL_SOURCE void pop_view();
+
+		QL_SOURCE void apply_view();
 
 		template <typename T, typename... Args>
 		requires (ql::has_event_update<ql::modal_decay<T>, Args...>())
@@ -136,27 +146,7 @@ namespace ql
 					using U = decltype(updatable);
 					if constexpr (ql::has_event_update<U, Args...>())
 					{
-						if constexpr (ql::is_view<U>())
-						{
-							if (updatable.is_default_view())
-							{
-								updatable.update(*this, std::forward<Args>(args)...);
-							}
-							else
-							{
-								auto before = this->m_mouse_position;
-								auto before_delta = this->m_delta_mouse_position;
-
-								updatable.update(*this, std::forward<Args>(args)...);
-
-								this->m_mouse_position = before;
-								this->m_delta_mouse_position = before_delta;
-							}
-						}
-						else
-						{
-							updatable.update(*this, std::forward<Args>(args)...);
-						}
+						updatable.update(*this, std::forward<Args>(args)...);
 					}
 				}
 			);
@@ -202,6 +192,12 @@ namespace ql
 		ql::vector2i m_resized_size;
 		mutable ql::vec2 m_mouse_position;
 		mutable ql::vec2 m_delta_mouse_position;
+		mutable ql::vec2 m_mouse_position_before;
+		mutable ql::vec2 m_delta_mouse_position_before;
+
+		mutable std::vector<ql::view> m_views;
+
+
 		ql::vector2i m_mouse_position_screen;
 		ql::vector2i m_mouse_position_screen_before;
 		ql::vector2i m_mouse_position_desktop;

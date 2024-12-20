@@ -3,35 +3,19 @@
 #include <ql/core/definition/definition.hpp>
 #if defined QL_GRAPHIC
 
-#include <SFML/Graphics/RenderStates.hpp>
-
 #include <ql/graphic/render/type/type.hpp>
-#include <ql/graphic/state/base-state/base-state.hpp>
+#include <ql/core/advanced-type/view/view.hpp>
 
 namespace ql
 {
-
 	template <typename T>
-	struct view_control_t : ql::view_type<T>
+	struct view_control_t : public ql::view_type<T>
 	{
 		sf::Mouse::Button drag_mouse_button = sf::Mouse::Left;
 
 		view_control_t()
 		{
 			this->smooth_zoom_animation.set_duration(this->smooth_zoom_duration);
-		}
-
-		void set_hitbox(ql::vector2<T> position, ql::vector2<T> dimension)
-		{
-			this->set_hitbox(ql::hitbox{position, dimension});
-		}
-
-		void set_hitbox(const ql::base_state& state)
-		{
-			this->set_hitbox(ql::hitbox{
-					{0, 0},
-					state.dimension()
-			});
 		}
 
 		void set_hitbox(ql::hitbox hitbox)
@@ -249,23 +233,6 @@ namespace ql
 					this->click_mouse_position = event.mouse_position() - this->hitbox.position;
 				}
 			}
-
-			event.apply_view(*this);
-
-		}
-
-		void draw(ql::render& render) const
-		{
-			if (!this->hitbox_set)
-			{
-				ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "draw: hitbox of view_control was not set");
-				return;
-			}
-
-			if (this->enabled)
-			{
-				this->apply_to(render.states);
-			}
 		}
 
 		ql::vector2<T> position_at_mouse() const
@@ -286,6 +253,12 @@ namespace ql
 		bool empty() const
 		{
 			return this->hitbox_set == false;
+		}
+
+		template <typename U>
+		operator ql::view_type<U>() const
+		{
+			return ql::view_type<U>(this->position, this->delta, this->scale, static_cast<U>(this->rotation));
 		}
 
 		ql::hitbox hitbox;

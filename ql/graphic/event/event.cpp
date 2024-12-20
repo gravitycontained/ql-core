@@ -625,6 +625,10 @@ namespace ql
 		}
 		return true;
 	}
+	bool ql::event::modified_key_holding() const
+	{
+		return this->key_holding(sf::Keyboard::LShift) || this->key_holding(sf::Keyboard::LControl);
+	}
 
 	ql::vec2 ql::event::mouse_position() const
 	{
@@ -689,6 +693,38 @@ namespace ql
 	std::string ql::event::all_text_entered_str() const
 	{
 		return ql::wstring_to_string(this->m_text_entered_total);
+	}
+
+	void ql::event::push_view(ql::view type)
+	{
+		if (this->m_views.empty())
+		{
+			this->m_mouse_position_before = this->m_mouse_position;
+			this->m_delta_mouse_position_before = this->m_delta_mouse_position;
+		}
+		this->m_views.push_back(type);
+		this->apply_view();
+	}
+
+	void ql::event::pop_view()
+	{
+		if (!this->m_views.empty())
+		{
+			this->m_views.pop_back();
+			this->apply_view();
+		}
+	}
+
+	void ql::event::apply_view()
+	{
+		if (this->m_views.empty())
+		{
+			return;
+		}
+
+		auto view = this->m_views.back();
+		this->m_mouse_position = view.transform_point(this->m_mouse_position_before);
+		this->m_delta_mouse_position = view.transform_point_no_offset(this->m_delta_mouse_position_before);
 	}
 
 }	 // namespace ql

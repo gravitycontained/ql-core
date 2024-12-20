@@ -1,12 +1,8 @@
 #pragma once
 
-#include <ql/graphic/render/render.hpp>
-#include <ql/graphic/sync/type.hpp>
-
-#include <ql/core/constexpr/constexpr.hpp>
-#include <ql/core/type/type.hpp>
-
+#include <ql/graphic/sync/type/type.hpp>
 #include <ql/core/system/print/print.hpp>
+#include <ql/graphic/view/view.hpp>
 
 namespace ql
 {
@@ -44,17 +40,29 @@ namespace ql
 
 				auto iterate = [&](auto& tuple)
 				{
+					bool found_view = false;
+
 					constexpr auto N = ql::tuple_find_index_of_type<decltype(tuple), ql::declare_unsync>();
 					ql::constexpr_iterate<N>(
 						[&](auto i)
 						{
 							auto&& tuple_element = ql::tuple_value<i>(tuple);
+
+							if constexpr (ql::is_view<decltype(tuple_element)>())
+							{
+								render.push_view(tuple_element);
+								found_view = true;
+							}
+
 							if constexpr (ql::is_or_has_sync<ql::modal_decay<decltype(tuple_element)>>() ||
 								detail::has_sync_draw<ql::modal_decay<decltype(tuple_element)>>()
 							)
 								sync_draw(tuple_element, render);
 						}
 					);
+
+					if (found_view)
+						render.pop_view();
 				};
 
 				auto check_apply_on_object = [&](auto& apply_check)
@@ -63,12 +71,20 @@ namespace ql
 						apply_check,
 						[&](auto& value)
 						{
+
 							if constexpr (detail::has_sync_draw<decltype(value)>())
 								detail::apply_draw(value, render);
 						}
 					);
 				};
 
+				if constexpr (ql::is_sync<decltype(check)>())
+					if (!check.declare_sync.active || !check.declare_sync.draw)
+						return;
+
+				if constexpr (ql::has_sync<decltype(check)>())
+					if (!check.sync.declare_sync.active || !check.sync.declare_sync.draw)
+						return;
 
 				if constexpr (order)
 				{

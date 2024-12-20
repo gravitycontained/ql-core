@@ -9,6 +9,8 @@
 #include <ql/graphic/render/render.hpp>
 #include <ql/graphic/sync/update.hpp>
 #include <ql/graphic/init/init.hpp>
+#include <ql/core/advanced-type/view/view.hpp>
+
 
 namespace ql
 {
@@ -19,6 +21,17 @@ namespace ql
 	constexpr bool has_update()
 	{
 		return has_update_c<T, U>;
+	}
+
+	struct update_manager;
+
+	template <typename T>
+	constexpr bool has_update_for_manager()
+	{
+		return (
+			ql::has_event_update<ql::modal_decay<T>>() || ql::has_update<T, ql::update_manager>() ||
+			ql::has_update<T, ql::state_manager>()
+		);
 	}
 
 	struct state_manager;
@@ -33,10 +46,7 @@ namespace ql
 
 
 		template <typename T>
-		requires (
-			ql::has_event_update<ql::modal_decay<T>>() || ql::has_update<T, ql::update_manager>() ||
-			ql::has_update<T, ql::state_manager>()
-		)
+		requires (ql::has_update_for_manager<T>())
 		void update(T& object)
 		{
 			if constexpr (ql::has_event_update<ql::modal_decay<T>>())

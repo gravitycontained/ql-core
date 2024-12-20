@@ -19,6 +19,8 @@ namespace ql
 		ql::vector2<T> scale = {T{1}, T{1}};
 		T rotation = T{0};
 
+		using type = T;
+
 		sf::Transform get_transform() const
 		{
 			sf::Transform transform;     
@@ -146,35 +148,6 @@ namespace ql
 	{
 		ql::view view;
 	};
-
-	namespace detail
-	{
-		template <typename T>
-		struct view_signature : std::false_type
-		{};
-
-		template <typename T>
-		struct view_signature<ql::view_type<T>> : std::true_type
-		{};
-	}	 // namespace detail
-
-	template <typename T>
-	constexpr bool is_view()
-	{
-		return detail::view_signature<T>{};
-	}
-
-	template <typename T>
-	concept has_view_c = requires(T x) {
-		{ x.auto_view };
-		requires ql::is_view<decltype(T::auto_view)>();
-	};
-
-	template <typename T>
-	constexpr bool has_view()
-	{
-		return has_view_c<T>;
-	}
 }	 // namespace ql
 
 #endif
