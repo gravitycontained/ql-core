@@ -12,18 +12,20 @@ namespace qldev
 	struct rectangle_shape
 	{
 		ql_sync;
+		ql::connection connection;
 
 		qldev::rectangle hitbox;
 		qldev::polygon_shape shape;
 		ql::signal<ql::rgba> color;
 
+
 		void init()
 		{
-			ql::effect(
+			ql::effect(*this,
 				this->hitbox.position, this->hitbox.dimension, this->hitbox.border_radius, [this]() { this->update_polygon(); }
 			);
 
-			ql::effect(
+			ql::effect(*this,
 				this->color,
 				[this]()
 				{

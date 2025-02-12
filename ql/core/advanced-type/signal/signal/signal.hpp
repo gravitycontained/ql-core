@@ -30,7 +30,6 @@ namespace ql
 		std::vector<std::pair<ql::size, std::function<void(const T&)>>> listeners;
 		std::vector<std::pair<ql::size, std::function<void(void)>>> voidListeners;
 
-
 		bool fire_next_time = false;
 
 		~signal()
@@ -179,6 +178,34 @@ namespace ql
 				auto index = this->sync.update_manager->advance_count();
 				this->voidListeners.push_back(std::make_pair(index, listener));
 			}
+		}
+
+		void removeListener(const std::function<void(const T&)>& listener)
+		{
+			if (this->listeners.empty())
+				return;
+
+			this->listeners.erase(
+				std::remove_if(
+					this->listeners.begin(), this->listeners.end(),
+					[&](const auto& pair) { return pair.second.target<void(const T&)>() == listener.target<void(const T&)>(); }
+				),
+				this->listeners.end()
+			);
+		}
+
+		void removeListener(const std::function<void(void)>& listener)
+		{
+			if (this->voidListeners.empty())
+				return;
+
+			this->voidListeners.erase(
+				std::remove_if(
+					this->voidListeners.begin(), this->voidListeners.end(),
+					[&](const auto& pair) { return pair.second.target<void(void)>() == listener.target<void(void)>(); }
+				),
+				this->voidListeners.end()
+			);
 		}
 
 		void emit()

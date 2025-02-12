@@ -12,6 +12,7 @@ namespace qldev
 	struct circle_shape
 	{
 		ql_sync;
+		ql::connection connection;
 
 		qldev::circle circle;
 		sf::CircleShape shape;
@@ -23,9 +24,9 @@ namespace qldev
 					ql::color::bright_red, "game", ql::color::bright_gray, " :: ", ql::string_left_spaced("circle shape init ", 24), ql::color::aqua, this
 			);
 			//ql::println("signal injected number: ", this->color.test.value);
-			ql::effect(this->circle.position, this->circle.radius, [this]() { this->update_shape(); });
+			ql::effect(*this, this->circle.position, this->circle.radius, [this]() { this->update_shape(); });
 
-			ql::effect(this->color, [this]() { this->shape.setFillColor(this->color()); });
+			ql::effect(*this, this->color, [this]() { this->shape.setFillColor(this->color()); });
 		}
 
 		void update_shape()

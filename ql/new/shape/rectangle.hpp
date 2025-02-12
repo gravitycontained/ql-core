@@ -13,6 +13,7 @@ namespace qldev
 	struct rectangle_t
 	{
 		ql_sync;
+		ql::connection connection;
 
 		ql::signal<ql::vector2<T>> position;
 		ql::signal<ql::vector2<T>> dimension;
@@ -22,7 +23,7 @@ namespace qldev
 
 		void init()
 		{
-			ql::effect(this->position, this->dimension, this->border_radius, [this]() { this->update_polygon(); });
+			ql::effect(*this, this->position, this->dimension, this->border_radius, [this]() { this->update_polygon(); });
 		}
 
 		void update_polygon()
