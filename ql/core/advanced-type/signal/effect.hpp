@@ -12,7 +12,7 @@ namespace ql
 	constexpr auto are_signals()
 	{
 		return ql::all_tuple_true(ql::constexpr_apply<ql::variadic_size<Args...>() - 1>(
-				[&](auto i) { return ql::is_signal<ql::variadic_type<i, Args...>>(); }
+			[&](auto i) { return ql::is_signal<ql::variadic_type<i, Args...>>(); }
 		));
 	}
 
@@ -30,17 +30,18 @@ namespace ql
 
 		constexpr auto size = ql::variadic_size<Args...>();
 		ql::constexpr_iterate<size - 1>([&](auto i)
-			{
-				ql::tuple_value<i>(tied).addListener(function);
-			});
+		{
+			ql::tuple_value<i>(tied).addListener(function);
+		});
 
 		host.connection.emplace_back(std::make_unique<ql::single_connection>(std::move(
-		[tied, function]() mutable
-		{
-			ql::constexpr_iterate<size - 1>([&](auto i)
+			[tied, function]() mutable
+			{
+				ql::constexpr_iterate<size - 1>([&](auto i)
 				{
 					ql::tuple_value<i>(tied).removeListener(function);
 				});
-		})));
+			}
+		)));
 	}
 }	 // namespace ql
