@@ -1,15 +1,10 @@
 #pragma once
 
-#include <ql/core/definition/definition.hpp>
 #include <ql/core/advanced-type/signal/signal-update-manager/signal-update-manager.hpp>
-
-#include <ql/core/type/type.hpp>
 
 #include <ql/core/system/print/print.hpp>
 
 #include <ql/core/injection/injection.hpp>
-
-#include <ql/core/encryption/encryption.hpp>
 
 #include <ql/graphic/sync/type/type.hpp>
 
@@ -51,7 +46,6 @@ namespace ql
 		constexpr signal(const signal<T>& other)
 		{
 			auto message = ql::to_string("ql::signal<", ql::type_name<T>(), ">: avoid signal copies");
-			//throw std::runtime_error(message);
 			ql::println(message);
 
 			*this = other;
@@ -60,7 +54,6 @@ namespace ql
 		signal<T>& operator=(const signal<T>& other)
 		{
 			auto message = ql::to_string("ql::signal<", ql::type_name<T>(), ">: avoid signal copies");
-			//throw std::runtime_error(message);
 			ql::println(message);
 
 			this->value = other.value;
