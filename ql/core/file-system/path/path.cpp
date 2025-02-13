@@ -817,7 +817,9 @@ namespace ql::filesys
 	{
 		if (!this->exists())
 		{
-			ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "ql::filesys::path::remove: ", this->to_string(), " doesn't exist");
+			if constexpr (ql::debug::print)
+				ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "ql::filesys::path::remove: ", this->to_string(), " doesn't exist");
+			
 			return;
 		}
 		std::filesystem::remove_all(this->to_string());
@@ -847,7 +849,9 @@ namespace ql::filesys
 	{
 		if (!this->exists())
 		{
-			ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "ql::filesys::path::copy: ", this->to_string(), " doesn't exist");
+			if constexpr (ql::debug::print)
+				ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "ql::filesys::path::copy: ", this->to_string(), " doesn't exist");
+			
 			return;
 		}
 		path_destination.ensure_branches_exist();
@@ -869,7 +873,9 @@ namespace ql::filesys
 	{
 		if (!this->exists())
 		{
-			ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "ql::filesys::path::copy_overwrite: ", this->to_string(), " doesn't exist");
+			if constexpr (ql::debug::print)
+				ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "ql::filesys::path::copy_overwrite: ", this->to_string(), " doesn't exist");
+			
 			return;
 		}
 		if (path_destination.is_directory())
@@ -896,7 +902,9 @@ namespace ql::filesys
 	{
 		if (!this->exists())
 		{
-			ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "ql::filesys::path::move: ", this->to_string(), " doesn't exist");
+			if constexpr (ql::debug::print)
+				ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "ql::filesys::path::move: ", this->to_string(), " doesn't exist");
+			
 			return;
 		}
 		this->copy(path_destination);
@@ -907,7 +915,9 @@ namespace ql::filesys
 	{
 		if (!this->exists())
 		{
-			ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "ql::filesys::path::move_overwrite: ", this->to_string(), " doesn't exist");
+			if constexpr (ql::debug::print)
+				ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "ql::filesys::path::move_overwrite: ", this->to_string(), " doesn't exist");
+			
 			return;
 		}
 		this->copy_overwrite(path_destination);
@@ -918,7 +928,9 @@ namespace ql::filesys
 	{
 		if (!this->exists())
 		{
-			ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "ql::filesys::path::move_and_apply_path: ", this->to_string(), " doesn't exist");
+			if constexpr (ql::debug::print)
+				ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "ql::filesys::path::move_and_apply_path: ", this->to_string(), " doesn't exist");
+			
 			return;
 		}
 		this->move(path_destination);
@@ -929,7 +941,9 @@ namespace ql::filesys
 	{
 		if (!this->exists())
 		{
-			ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "ql::filesys::path::move_overwrite_and_apply_path: ", this->to_string(), " doesn't exist");
+			if constexpr (ql::debug::print)
+				ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "ql::filesys::path::move_overwrite_and_apply_path: ", this->to_string(), " doesn't exist");
+			
 			return;
 		}
 		this->move_overwrite(path_destination);
@@ -1436,7 +1450,9 @@ namespace ql::filesys
 			}
 
 			ql::print("_ ");
-			ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", path.get_name());
+			if constexpr (ql::debug::print)
+				ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", path.get_name());
+			
 		}
 	}
 

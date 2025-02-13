@@ -13,11 +13,10 @@ namespace ql
 	template <typename T>
 	struct signal
 	{
-		struct
-		{
-			ql_sync;
+		ql_sync_within
+		(
 			ql::injectable<ql::signal_update_manager> update_manager;
-		} sync;
+		);
 
 		T value;
 		T value_before;
@@ -29,10 +28,11 @@ namespace ql
 
 		~signal()
 		{
-			ql::println(
-				ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_gray, ql::string_left_spaced("destruct signal ", 24),
-				ql::color::aqua, this, " ", ql::color::bright_blue, ql::type_name<T>()
-			);
+			if constexpr (ql::debug::print)
+				ql::println(
+					ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_gray, ql::string_left_spaced("destruct signal ", 24),
+					ql::color::aqua, this, " ", ql::color::bright_blue, ql::type_name<T>()
+				);
 		}
 
 		constexpr T& operator=(const T& newValue)

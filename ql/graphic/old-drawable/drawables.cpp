@@ -6024,6 +6024,7 @@ namespace ql
 		if (!this->font)
 		{
 			ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", " ql::colored_text::add : no font set!");
+			
 			return;
 		}
 

@@ -27,10 +27,12 @@ namespace ql
 
 	state_manager::~state_manager()
 	{
-		ql::println(
-			ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::string_left_spaced("state_manager", 24),
-			ql::color::bright_gray, "destructed"
-		);
+		if constexpr (ql::debug::print)
+			ql::println(
+				ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::string_left_spaced("state_manager", 24),
+				ql::color::bright_gray, "destructed"
+			);
+			
 		#if defined QL_GLEW
 			if (this->created_gl)
 			{

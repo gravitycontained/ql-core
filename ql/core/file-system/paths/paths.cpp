@@ -500,7 +500,7 @@ namespace ql
 				{
 					print_branch_space(i);
 
-					ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "_ ", branch_names[i]);
+					ql::println("_ ", branch_names[i]);
 				}
 			};
 
@@ -523,7 +523,8 @@ namespace ql
 						if (path.is_file())
 						{
 							print_branch_space(branch_names.size());
-							ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "_ ", path.get_full_name(true));
+
+							ql::println("_ ", path.get_full_name(true));
 						}
 						break;
 					}
@@ -533,7 +534,8 @@ namespace ql
 				{
 					branch_names = current_branch_names;
 					print_branch_space(branch_names.size());
-					ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "_ ", path.get_full_name(true));
+					
+					ql::println("_ ", path.get_full_name(true));
 				}
 			}
 		}

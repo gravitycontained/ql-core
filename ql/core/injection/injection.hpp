@@ -18,10 +18,12 @@ namespace ql
 
 		~injectable()
 		{
-			ql::println(
-				ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_gray,
-				ql::string_left_spaced("destruct injectable ", 24), ql::color::aqua, this, " ", ql::color::bright_blue, ql::type_name<T>()
-			);
+			if constexpr (ql::debug::print)
+				ql::println(
+					ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_gray,
+					ql::string_left_spaced("destruct injectable ", 24), ql::color::aqua, this, " ", ql::color::bright_blue, ql::type_name<T>()
+				);
+
 			this->value = nullptr;
 		}
 
@@ -29,12 +31,13 @@ namespace ql
 		{
 			if (!this->value)
 			{
-				ql::println(
-					ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_gray,
-					ql::string_left_spaced("received injection! ", 24), ql::color::aqua, this, " ", ql::color::bright_blue,
-					ql::type_name<T>()
-				);
-				//this->value = std::make_shared<T>(value);
+				if constexpr (ql::debug::print)
+					ql::println(
+						ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_gray,
+						ql::string_left_spaced("received injection! ", 24), ql::color::aqua, this, " ", ql::color::bright_blue,
+						ql::type_name<T>()
+					);
+					
 				this->value = &value;
 			}
 		}
@@ -43,10 +46,11 @@ namespace ql
 		{
 			if (!this->value)
 			{
-				ql::println(
-					ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_blue,
-					ql::string_left_spaced("update injection ", 24), ql::color::aqua, this, " ", ql::color::bright_blue, ql::type_name<T>()
-				);
+				if constexpr (ql::debug::print)
+					ql::println(
+						ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_blue,
+						ql::string_left_spaced("update injection ", 24), ql::color::aqua, this, " ", ql::color::bright_blue, ql::type_name<T>()
+					);
 				manager.provide();
 			}
 		}
@@ -58,7 +62,6 @@ namespace ql
 
 		constexpr T*& operator->()
 		{
-			//return this->value.operator->();
 			return this->value;
 		}
 

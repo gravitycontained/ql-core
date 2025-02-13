@@ -1631,7 +1631,9 @@ namespace ql
 		auto lines = ql::string_split(data, '\n');
 		if (lines.size() != 5u)
 		{
-			ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "ql::RSASSA_PSS_OAEP::load_keys : invalid keys file");
+			if constexpr (ql::debug::print)
+				ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "ql::RSASSA_PSS_OAEP::load_keys : invalid keys file");
+			
 			return;
 		}
 		for (auto& i : lines)

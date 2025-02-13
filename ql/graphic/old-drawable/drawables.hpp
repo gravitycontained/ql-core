@@ -1848,6 +1848,7 @@ namespace ql
 			if (!this->texture_ptr_set)
 			{
 				ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "tile_map::create: texture_ptr not set");
+				
 				return;
 			}
 
@@ -2011,6 +2012,7 @@ namespace ql
 			if (!this->texture_ptr)
 			{
 				ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "small_tile_map::create: texture_ptr not set");
+				
 				return;
 			}
 
@@ -2114,6 +2116,7 @@ namespace ql
 			if (!this->texture_ptr)
 			{
 				ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "small_tile_map::create: texture_ptr not set");
+				
 				return;
 			}
 
@@ -2161,6 +2164,7 @@ namespace ql
 			if (!this->texture_ptr)
 			{
 				ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "small_tile_map::create: texture_ptr not set");
+				
 				return;
 			}
 

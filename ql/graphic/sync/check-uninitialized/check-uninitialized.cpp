@@ -17,10 +17,12 @@ namespace ql
 
 			if (ql::detail::sync_unitialized_count)
 			{
-				ql::println(
-					ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_yellow,
-					ql::color::aqua, ql::detail::sync_unitialized_count, ql::color::bright_gray, " new synchronizations"
-				);
+				if constexpr (ql::debug::print)
+					ql::println(
+						ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_yellow,
+						ql::color::aqua, ql::detail::sync_unitialized_count, ql::color::bright_gray, " new synchronizations"
+					);
+				
 				ql::detail::sync_unitialized_count = 0u;
 				manager.provide();
 				manager.initialize();
