@@ -114,20 +114,6 @@ namespace ql
 			return std::forward<decltype(value.sync_extension)>(value.sync_extension);
 	}
 
-	template <typename T>
-	requires (ql::is_or_has_sync<T>())
-	constexpr auto&& sync_resolve_backwards(T&& value)
-	{
-		if constexpr (ql::has_sync_extension<decltype(value)>())
-			return std::forward<decltype(value.sync_extension)>(value.sync_extension);
-
-		else if constexpr (ql::has_sync<decltype(value)>())
-			return std::forward<decltype(value.sync)>(value.sync);
-
-		else
-			return std::forward<decltype(value)>(value);
-	}
-
 }	 // namespace ql
 
 #define ql_sync ql::declare_sync declare_sync;
