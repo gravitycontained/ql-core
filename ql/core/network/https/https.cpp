@@ -10,7 +10,7 @@ namespace ql
 		return total_size;
 	}
 
-	ql::promise<std::string> http_get(const std::string& url)
+	ql::promise<std::string> http_get(const std::string_view& url)
 	{
 		return ql::make_promise(
 				[url]()
@@ -24,7 +24,7 @@ namespace ql
 						}
 
 						std::string response_data;
-						curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+						curl_easy_setopt(curl, CURLOPT_URL, url);
 						curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
 						curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response_data);
 						curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);	 // Follow redirects

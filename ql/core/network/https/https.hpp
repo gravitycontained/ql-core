@@ -11,5 +11,5 @@ namespace ql
 	QL_SOURCE size_t write_callback(void* contents, size_t size, size_t nmemb, void* user_data);
 
 	// Function to perform an HTTP GET request using libcurl
-	QL_SOURCE ql::promise<std::string> http_get(const std::string& url);
+	QL_SOURCE ql::promise<std::string> http_get(const std::string_view& url);
 }	 // namespace ql
