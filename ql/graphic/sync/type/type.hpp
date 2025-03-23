@@ -35,6 +35,15 @@ namespace ql
 	}
 
 	template <typename C>
+	concept has_sync_extension_c = requires(C x) { ql::struct_member_size<decltype(x.sync_extension)>(); };
+
+	template <typename C>
+	constexpr bool has_sync_extension()
+	{
+		return has_sync_extension_c<C>;
+	}
+
+	template <typename C>
 	concept is_sync_c = requires(C x) {
 		{ x.declare_sync };
 	};
@@ -62,3 +71,10 @@ namespace ql
     ql::declare_sync declare_sync; \
     __VA_ARGS__ \
   } sync;
+
+#define ql_sync_extension_within(...) \
+  struct \
+  { \
+    ql::declare_sync declare_sync; \
+    __VA_ARGS__ \
+  } sync_extension;
