@@ -32,6 +32,8 @@ namespace ql
 		bool simple_hitbox = false;
 		bool hovering = false;
 		bool clicked = false;
+		bool holding = false;
+		bool clicked_release = false;
 		bool clicked_once = false;
 		bool use_basic_hover_animation = true;
 		bool hover_before = false;
@@ -98,6 +100,8 @@ namespace ql
 		QL_SOURCE std::wstring get_text_wstring() const;
 		QL_SOURCE bool is_hovering() const;
 		QL_SOURCE bool is_clicked() const;
+		QL_SOURCE bool is_holding() const;
+		QL_SOURCE bool is_clicked_release() const;
 
 		QL_SOURCE void update(const ql::event& event);
 

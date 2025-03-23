@@ -286,29 +286,46 @@ namespace ql
 	{
 		return this->hovering;
 	}
+	bool ql::smooth_button::is_holding() const
+	{
+		return this->holding;
+	}
 
 	bool ql::smooth_button::is_clicked() const
 	{
 		return this->clicked;
+	}
+	bool ql::smooth_button::is_clicked_release() const
+	{
+		return this->clicked_release;
 	}
 
 	void ql::smooth_button::update(const ql::event& event)
 	{
 		this->create_check();
 		if (this->simple_hitbox)
-		{
 			this->hovering = this->rectangle.get_hitbox().increased(5).collides(event.mouse_position());
-		}
+
 		else
-		{
 			this->hovering = this->rectangle.contains(event.mouse_position());
-		}
+
 		this->clicked = this->hovering && event.left_mouse_clicked();
 
 		if (this->clicked)
 		{
+			this->holding = true;
 			this->clicked_once = true;
 			this->click_timer.reset();
+		}
+
+		this->clicked_release = false;
+		if (event.left_mouse_released())
+		{
+			if (this->holding && this->hovering)
+				this->clicked_release = true;
+
+			this->clicked = false;
+			this->holding = false;
 		}
 
 		ql::rgba text_color_effect = this->text_color;
