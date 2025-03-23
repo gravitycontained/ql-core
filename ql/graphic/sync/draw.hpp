@@ -71,49 +71,36 @@ namespace ql
 						apply_check,
 						[&](auto& value)
 						{
-
 							if constexpr (detail::has_sync_draw<decltype(value)>())
 								detail::apply_draw(value, render);
 						}
 					);
 				};
 
-				if constexpr (ql::is_sync<decltype(check)>())
-					if (!check.declare_sync.active || !check.declare_sync.draw)
+				if constexpr (ql::is_or_has_sync<decltype(check)>())
+				{
+					auto&& sync = ql::sync_resolve(check);
+					if (!sync.declare_sync.active || !sync.declare_sync.draw)
 						return;
-
-				if constexpr (ql::has_sync<decltype(check)>())
-					if (!check.sync.declare_sync.active || !check.sync.declare_sync.draw)
-						return;
+				}
 
 				if constexpr (order)
+					ql::sync_apply_soft<true>(check, [&](auto&& value)
+					{
+						check_apply_on_object(value);
+					});
+
+				ql::sync_modal_apply(check, [&](auto&& value)
 				{
-					check_apply_on_object(check);
-
-					if constexpr (ql::has_sync<decltype(check)>())
-						check_apply_on_object(check.sync);
-				}
-
-
-				if constexpr (ql::has_sync<decltype(check)>())
-				{
-					auto tuple = ql::struct_to_tuple(check.sync);
+					auto tuple = ql::struct_to_tuple(value);
 					iterate(tuple);
-				}
-				else if constexpr (ql::is_sync<decltype(check)>())
-				{
-					auto tuple = ql::struct_to_tuple(check);
-					iterate(tuple);
-				}
-
+				});
 
 				if constexpr (!order)
-				{
-					if constexpr (ql::has_sync<decltype(check)>())
-						check_apply_on_object(check.sync);
-
-					check_apply_on_object(check);
-				}
+					ql::sync_apply_soft<false>(check, [&](auto&& value)
+					{
+						check_apply_on_object(value);
+					});
 			}
 		);
 	}

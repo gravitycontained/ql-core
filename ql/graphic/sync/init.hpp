@@ -107,33 +107,22 @@ namespace ql
 				};
 
 				if constexpr (order)
+					ql::sync_apply_soft<true>(check, [&](auto&& value)
+					{
+						check_apply_on_object(value);
+					});
+
+				ql::sync_modal_apply(check, [&](auto&& value)
 				{
-					check_apply_on_object(check);
-
-					if constexpr (ql::has_sync<decltype(check)>())
-						check_apply_on_object(check.sync);
-				}
-
-
-				if constexpr (ql::has_sync<decltype(check)>())
-				{
-					auto tuple = ql::struct_to_tuple(check.sync);
+					auto tuple = ql::struct_to_tuple(value);
 					iterate(tuple);
-				}
-				else if constexpr (ql::is_sync<decltype(check)>())
-				{
-					auto tuple = ql::struct_to_tuple(check);
-					iterate(tuple);
-				}
-
+				});
 
 				if constexpr (!order)
-				{
-					if constexpr (ql::has_sync<decltype(check)>())
-						check_apply_on_object(check.sync);
-
-					check_apply_on_object(check);
-				}
+					ql::sync_apply_soft<false>(check, [&](auto&& value)
+					{
+						check_apply_on_object(value);
+					});
 			}
 		);
 	}

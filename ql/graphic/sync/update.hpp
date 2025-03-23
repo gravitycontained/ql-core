@@ -80,38 +80,31 @@ namespace ql
 					);
 				};
 
-				if constexpr (ql::is_sync<decltype(check)>())
-					if (!check.declare_sync.active || !check.declare_sync.update)
+				if constexpr (ql::is_or_has_sync<decltype(check)>())
+				{
+					auto&& sync = ql::sync_resolve(check);
+					if (!sync.declare_sync.active || !sync.declare_sync.update)
 						return;
+				}
 
-				if constexpr (ql::has_sync<decltype(check)>())
-					if (!check.sync.declare_sync.active || !check.sync.declare_sync.update)
-						return;
 
 				if constexpr (order)
-				{
-					check_apply_on_object(check);
+					ql::sync_apply_soft<true>(check, [&](auto&& value)
+					{
+						check_apply_on_object(value);
+					});
 
-					if constexpr (ql::has_sync<decltype(check)>())
-						check_apply_on_object(check.sync);
-				}
-				if constexpr (ql::has_sync<decltype(check)>())
+				ql::sync_modal_apply(check, [&](auto&& value)
 				{
-					auto tuple = ql::struct_to_tuple(check.sync);
+					auto tuple = ql::struct_to_tuple(value);
 					iterate(tuple);
-				}
-				else if constexpr (ql::is_sync<decltype(check)>())
-				{
-					auto tuple = ql::struct_to_tuple(check);
-					iterate(tuple);
-				}
+				});
+
 				if constexpr (!order)
-				{
-					if constexpr (ql::has_sync<decltype(check)>())
-						check_apply_on_object(check.sync);
-
-					check_apply_on_object(check);
-				}
+					ql::sync_apply_soft<false>(check, [&](auto&& value)
+					{
+						check_apply_on_object(value);
+					});
 			}
 		);
 	}
