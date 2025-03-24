@@ -661,7 +661,7 @@ namespace ql
 		requires (ql::is_arithmetic<U>())
 		constexpr vectorN& operator=(U value)
 		{
-			this->data[0u] = value;
+			this->data[0u] = static_cast<T>(value);
 			for (ql::size i = 1u; i < N; ++i)
 			{
 				this->data[i] = T{0};
