@@ -94,9 +94,7 @@ namespace ql
 				std::ofstream file(file_name.c_str(), std::ios::binary);
 				if (!file.good())
 				{
-					if constexpr (ql::debug::print)
-						ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "there was a problem creating \"", file_name, "\"");
-					
+					ql::println("there was a problem creating \"", file_name, "\"");
 				}
 				file << content.substr(i * bytes, bytes);
 				file.flush();
@@ -108,9 +106,7 @@ namespace ql
 			std::ofstream file(destination.c_str(), std::ios::binary);
 			if (!file.good())
 			{
-				if constexpr (ql::debug::print)
-					ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "there was a problem creating \"", destination, "\"");
-				
+				ql::println("there was a problem creating \"", destination, "\"");
 			}
 			for (auto& i : paths)
 			{
@@ -534,9 +530,7 @@ namespace ql
 		{
 			for (auto& i : files)
 			{
-				if constexpr (ql::debug::print)
-					ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", i);
-				
+				i.copy_overwrite(path_destination);
 			}
 		}
 

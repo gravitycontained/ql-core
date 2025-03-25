@@ -51,6 +51,7 @@ namespace ql
 						ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_blue,
 						ql::string_left_spaced("update injection ", 24), ql::color::aqua, this, " ", ql::color::bright_blue, ql::type_name<T>()
 					);
+					
 				manager.provide();
 			}
 		}
