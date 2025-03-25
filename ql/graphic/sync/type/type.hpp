@@ -61,7 +61,6 @@ namespace ql
 		return is_sync<C>() || has_sync<C>() || has_sync_extension<C>();
 	}
 
-
 	template <typename T, typename F>
 	constexpr void sync_modal_apply(T&& value, F function)
 	{

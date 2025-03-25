@@ -21,11 +21,6 @@ namespace ql
 		{
 			if (this->disconnect)
 			{
-				if constexpr (ql::debug::print)
-					ql::println(
-						ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_gray, ql::string_left_spaced("destruct signal connection ", 24)
-					);
-					
 				this->disconnect();
 			}
 		}

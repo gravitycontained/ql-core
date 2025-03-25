@@ -84,6 +84,11 @@ namespace ql
 						}
 					);
 				};
+				if constexpr (ql::debug::print)
+					ql::println(
+						ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_yellow, "provide on ",
+						ql::color::aqua, ql::type_name<decltype(check)>(), ql::color::bright_gray, " ", ql::color::bright_blue, &check
+					);
 				
 				if constexpr (order)
 					ql::sync_apply_soft<true>(check, [&](auto&& value)
