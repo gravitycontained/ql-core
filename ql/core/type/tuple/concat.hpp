@@ -29,5 +29,4 @@ namespace ql
 
 	template <typename... T>
 	using concat_tuple_type = decltype(concat_tuple(ql::declval_fully_qualified<T>()...));
-
 }
