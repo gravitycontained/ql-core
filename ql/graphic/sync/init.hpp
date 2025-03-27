@@ -18,8 +18,8 @@ namespace ql
 		{
 			if constexpr (has_init_no_parameter_c<T>)
 				return true;
-			return ql::constexpr_or_chain<ql::variadic_size<Args...>()>([&](auto index)
 
+			return ql::constexpr_or_chain<ql::variadic_size<Args...>()>([&](auto index)
 			{
 				return has_init_c<T, ql::variadic_type<index, Args...>>;
 			});
@@ -28,41 +28,27 @@ namespace ql
 		template <typename T, typename... Args>
 		constexpr void apply_init(T& object, Args&&... args)
 		{
-			if constexpr (ql::is_sync<T>())
+			ql::println(
+				ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_yellow, "init ",
+				ql::color::aqua, ql::type_name<T>()
+			);
+			if constexpr (ql::is_or_has_sync<decltype(object)>())
 			{
-				if (!object.declare_sync.initialized)
+				auto&& sync = ql::sync_resolve(object);
+
+				sync.declare_sync.initialized = true;
+			}
+
+			if constexpr (has_init_no_parameter_c<T>)
+				object.init();
+
+			ql::constexpr_iterate<ql::variadic_size<Args...>()>(
+				[&](auto index)
 				{
-					if constexpr (detail::has_function_init<T, Args...>())
-					{
-						if constexpr (has_init_no_parameter_c<T>)
-							object.init();
-
-						ql::constexpr_iterate<ql::variadic_size<Args...>()>(
-							[&](auto index)
-							{
-								if constexpr (has_init_c<T, ql::variadic_type<index, Args...>>)
-									object.init(ql::tuple_value<index>(ql::auto_tie(std::forward<Args>(args)...)));
-							}
-						);
-					}
-
-					object.declare_sync.initialized = true;
+					if constexpr (has_init_c<T, ql::variadic_type<index, Args...>>)
+						object.init(ql::tuple_value<index>(ql::auto_tie(std::forward<Args>(args)...)));
 				}
-			}
-
-			else if constexpr (detail::has_function_init<T, Args...>())
-			{
-				if constexpr (has_init_no_parameter_c<T>)
-					object.init();
-
-				ql::constexpr_iterate<ql::variadic_size<Args...>()>(
-					[&](auto index)
-					{
-						if constexpr (has_init_c<T, ql::variadic_type<index, Args...>>)
-							object.init(ql::tuple_value<index>(ql::auto_tie(std::forward<Args>(args)...)));
-					}
-				);
-			}
+			);
 		}
 	}	 // namespace detail
 
@@ -98,19 +84,37 @@ namespace ql
 						apply_check,
 						[&](auto& value)
 						{
-							if constexpr (ql::is_sync<decltype(value)>() || detail::has_function_init<decltype(value), Args...>())
+							ql::sync_check_uninitialized(manager);
+
+							if constexpr (ql::is_or_has_sync<decltype(value)>())
+							{
+								bool all_initialized = true;
+								ql::sync_apply(value, [&](auto&& sync)
+								{
+									if (!sync.declare_sync.initialized)
+										all_initialized = false;
+								});
+
+								if (all_initialized)
+									return;
+							}
+
+							if constexpr (detail::has_function_init<decltype(value), Args...>())
 								detail::apply_init(value, std::forward<Args>(args)...);
 
+							ql::sync_apply(value, [&](auto&& sync)
+							{
+								sync.declare_sync.initialized = true;
+							});
+
 							ql::sync_check_uninitialized(manager);
+
 						}
 					);
 				};
 
 				if constexpr (order)
-					ql::sync_apply_soft<true>(check, [&](auto&& value)
-					{
-						check_apply_on_object(value);
-					});
+					check_apply_on_object(check);
 
 				ql::sync_modal_apply(check, [&](auto&& value)
 				{
@@ -119,10 +123,8 @@ namespace ql
 				});
 
 				if constexpr (!order)
-					ql::sync_apply_soft<false>(check, [&](auto&& value)
-					{
-						check_apply_on_object(value);
-					});
+					check_apply_on_object(check);
+
 			}
 		);
 	}

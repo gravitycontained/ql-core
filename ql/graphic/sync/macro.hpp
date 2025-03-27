@@ -84,22 +84,16 @@ void sync_##function##(T& object, Args&&... args)																															
 			};																																																																																									\
 																																																																																													\
 			if constexpr (order)																																																																																\
-				ql::sync_apply_soft<true>(check, [&](auto&& value)																																																																\
-				{																																																																																									\
-					check_apply_on_object(value);																																																																										\
-				});																																																																																								\
+				check_apply_on_object(check);																																																																											\
 																																																																																													\
-			ql::sync_modal_apply(check, [&](auto&& value)																																																																							\
+			ql::sync_modal_apply(check, [&](auto&& value)																																																																				\
 			{																																																																																										\
 				auto tuple = ql::struct_to_tuple(value);																																																																					\
 				iterate(tuple);																																																																																		\
 			});																																																																																									\
 																																																																																													\
 			if constexpr (!order)																																																																																\
-				ql::sync_apply_soft<false>(check, [&](auto&& value)																																																																\
-				{																																																																																									\
-					check_apply_on_object(value);																																																																										\
-				});																																																																																								\
+				check_apply_on_object(check);																																																																											\
 		}																																																																																											\
 	);																																																																																											\
 }																																																																																													\

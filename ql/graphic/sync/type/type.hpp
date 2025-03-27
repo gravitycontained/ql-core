@@ -62,6 +62,19 @@ namespace ql
 	}
 
 	template <typename T, typename F>
+	constexpr void sync_apply(T&& value, F function)
+	{
+		if constexpr (ql::is_sync<ql::modal_decay<decltype(value)>>())
+			function(std::forward<decltype(value)>(value));
+
+		if constexpr (ql::has_sync<ql::modal_decay<decltype(value)>>())
+			function(std::forward<decltype(value.sync)>(value.sync));
+
+		if constexpr (ql::has_sync_extension<ql::modal_decay<decltype(value)>>())
+			function(std::forward<decltype(value.sync_extension)>(value.sync_extension));
+	}
+
+	template <typename T, typename F>
 	constexpr void sync_modal_apply(T&& value, F function)
 	{
 		if constexpr (ql::is_sync<ql::modal_decay<decltype(value)>>())
@@ -72,31 +85,6 @@ namespace ql
 
 		if constexpr (ql::has_sync_extension<ql::modal_decay<decltype(value)>>())
 			ql::modal_apply(std::forward<decltype(value.sync_extension)>(value.sync_extension), function);
-	}
-
-	template <bool order, typename T, typename F>
-	constexpr void sync_apply_soft(T&& value, F function)
-	{
-		if constexpr (order)
-		{
-			function(std::forward<decltype(value)>(value));
-
-			if constexpr (ql::has_sync<decltype(value)>())
-				function(std::forward<decltype(value.sync)>(value.sync));
-
-			if constexpr (ql::has_sync_extension<decltype(value)>())
-				function(std::forward<decltype(value.sync_extension)>(value.sync_extension));
-		}
-		else
-		{
-			if constexpr (ql::has_sync_extension<decltype(value)>())
-				function(std::forward<decltype(value.sync_extension)>(value.sync_extension));
-
-			if constexpr (ql::has_sync<decltype(value)>())
-				function(std::forward<decltype(value.sync)>(value.sync));
-
-			function(std::forward<decltype(value)>(value));
-		}
 	}
 
 	template <typename T>
