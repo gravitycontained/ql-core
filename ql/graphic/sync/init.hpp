@@ -28,10 +28,6 @@ namespace ql
 		template <typename T, typename... Args>
 		constexpr void apply_init(T& object, Args&&... args)
 		{
-			ql::println(
-				ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_yellow, "init ",
-				ql::color::aqua, ql::type_name<T>()
-			);
 			if constexpr (ql::is_or_has_sync<decltype(object)>())
 			{
 				auto&& sync = ql::sync_resolve(object);
