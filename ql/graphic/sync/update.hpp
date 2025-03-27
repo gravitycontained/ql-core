@@ -41,20 +41,27 @@ namespace ql
 				constexpr bool order = true;
 				auto iterate = [&](auto& tuple)
 				{
-					bool found_view = false;
+					ql::size view_found_ctr = 0;
 
 					constexpr auto N = ql::tuple_find_index_of_type<decltype(tuple), ql::declare_unsync>();
 					ql::constexpr_iterate<N>(
 						[&](auto i)
 						{
 							auto&& tuple_element = ql::tuple_value<i>(tuple);
+
+							if constexpr (ql::has_view_priority<decltype(tuple_element)>())
+							{
+								update.event.push_view(tuple_element.view_priority);
+								++view_found_ctr;
+							}
+
 							if constexpr (ql::is_view<decltype(tuple_element)>())
 							{
 								if constexpr (ql::has_update_for_manager<decltype(tuple_element)>())
 									update.update(tuple_element);
 
 								update.event.push_view(tuple_element);
-								found_view = true;
+								++view_found_ctr;
 							}
 
 							if constexpr (ql::is_or_has_sync<ql::modal_decay<decltype(tuple_element)>>() ||
@@ -63,8 +70,8 @@ namespace ql
 						}
 					);
 
-					if (found_view)
-						update.event.pop_view();
+					if (view_found_ctr)
+						update.event.pop_view(view_found_ctr);
 				};
 				auto check_apply_on_object = [&](auto& apply_check)
 				{
@@ -87,12 +94,8 @@ namespace ql
 						return;
 				}
 
-
 				if constexpr (order)
-					ql::sync_apply_soft<true>(check, [&](auto&& value)
-					{
-						check_apply_on_object(value);
-					});
+					check_apply_on_object(check);
 
 				ql::sync_modal_apply(check, [&](auto&& value)
 				{
@@ -101,10 +104,7 @@ namespace ql
 				});
 
 				if constexpr (!order)
-					ql::sync_apply_soft<false>(check, [&](auto&& value)
-					{
-						check_apply_on_object(value);
-					});
+					check_apply_on_object(check);
 			}
 		);
 	}

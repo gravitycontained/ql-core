@@ -132,7 +132,7 @@ namespace ql
 		QL_SOURCE std::string all_text_entered_str() const;
 
 		QL_SOURCE void push_view(ql::view view);
-		QL_SOURCE void pop_view();
+		QL_SOURCE void pop_view(ql:: size count);
 
 		QL_SOURCE void apply_view();
 

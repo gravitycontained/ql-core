@@ -706,11 +706,11 @@ namespace ql
 		this->apply_view();
 	}
 
-	void ql::event::pop_view()
+	void ql::event::pop_view(ql::size ctr = 1)
 	{
 		if (!this->m_views.empty())
 		{
-			this->m_views.pop_back();
+			this->m_views.resize(ql::max(0ull, this->m_views.size() - ctr));
 			this->apply_view();
 		}
 	}

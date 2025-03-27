@@ -32,16 +32,16 @@ namespace ql
 	}
 
 	template <typename T>
-	concept has_view_c = requires(T x) {
+	concept has_view_priority_c = requires(T x) {
 		{
-			x.view
+			x.view_priority
 		};
-		requires ql::is_view<decltype(T::view)>();
+		requires ql::is_view<ql::decay<decltype(T::view_priority)>>();
 	};
 
 	template <typename T>
-	constexpr bool has_view()
+	constexpr bool has_view_priority()
 	{
-		return has_view_c<T>;
+		return has_view_priority_c<ql::decay<T>>;
 	}
 }

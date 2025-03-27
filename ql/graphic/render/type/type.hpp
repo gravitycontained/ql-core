@@ -167,11 +167,11 @@ namespace ql
 			this->apply_view();
 		}
 
-		void pop_view()
+		void pop_view(ql::size count = 1)
 		{
 			if (!this->views.empty())
 			{
-				this->views.pop_back();
+				this->views.resize(ql::max(0ull, this->views.size() - count));
 				this->apply_view();
 			}
 		}
