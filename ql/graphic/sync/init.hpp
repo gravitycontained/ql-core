@@ -82,13 +82,21 @@ namespace ql
 						{
 							ql::sync_check_uninitialized(manager);
 
+
 							if constexpr (ql::is_or_has_sync<decltype(value)>())
 							{
 								bool all_initialized = true;
 								ql::sync_apply(value, [&](auto&& sync)
 								{
 									if (!sync.declare_sync.initialized)
+									{
+										if constexpr (ql::debug::print)
+											ql::println(
+												ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_yellow,
+												ql::color::aqua, "sync init", ql::color::bright_gray, " ", ql::color::aqua, ql::type_name<T>()
+											);
 										all_initialized = false;
+									}
 								});
 
 								if (all_initialized)
