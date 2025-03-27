@@ -205,6 +205,14 @@ namespace ql
 		bool call_resize_call_on_init = true;
 	};
 
+
+	namespace detail
+	{
+		QL_SOURCE extern ql::state_manager* state_manager;
+
+		QL_SOURCE void register_state_manager(ql::state_manager& state_manager);
+	}
+
 }	 // namespace ql
 
 #endif

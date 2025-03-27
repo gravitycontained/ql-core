@@ -23,6 +23,8 @@ namespace ql
 		#endif
 
 		this->created = false;
+
+		ql::detail::register_state_manager(*this);
 	}
 
 	state_manager::~state_manager()
@@ -728,6 +730,16 @@ namespace ql
 		this->add_image(name, path);
 		const auto& image = this->get_image(name);
 		this->window.setIcon(image.getSize().x, image.getSize().y, image.getPixelsPtr());
+	}
+
+	namespace detail
+	{
+		ql::state_manager* state_manager = nullptr;
+
+		void register_state_manager(ql::state_manager& state_manager)
+		{
+			detail::state_manager = &state_manager;
+		}
 	}
 
 }	 // namespace ql

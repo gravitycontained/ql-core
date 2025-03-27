@@ -66,20 +66,31 @@ namespace ql
 			return this->value;
 		}
 
+		void sanity_check() const
+		{
+			if (!this->value)
+			{
+				ql::println(
+					ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_red,
+					ql::to_string("ql::injectable<", ql::type_name<T>(), ">: no injection received -> calling manual provide (the state management needs to be extended so this can be avoided)")
+				);
+
+				ql::detail::state_manager->provide();
+
+				if (!this->value)
+					throw std::runtime_error(ql::to_string("ql::injectable<", ql::type_name<T>(), ">: no injection received"));
+			}
+		}
 		
 		constexpr T& get()
 		{
-			if (!this->value)
-				throw std::runtime_error(ql::to_string("ql::injectable<", ql::type_name<T>(), ">: no injection received"));
-
+			this->sanity_check();
 			return *this->value;
 		}
 
 		constexpr const T& get() const
 		{
-			if (!this->value)
-				throw std::runtime_error(ql::to_string("ql::injectable<", ql::type_name<T>(), ">: no injection received"));
-
+			this->sanity_check();
 			return *this->value;
 		}
 
