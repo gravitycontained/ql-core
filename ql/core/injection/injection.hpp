@@ -14,7 +14,6 @@ namespace ql
 	struct injectable
 	{
 		T* value = nullptr;
-		//std::shared_ptr<T> value = std::make_shared<T>();
 
 		~injectable()
 		{
@@ -70,10 +69,11 @@ namespace ql
 		{
 			if (!this->value)
 			{
-				ql::println(
+				ql::println('\n',
 					ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_red,
-					ql::to_string("ql::injectable<", ql::type_name<T>(), ">: no injection received -> calling manual provide (the state management needs to be extended so this can be avoided)")
+					ql::to_string("ql::injectable<", ql::type_name<T>(), ">: no injection received -> calling manual provide")
 				);
+				ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::aqua, "-> the state management needs to be extended OR the order of operations outside this framework need to be reworked.\n");
 
 				ql::detail::state_manager->provide();
 
