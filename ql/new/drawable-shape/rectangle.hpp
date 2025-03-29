@@ -11,8 +11,8 @@ namespace qldev
 {
 	struct rectangle_shape
 	{
-		ql_sync;
-		ql::connection connection;
+		ql_sync();
+		ql_signal_connection();
 
 		qldev::rectangle hitbox;
 		qldev::polygon_shape shape;

@@ -18,7 +18,7 @@ namespace ql
 
 	template <typename T>
 	concept has_connection = requires(T t) {
-		{ t.connection } -> std::convertible_to<ql::connection>;
+		{ t.signal_connection } -> std::convertible_to<ql::signal_connection>;
 	};
 
 	template <typename T, typename... Args>
@@ -34,7 +34,7 @@ namespace ql
 			ql::tuple_value<i>(tied).addListener(function);
 		});
 
-		host.connection.emplace_back(std::make_unique<ql::single_connection>(std::move(
+		host.signal_connection.emplace_back(std::make_unique<ql::signal_connection_single>(std::move(
 			[tied, function]() mutable
 			{
 				ql::constexpr_iterate<size - 1>([&](auto i)
@@ -44,4 +44,7 @@ namespace ql
 			}
 		)));
 	}
+
+	#define ql_signal_connection() ql::signal_connection signal_connection;
+
 }	 // namespace ql

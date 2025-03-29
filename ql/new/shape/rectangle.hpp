@@ -12,8 +12,8 @@ namespace qldev
 	requires (ql::is_arithmetic<T>())
 	struct rectangle_t
 	{
-		ql_sync;
-		ql::connection connection;
+		ql_sync();
+		ql_signal_connection();
 
 		ql::signal<ql::vector2<T>> position;
 		ql::signal<ql::vector2<T>> dimension;

@@ -11,8 +11,8 @@ namespace qldev
 {
 	struct circle_shape
 	{
-		ql_sync;
-		ql::connection connection;
+		ql_sync();
+		ql_signal_connection();
 
 		qldev::circle circle;
 		sf::CircleShape shape;

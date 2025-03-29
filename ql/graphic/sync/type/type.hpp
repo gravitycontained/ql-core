@@ -103,8 +103,8 @@ namespace ql
 
 }	 // namespace ql
 
-#define ql_sync ql::declare_sync declare_sync;
-#define ql_unsync ql::declare_unsync declare_unsync;
+#define ql_sync() ql::declare_sync declare_sync;
+#define ql_unsync() ql::declare_unsync declare_unsync;
 
 #define ql_sync_within(...) \
   struct \

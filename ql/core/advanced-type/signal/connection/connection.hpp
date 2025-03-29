@@ -8,16 +8,16 @@
 
 namespace ql
 {
-	struct single_connection
+	struct signal_connection_single
 	{
 		std::function<void()> disconnect;
 
-		single_connection(std::function<void()> disconnect_fn)
+		signal_connection_single(std::function<void()> disconnect_fn)
 			: disconnect(std::move(disconnect_fn)) {}
 
-		single_connection() = default;
+		signal_connection_single() = default;
 
-		~single_connection()
+		~signal_connection_single()
 		{
 			if (this->disconnect)
 			{
@@ -26,5 +26,5 @@ namespace ql
 		}
 	};
 
-	using connection = std::vector<std::unique_ptr<ql::single_connection>>;
+	using signal_connection = std::vector<std::unique_ptr<ql::signal_connection_single>>;
 }
