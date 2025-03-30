@@ -40,6 +40,7 @@ namespace ql
 		}
 
 	 public:
+
 		constexpr auto& operator=(const std::vector<T>& other)
 		{
 			return std::vector<T>::operator=(other);
