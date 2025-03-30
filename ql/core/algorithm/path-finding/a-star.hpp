@@ -35,7 +35,7 @@ namespace ql
 	};
 
 	template <bool allow_diagonal, typename T, typename F>
-	requires (std::is_integral_v<T> && ql::is_callable<F>())
+	requires (ql::is_callable<F>())
 	std::vector<ql::vec2s> astar_solve(const std::vector<std::vector<T>>& maze, ql::vec2s start, ql::vec2s end, F valid_check)
 	{
 		if (maze.empty())
