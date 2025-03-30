@@ -235,6 +235,33 @@ namespace ql
 		}
 
 		template <typename U>
+		void move_to_touch(const ql::hitbox_t<U>& hitbox)
+		{
+			auto overlap_x = std::min(
+				(this->position.x + this->dimension.x) - hitbox.position.x, (hitbox.position.x + hitbox.dimension.x) - this->position.x
+			);
+
+			auto overlap_y = std::min(
+				(this->position.y + this->dimension.y) - hitbox.position.y, (hitbox.position.y + hitbox.dimension.y) - this->position.y
+			);
+
+			if (overlap_x < overlap_y)
+			{
+				if (this->position.x < hitbox.position.x)
+					this->position.x -= overlap_x; // Push left
+				else
+					this->position.x += overlap_x; // Push right
+			}
+			else
+			{
+				if (this->position.y < hitbox.position.y)
+					this->position.y -= overlap_y; // Push up
+				else
+					this->position.y += overlap_y; // Push down
+			}
+		}
+
+		template <typename U>
 		constexpr bool collides(const ql::hitbox_t<U>& hitbox) const
 		{
 			auto a1 = this->position;
