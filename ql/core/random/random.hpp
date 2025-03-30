@@ -655,7 +655,7 @@ namespace ql
 		std::vector<ql::size> indices(data.size());
 		std::iota(indices.begin(), indices.end(), 0ull);
 
-		std::vector<ql::f64> mutable_weights(weights.cbegin(), weights.cend());
+		std::vector<ql::container_subtype<C2>> mutable_weights(weights.cbegin(), weights.cend());
 
 		C shuffled;
 		shuffled.reserve(data.size());
