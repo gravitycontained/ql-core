@@ -17,11 +17,6 @@ namespace ql
 
 		injectable()
 		{
-			ql::println(
-				ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_gray,
-				ql::string_left_spaced("construct injectable ", 24), ql::color::aqua, this, " ", ql::color::bright_blue, ql::type_name<T>()
-			);
-
 			++ql::detail::sync_injection_request_count;
 		}
 

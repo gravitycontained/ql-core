@@ -105,20 +105,17 @@ namespace ql
 	requires (ql::is_or_has_sync<ql::modal_decay<T>>() || ql::detail::has_function_inject<ql::modal_decay<T>, Args...>())
 	void provide(T& object, Args&&... args)
 	{
-		ql::println("injection count: ", ql::detail::sync_injection_request_count);
 		if (ql::detail::sync_injection_request_count != 0u)
 		{
-			ql::println(
-				ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_yellow,
-				ql::color::aqua, ql::detail::sync_injection_request_count, ql::color::bright_gray, " new injection requests"
-			);
-
+			auto before = ql::detail::sync_injection_request_count;
 			ql::provide_action(object, std::forward<Args>(args)...);
 
-			ql::println(
-				ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_yellow,
-				ql::color::aqua, ql::detail::sync_injection_request_count, ql::color::bright_gray, " -> post new injection requests"
-			);
+			if constexpr (ql::debug::print)
+				if (ql::detail::sync_injection_request_count - before)
+					ql::println(
+						ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_yellow, ql::color::bright_gray,
+						"handled ", ql::color::aqua, ql::detail::sync_injection_request_count - before, ql::color::bright_gray, " new injection requests"
+					);
 
 		}
 	}
