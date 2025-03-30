@@ -5,6 +5,7 @@
 #include <ql/core/time/time.hpp>
 #include <ql/core/type/type.hpp>
 #include <ql/core/system/system.hpp>
+
 #include <array>
 #include <iterator>
 #include <type_traits>
@@ -554,6 +555,7 @@ namespace ql
 	QL_SOURCE ql::f64 random_falling(ql::f64 n);
 
 	template <typename C>
+	requires (ql::is_container<C>() && ql::has_size<C>())
 	void shuffle(C& data, ql::u32 offset = 0u)
 	{
 		ql::detail::rng.engine.discard(1);
@@ -586,30 +588,36 @@ namespace ql
 		return data[index];
 	}
 
-	template <typename T>
-	ql::u32 random_weighted_index(std::vector<T> weights)
+	template <typename C>
+	requires (ql::is_container<C>() && ql::has_size<C>())
+	ql::size random_weighted_index(const C& weights)
 	{
-		std::decay_t<T> sum = 0;
-		for (auto& i : weights)
+		using T = ql::container_subtype<C>;
+		std::decay_t<T> sum = std::accumulate(weights.begin(), weights.end(), T(0));
+
+		if (sum < 0)
 		{
-			sum += i;
+			ql::println("random_weighted_index: Invalid weight sum (< 0): ", weights);
+			return 0;
 		}
 
-		auto index = ql::random(std::decay_t<T>{}, sum - 1);
-		std::decay_t<T> target_sum = 0;
-		for (ql::u32 i = 0u; i < weights.size(); ++i)
+		auto threshold = ql::random(T(0), sum);
+		std::decay_t<T> accumulated = 0;
+
+		for (ql::size i = 0; i < weights.size(); ++i)
 		{
-			target_sum += weights[i];
-			if (index < target_sum)
+			accumulated += weights[i];
+			if (threshold < accumulated)
 			{
 				return i;
 			}
 		}
-		return weights.size();
+
+		return weights.size() - 1;  // Safeguard
 	}
 
 	template <typename T>
-	ql::u32 random_weighted_index(std::span<T> weights)
+	ql::size random_weighted_index(std::span<T> weights)
 	{
 		std::decay_t<T> sum = 0;
 		for (auto& i : weights)
@@ -620,18 +628,55 @@ namespace ql
 		{
 			return 0u;
 		}
-		auto index = ql::random(T{}, sum - 1);
+		auto index = ql::random(std::decay_t<T>{}, sum);
 		std::decay_t<T> target_sum = 0;
 		for (ql::u32 i = 0u; i < weights.size(); ++i)
 		{
 			target_sum += weights[i];
 			if (index < target_sum)
-			{
 				return i;
-			}
 		}
 		return weights.size();
 	}
+
+	template <typename C, typename C2>
+	requires (ql::is_container<C>() && ql::has_size<C>())
+	void shuffle_weighted(C& data, const C2& weights)
+	{
+		if (weights.size() != data.size())
+		{
+			ql::println(
+				"ql::shuffle_weighted( ", ql::type_name<C>(), " ) : size mismatch between data and weights: ", data.size(),
+				" != ", weights.size()
+			);
+			return;
+		}
+
+		std::vector<ql::size> indices(data.size());
+		std::iota(indices.begin(), indices.end(), 0ull);
+
+		std::vector<ql::f64> mutable_weights(weights.cbegin(), weights.cend());
+
+		C shuffled;
+		shuffled.reserve(data.size());
+
+		// Shuffle by weighted selection
+		while (!indices.empty())
+		{
+			auto selected_index = ql::random_weighted_index(mutable_weights);
+
+			// Move selected element to shuffled container
+			shuffled.push_back(std::move(data[indices[selected_index]]));
+
+			// Remove used element from tracking
+			indices.erase(indices.begin() + selected_index);
+			mutable_weights.erase(mutable_weights.begin() + selected_index);
+		}
+
+		// Overwrite original data with shuffled version
+		data = std::move(shuffled);
+	}
+
 
 	template <typename T, typename U, typename... Args>
 	T random_element(T&& first, U&& second, Args&&... n)
