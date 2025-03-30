@@ -9,7 +9,8 @@ namespace ql
 {
 	namespace detail
 	{
-		QL_SOURCE extern ql::size sync_unitialized_count;
+		QL_SOURCE extern ql::size sync_initialization_request_count;
+		QL_SOURCE extern ql::size sync_injection_request_count;
 	}
 	struct declare_sync
 	{
@@ -20,7 +21,7 @@ namespace ql
 
 		declare_sync()
 		{
-			++detail::sync_unitialized_count;
+			++detail::sync_initialization_request_count;
 		}
 	};
 

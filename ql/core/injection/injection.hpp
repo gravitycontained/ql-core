@@ -15,6 +15,16 @@ namespace ql
 	{
 		T* value = nullptr;
 
+		injectable()
+		{
+			ql::println(
+				ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_gray,
+				ql::string_left_spaced("construct injectable ", 24), ql::color::aqua, this, " ", ql::color::bright_blue, ql::type_name<T>()
+			);
+
+			++ql::detail::sync_injection_request_count;
+		}
+
 		~injectable()
 		{
 			if constexpr (ql::debug::print)
@@ -37,6 +47,9 @@ namespace ql
 						ql::type_name<T>()
 					);
 					
+				if (ql::detail::sync_injection_request_count)
+					--ql::detail::sync_injection_request_count;
+
 				this->value = &value;
 			}
 		}
@@ -50,7 +63,10 @@ namespace ql
 						ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_blue,
 						ql::string_left_spaced("update injection ", 24), ql::color::aqua, this, " ", ql::color::bright_blue, ql::type_name<T>()
 					);
-					
+
+				if (ql::detail::sync_injection_request_count)
+					--ql::detail::sync_injection_request_count;
+
 				manager.provide();
 			}
 		}

@@ -49,7 +49,7 @@ namespace ql
 
 	template <typename T, typename... Args>
 	requires (ql::is_or_has_sync<ql::modal_decay<T>>() || detail::has_function_inject<ql::modal_decay<T>, Args...>())
-	void provide(T& object, Args&&... args)
+	void provide_action(T& object, Args&&... args)
 	{
 		constexpr bool order = true;
 
@@ -68,7 +68,7 @@ namespace ql
 								ql::is_or_has_sync<ql::modal_decay<decltype(tuple_element)>>() ||
 								detail::has_function_inject<ql::modal_decay<decltype(tuple_element)>, Args...>()
 							)
-								provide(tuple_element, std::forward<Args>(args)...);
+								ql::provide_action(tuple_element, std::forward<Args>(args)...);
 						}
 					);
 				};
@@ -98,5 +98,28 @@ namespace ql
 					check_apply_on_object(check);
 			}
 		);
+	}
+
+
+	template <typename T, typename... Args>
+	requires (ql::is_or_has_sync<ql::modal_decay<T>>() || ql::detail::has_function_inject<ql::modal_decay<T>, Args...>())
+	void provide(T& object, Args&&... args)
+	{
+		ql::println("injection count: ", ql::detail::sync_injection_request_count);
+		if (ql::detail::sync_injection_request_count != 0u)
+		{
+			ql::println(
+				ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_yellow,
+				ql::color::aqua, ql::detail::sync_injection_request_count, ql::color::bright_gray, " new injection requests"
+			);
+
+			ql::provide_action(object, std::forward<Args>(args)...);
+
+			ql::println(
+				ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_yellow,
+				ql::color::aqua, ql::detail::sync_injection_request_count, ql::color::bright_gray, " -> post new injection requests"
+			);
+
+		}
 	}
 }	 // namespace ql
