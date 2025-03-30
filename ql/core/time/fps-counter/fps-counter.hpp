@@ -20,7 +20,7 @@ namespace ql
 
 		bool start;
 		ql::clock clock;
-		ql::exponential_moving_average ema;
+		ql::exponential_moving_average<> ema;
 	};
 
 }	 // namespace ql
