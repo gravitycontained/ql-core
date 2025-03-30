@@ -1341,6 +1341,14 @@ namespace ql
 			}
 		}
 
+		constexpr void reduce_length_by(auto reduction)
+		{
+			if (this->length() < reduction)
+				this->clear();
+			else
+				*this -= this->normalized() * reduction;
+		}
+
 		constexpr vectorN normalized() const
 		{
 			if (this->length() == 0)
