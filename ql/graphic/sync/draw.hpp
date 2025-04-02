@@ -45,22 +45,38 @@ namespace ql
 						[&](auto i)
 						{
 							auto&& tuple_element = ql::tuple_value<i>(tuple);
+							using U = decltype(tuple_element);
 
-							if constexpr (ql::is_view<decltype(tuple_element)>())
+							if constexpr (ql::is_view<U>())
 							{
 								render.push_view(tuple_element);
 								++view_found_ctr;
 							}
-							if constexpr (ql::has_view_priority<decltype(tuple_element)>())
+
+							if constexpr (ql::has_view_priority<U>())
 							{
 								render.push_view(tuple_element.view_priority);
 								++view_found_ctr;
 							}
 
-							if constexpr (ql::is_or_has_sync<ql::modal_decay<decltype(tuple_element)>>() ||
-								detail::has_sync_draw<ql::modal_decay<decltype(tuple_element)>>()
-							)
+							if constexpr (ql::has_modify_view<U>())
+								if (render.views.size())
+								{
+									auto new_view = tuple_element.modify_view(render.views.back());
+
+									render.push_view(new_view);
+								}
+
+							if constexpr (ql::has_modify_view_no_parameter<U>())
+								render.push_view(tuple_element.modify_view());
+
+							if constexpr (ql::is_or_has_sync<ql::modal_decay<U>>() || detail::has_sync_draw<ql::modal_decay<U>>())
 								sync_draw(tuple_element, render);
+
+
+							if constexpr (ql::has_modify_view<U>() || ql::has_modify_view_no_parameter<U>())
+								if (render.views.size())
+									render.pop_view();
 						}
 					);
 

@@ -48,25 +48,39 @@ namespace ql
 						[&](auto i)
 						{
 							auto&& tuple_element = ql::tuple_value<i>(tuple);
+							using U = decltype(tuple_element);
 
-							if constexpr (ql::has_view_priority<decltype(tuple_element)>())
+							if constexpr (ql::has_view_priority<U>())
 							{
 								update.event.push_view(tuple_element.view_priority);
 								++view_found_ctr;
 							}
 
-							if constexpr (ql::is_view<decltype(tuple_element)>())
+							if constexpr (ql::is_view<U>())
 							{
-								if constexpr (ql::has_update_for_manager<decltype(tuple_element)>())
+								if constexpr (ql::has_update_for_manager<U>())
 									update.update(tuple_element);
 
 								update.event.push_view(tuple_element);
 								++view_found_ctr;
 							}
 
-							if constexpr (ql::is_or_has_sync<ql::modal_decay<decltype(tuple_element)>>() ||
-														detail::has_function_update<ql::modal_decay<decltype(tuple_element)>>())
+							if constexpr (ql::has_modify_view<U>())
+								if (update.event.m_views.size())
+								{
+									auto new_view = tuple_element.modify_view(update.event.m_views.back());
+									update.event.push_view(new_view);
+								}
+
+							if constexpr (ql::has_modify_view_no_parameter<U>())
+									update.event.push_view(tuple_element.modify_view());
+
+							if constexpr (ql::is_or_has_sync<ql::modal_decay<U>>() || detail::has_function_update<ql::modal_decay<U>>())
 								sync_update(tuple_element, state, update);
+
+							if constexpr (ql::has_modify_view<U>() || ql::has_modify_view_no_parameter<U>())
+								if (update.event.m_views.size())
+									update.event.pop_view();
 						}
 					);
 
