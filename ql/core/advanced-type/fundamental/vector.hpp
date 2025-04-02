@@ -27,6 +27,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 #endif
+#include <ql/core/transform/round.hpp>
 
 namespace ql
 {
@@ -733,12 +734,12 @@ namespace ql
 			return result;
 		}
 
-		constexpr vectorN round() const
+		constexpr vectorN round(ql::size precision = 0u) const
 		{
 			vectorN result = *this;
 			for (auto& i : result.data)
 			{
-				i = std::round(i);
+				i = ql::round(i, precision);
 			}
 			return result;
 		}
