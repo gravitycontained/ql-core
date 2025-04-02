@@ -1843,7 +1843,7 @@ namespace ql
 
 		template <typename C>
 		requires (ql::is_container<C>() && ql::has_size<C>())
-		void create_skip_empty(const C& indices, ql::size index_width, ql::u32 skip_index = 0u, ql::rgba color = ql::rgba::white())
+		void create_skip_empty(const C& indices, ql::size index_width, auto skip_index = 0u, ql::rgba color = ql::rgba::white())
 		{
 			if (!this->texture_ptr_set)
 			{
@@ -1851,6 +1851,8 @@ namespace ql
 				
 				return;
 			}
+
+			using I = ql::container_subtype<C>;
 
 			this->chunks.clear();
 			this->color = color;
@@ -1868,10 +1870,10 @@ namespace ql
 
 			auto texture_row_tile_count = texture_ptr->getSize().x / this->texture_tile_dimension.x;
 
-			ql::u32 ctr = 0;
+			I ctr = 0;
 			if (color == ql::rgba::white())
 			{
-				for (ql::u32 i = 0; i < indices.size(); ++i)
+				for (I i = 0; i < indices.size(); ++i)
 				{
 					auto index = indices[i];
 					if (index == skip_index)
@@ -1892,13 +1894,13 @@ namespace ql
 					auto tile_y = (index / texture_row_tile_count);
 
 					chunk[ctr + 0].position =
-							this->position + ql::vector2u(x * this->position_tile_dimension.x, y * this->position_tile_dimension.y);
+							this->position + ql::vector2u(x * this->tile_dimension.x, y * this->tile_dimension.y);
 					chunk[ctr + 1].position =
-							this->position + ql::vector2u((x + 1) * this->position_tile_dimension.x, y * this->position_tile_dimension.y);
+							this->position + ql::vector2u((x + 1) * this->tile_dimension.x, y * this->tile_dimension.y);
 					chunk[ctr + 2].position =
-							this->position + ql::vector2u((x + 1) * this->position_tile_dimension.x, (y + 1) * this->position_tile_dimension.y);
+							this->position + ql::vector2u((x + 1) * this->tile_dimension.x, (y + 1) * this->tile_dimension.y);
 					chunk[ctr + 3].position =
-							this->position + ql::vector2u(x * this->position_tile_dimension.x, (y + 1) * this->position_tile_dimension.y);
+							this->position + ql::vector2u(x * this->tile_dimension.x, (y + 1) * this->tile_dimension.y);
 
 					chunk[ctr + 0].texCoords =
 							ql::vector2u(tile_x * this->texture_tile_dimension.x, tile_y * this->texture_tile_dimension.y);
@@ -1912,7 +1914,7 @@ namespace ql
 			}
 			else
 			{
-				for (ql::u32 i = 0; i < indices.size(); ++i)
+				for (I i = 0; i < indices.size(); ++i)
 				{
 					auto index = indices[i];
 					if (index == skip_index)
@@ -1933,13 +1935,13 @@ namespace ql
 					auto tile_y = (index / texture_row_tile_count);
 
 					chunk[ctr + 0].position =
-							this->position + ql::vector2u(x * this->position_tile_dimension.x, y * this->position_tile_dimension.y);
+							this->position + ql::vector2u(x * this->tile_dimension.x, y * this->tile_dimension.y);
 					chunk[ctr + 1].position =
-							this->position + ql::vector2u((x + 1) * this->position_tile_dimension.x, y * this->position_tile_dimension.y);
+							this->position + ql::vector2u((x + 1) * this->tile_dimension.x, y * this->tile_dimension.y);
 					chunk[ctr + 2].position =
-							this->position + ql::vector2u((x + 1) * this->position_tile_dimension.x, (y + 1) * this->position_tile_dimension.y);
+							this->position + ql::vector2u((x + 1) * this->tile_dimension.x, (y + 1) * this->tile_dimension.y);
 					chunk[ctr + 3].position =
-							this->position + ql::vector2u(x * this->position_tile_dimension.x, (y + 1) * this->position_tile_dimension.y);
+							this->position + ql::vector2u(x * this->tile_dimension.x, (y + 1) * this->tile_dimension.y);
 
 					chunk[ctr + 0].color = color;
 					chunk[ctr + 1].color = color;
@@ -1972,7 +1974,7 @@ namespace ql
 		const sf::Texture* texture_ptr;
 		bool texture_ptr_set = false;
 		ql::vector2u texture_tile_dimension;
-		ql::vector2u position_tile_dimension;
+		ql::vec2 tile_dimension;
 		ql::vec2 position;
 
 		ql::rgba color;
@@ -1998,10 +2000,12 @@ namespace ql
 		ql::vec2 position;
 		const sf::Texture* texture_ptr;
 		ql::vec2 scale = {1, 1};
-		ql::vector2u texture_tile_dimension;
+		ql::vec2 tile_dimension;
+		ql::vec2u texture_tile_dimension;
 
 		QL_SOURCE void set_texture(const sf::Texture& texture, ql::u32 texture_tile_width);
 		QL_SOURCE void set_position(ql::vec2 position);
+		QL_SOURCE void set_tile_dimension(ql::vec2 dimension);
 		QL_SOURCE void set_scale(ql::vec2 scale);
 		QL_SOURCE void draw(sf::RenderTarget& window, sf::RenderStates states = sf::RenderStates::Default) const;
 
@@ -2032,10 +2036,10 @@ namespace ql
 				auto tile_x = (index % texture_row_tile_count);
 				auto tile_y = (index / texture_row_tile_count);
 
-				this->vertices[ctr + 0].position = ql::vector2u(x, y) * this->scale * this->texture_tile_dimension;
-				this->vertices[ctr + 1].position = ql::vector2u((x + 1), y) * this->scale * this->texture_tile_dimension;
-				this->vertices[ctr + 2].position = ql::vector2u((x + 1), (y + 1)) * this->scale * this->texture_tile_dimension;
-				this->vertices[ctr + 3].position = ql::vector2u(x, (y + 1)) * this->scale * this->texture_tile_dimension;
+				this->vertices[ctr + 0].position = ql::vector2u(x, y) * this->scale * this->tile_dimension;
+				this->vertices[ctr + 1].position = ql::vector2u((x + 1), y) * this->scale * this->tile_dimension;
+				this->vertices[ctr + 2].position = ql::vector2u((x + 1), (y + 1)) * this->scale * this->tile_dimension;
+				this->vertices[ctr + 3].position = ql::vector2u(x, (y + 1)) * this->scale * this->tile_dimension;
 
 				this->vertices[ctr + 0].tex_coords = ql::vector2u(tile_x, tile_y) * this->texture_tile_dimension;
 				this->vertices[ctr + 1].tex_coords = ql::vector2u((tile_x + 1), tile_y) * this->texture_tile_dimension;
@@ -2080,8 +2084,8 @@ namespace ql
 				{
 					dy = std::fmod(dimf.y, 1.0);
 				}
-				auto pos1 = ql::vec(x, y) * this->scale * this->texture_tile_dimension;
-				auto pos2 = ql::vec(x + dx, y + dy) * this->scale * this->texture_tile_dimension;
+				auto pos1 = ql::vec(x, y) * this->scale * this->tile_dimension;
+				auto pos2 = ql::vec(x + dx, y + dy) * this->scale * this->tile_dimension;
 
 				this->vertices[ctr + 0].position = ql::vec(pos1.x, pos1.y);
 				this->vertices[ctr + 1].position = ql::vec(pos2.x, pos1.y);
@@ -2139,10 +2143,10 @@ namespace ql
 				auto tile_x = (index % texture_row_tile_count);
 				auto tile_y = (index / texture_row_tile_count);
 
-				this->vertices[ctr + 0].position = (ql::vector2u(x, y) * this->scale * this->texture_tile_dimension);
-				this->vertices[ctr + 1].position = (ql::vector2u((x + 1), y) * this->scale * this->texture_tile_dimension);
-				this->vertices[ctr + 2].position = (ql::vector2u((x + 1), (y + 1)) * this->scale * this->texture_tile_dimension);
-				this->vertices[ctr + 3].position = (ql::vector2u(x, (y + 1)) * this->scale * this->texture_tile_dimension);
+				this->vertices[ctr + 0].position = (ql::vector2u(x, y) * this->scale * this->tile_dimension);
+				this->vertices[ctr + 1].position = (ql::vector2u((x + 1), y) * this->scale * this->tile_dimension);
+				this->vertices[ctr + 2].position = (ql::vector2u((x + 1), (y + 1)) * this->scale * this->tile_dimension);
+				this->vertices[ctr + 3].position = (ql::vector2u(x, (y + 1)) * this->scale * this->tile_dimension);
 
 				this->vertices[ctr + 0].tex_coords = ql::vector2u(tile_x, tile_y) * this->texture_tile_dimension;
 				this->vertices[ctr + 1].tex_coords = ql::vector2u((tile_x + 1), tile_y) * this->texture_tile_dimension;
@@ -2157,9 +2161,9 @@ namespace ql
 			}
 		}
 
-		template <typename C>
+		template <typename C, typename I>
 		requires (ql::is_container<C>() && ql::has_size<C>())
-		void create_skip_empty(const C& indices, ql::size index_width, ql::u32 skip_index)
+		void create_skip_empty(const C& indices, ql::size index_width, I skip_index)
 		{
 			if (!this->texture_ptr)
 			{
@@ -2175,28 +2179,98 @@ namespace ql
 			auto texture_row_tile_count = this->texture_ptr->getSize().x / this->texture_tile_dimension.x;
 
 			ql::u32 ctr = 0;
-			for (ql::u32 i = 0; i < indices.size(); ++i)
+			for (I i = 0; i < indices.size(); ++i)
 			{
 				auto index = indices[i];
 				if (index == skip_index)
-				{
 					continue;
-				}
 
 				auto [y, x] = ql::div_mod(i, index_width);
 
 				auto tile_x = (index % texture_row_tile_count);
 				auto tile_y = (index / texture_row_tile_count);
 
-				this->vertices[ctr + 0].position = ql::vector2u(x, y) * this->scale * this->texture_tile_dimension;
-				this->vertices[ctr + 1].position = ql::vector2u((x + 1), y) * this->scale * this->texture_tile_dimension;
-				this->vertices[ctr + 2].position = ql::vector2u((x + 1), (y + 1)) * this->scale * this->texture_tile_dimension;
-				this->vertices[ctr + 3].position = ql::vector2u(x, (y + 1)) * this->scale * this->texture_tile_dimension;
+				this->vertices[ctr + 0].position = ql::vec(x, y) * this->scale * this->tile_dimension;
+				this->vertices[ctr + 1].position = ql::vec((x + 1), y) * this->scale * this->tile_dimension;
+				this->vertices[ctr + 2].position = ql::vec((x + 1), (y + 1)) * this->scale * this->tile_dimension;
+				this->vertices[ctr + 3].position = ql::vec(x, (y + 1)) * this->scale * this->tile_dimension;
 
-				this->vertices[ctr + 0].tex_coords = ql::vector2u(tile_x, tile_y) * this->texture_tile_dimension;
-				this->vertices[ctr + 1].tex_coords = ql::vector2u((tile_x + 1), tile_y) * this->texture_tile_dimension;
-				this->vertices[ctr + 2].tex_coords = ql::vector2u((tile_x + 1), (tile_y + 1)) * this->texture_tile_dimension;
-				this->vertices[ctr + 3].tex_coords = ql::vector2u(tile_x, (tile_y + 1)) * this->texture_tile_dimension;
+				this->vertices[ctr + 0].tex_coords = ql::vec(tile_x, tile_y) * this->texture_tile_dimension;
+				this->vertices[ctr + 1].tex_coords = ql::vec((tile_x + 1), tile_y) * this->texture_tile_dimension;
+				this->vertices[ctr + 2].tex_coords = ql::vec((tile_x + 1), (tile_y + 1)) * this->texture_tile_dimension;
+				this->vertices[ctr + 3].tex_coords = ql::vec(tile_x, (tile_y + 1)) * this->texture_tile_dimension;
+				ctr += 4;
+			}
+		}
+
+		template <typename I>
+		void create_skip_empty(const std::vector<std::pair<I, I>>& indices_with_rotation, ql::size index_width, I skip_index)
+		{
+			if (!this->texture_ptr)
+			{
+				ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "small_tile_map::create: texture_ptr not set");
+
+				return;
+			}
+
+			this->vertices.clear();
+			this->vertices.set_primitive_type(sf::Quads);
+			this->vertices.resize(indices_with_rotation.size() * 4);
+
+			auto texture_row_tile_count = this->texture_ptr->getSize().x / this->texture_tile_dimension.x;
+
+			ql::u32 ctr = 0;
+			for (I i = 0; i < indices_with_rotation.size(); ++i)
+			{
+				auto tile = indices_with_rotation[i];
+				auto index = tile.first;
+				if (index == skip_index)
+					continue;
+
+				auto [y, x] = ql::div_mod(i, index_width);
+
+				auto tile_x = (index % texture_row_tile_count);
+				auto tile_y = (index / texture_row_tile_count);
+
+				this->vertices[ctr + 0].position = ql::vec(x, y) * this->scale * this->tile_dimension;
+				this->vertices[ctr + 1].position = ql::vec((x + 1), y) * this->scale * this->tile_dimension;
+				this->vertices[ctr + 2].position = ql::vec((x + 1), (y + 1)) * this->scale * this->tile_dimension;
+				this->vertices[ctr + 3].position = ql::vec(x, (y + 1)) * this->scale * this->tile_dimension;
+
+				auto tex_0 = ql::vec(tile_x, tile_y) * this->texture_tile_dimension;
+				auto tex_1 = ql::vec((tile_x + 1), tile_y) * this->texture_tile_dimension;
+				auto tex_2 = ql::vec((tile_x + 1), (tile_y + 1)) * this->texture_tile_dimension;
+				auto tex_3 = ql::vec(tile_x, (tile_y + 1)) * this->texture_tile_dimension;
+
+				if (tile.second == 0b00) // 0° (top)
+				{
+					this->vertices[ctr + 0].tex_coords = tex_0;
+					this->vertices[ctr + 1].tex_coords = tex_1;
+					this->vertices[ctr + 2].tex_coords = tex_2;
+					this->vertices[ctr + 3].tex_coords = tex_3;
+				}
+				else if (tile.second == 0b01) // 90° (right)
+				{
+					this->vertices[ctr + 0].tex_coords = tex_3;
+					this->vertices[ctr + 1].tex_coords = tex_0;
+					this->vertices[ctr + 2].tex_coords = tex_1;
+					this->vertices[ctr + 3].tex_coords = tex_2;
+				}
+				else if (tile.second == 0b10) // 180° (bottom)
+				{
+					this->vertices[ctr + 0].tex_coords = tex_3;
+					this->vertices[ctr + 1].tex_coords = tex_2;
+					this->vertices[ctr + 2].tex_coords = tex_1;
+					this->vertices[ctr + 3].tex_coords = tex_0;
+				}
+				else if (tile.second == 0b11) // 270° (left)
+				{
+					this->vertices[ctr + 0].tex_coords = tex_0;
+					this->vertices[ctr + 1].tex_coords = tex_3;
+					this->vertices[ctr + 2].tex_coords = tex_2;
+					this->vertices[ctr + 3].tex_coords = tex_1;
+				}
+
 				ctr += 4;
 			}
 		}

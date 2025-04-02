@@ -496,9 +496,9 @@ namespace ql
 		ql::add_sound(name, path);
 	}
 
-	void state_manager::add_texture(const std::string& name, const std::string& path)
+	void state_manager::add_texture(const std::string& name, const std::string& path, bool set_smooth)
 	{
-		ql::add_texture(name, path);
+		ql::add_texture(name, path, set_smooth);
 	}
 
 	void state_manager::add_image(const std::string& name, const std::string& path)

@@ -157,9 +157,9 @@ namespace ql
 		ql::load_sound(this->sounds[name], path);
 	}
 
-	void ql::resources::add_texture(const std::string& name, const std::string& path)
+	void ql::resources::add_texture(const std::string& name, const std::string& path, bool set_smooth)
 	{
-		ql::load_texture(this->textures[name], path);
+		ql::load_texture(this->textures[name], path, set_smooth);
 	}
 
 	void ql::resources::add_image(const std::string& name, const std::string& path)
@@ -371,9 +371,9 @@ namespace ql
 		ql::detail::resources.add_sound(name, path);
 	}
 
-	void ql::add_texture(const std::string& name, const std::string& path)
+	void ql::add_texture(const std::string& name, const std::string& path, bool set_smooth)
 	{
-		ql::detail::resources.add_texture(name, path);
+		ql::detail::resources.add_texture(name, path, set_smooth);
 	}
 
 	void ql::add_sprite(const std::string& name, const std::string& path)

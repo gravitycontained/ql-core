@@ -131,7 +131,7 @@ namespace ql
 		QL_SOURCE void play_sound(const std::string& name, ql::f32 volume, ql::f32 speed);
 		QL_SOURCE void add_font(const std::string& name, const std::string& path);
 		QL_SOURCE void add_sound(const std::string& name, const std::string& path);
-		QL_SOURCE void add_texture(const std::string& name, const std::string& path);
+		QL_SOURCE void add_texture(const std::string& name, const std::string& path, bool set_smooth = false);
 		QL_SOURCE void add_image(const std::string& name, const std::string& path);
 		QL_SOURCE void add_sprite(const std::string& name, const std::string& path);
 		QL_SOURCE void add_sprite(const std::string& name, sf::Texture& texture);
