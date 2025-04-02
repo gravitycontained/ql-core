@@ -71,6 +71,7 @@ namespace ql
 		{
 			this->position = {T{0}, T{0}};
 			this->scale = {T{1}, T{1}};
+			this->delta = {T{0}, T{0}};
 			this->rotation = T{0};
 		}
 
