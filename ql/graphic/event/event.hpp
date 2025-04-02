@@ -132,7 +132,7 @@ namespace ql
 		QL_SOURCE std::string all_text_entered_str() const;
 
 		QL_SOURCE void push_view(ql::view view);
-		QL_SOURCE void pop_view(ql:: size count);
+		QL_SOURCE void pop_view(ql::size count = 1);
 
 		QL_SOURCE void apply_view();
 
@@ -196,7 +196,6 @@ namespace ql
 		mutable ql::vec2 m_delta_mouse_position_before;
 
 		mutable std::vector<ql::view> m_views;
-
 
 		ql::vector2i m_mouse_position_screen;
 		ql::vector2i m_mouse_position_screen_before;

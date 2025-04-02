@@ -706,7 +706,7 @@ namespace ql
 		this->apply_view();
 	}
 
-	void ql::event::pop_view(ql::size ctr = 1)
+	void ql::event::pop_view(ql::size ctr)
 	{
 		if (!this->m_views.empty())
 		{
