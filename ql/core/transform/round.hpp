@@ -10,8 +10,8 @@ namespace ql
 	requires (ql::is_arithmetic<T>())
 	constexpr auto round(T value, ql::size precision = 0)
 	{
-		using utype = ql::unsigned_type<T>;
+		using S = ql::signed_type<T>;
 		T factor = ql::pow(T{10}, precision);
-		return static_cast<T>(static_cast<utype>(value * factor + (value >= T{0} ? T{0.5} : T{-0.5})) / factor);
+		return static_cast<T>(static_cast<S>(value * factor + (value >= T{0} ? T{0.5} : T{-0.5})) / factor);
 	}
 }	 // namespace ql
