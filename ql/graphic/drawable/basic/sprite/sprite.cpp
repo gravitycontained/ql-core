@@ -114,6 +114,10 @@ namespace ql
 	{
 		return ql::get_sprite_center(this->m_sprite);
 	}
+	ql::vec2u ql::sprite::get_texture_dimension() const
+	{
+		return this->m_sprite.getTexture()->getSize();
+	}
 
 	void ql::sprite::centerize_origin()
 	{

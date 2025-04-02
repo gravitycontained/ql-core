@@ -48,6 +48,8 @@ namespace ql
 		QL_SOURCE ql::hitbox get_hitbox() const;
 		QL_SOURCE ql::vec2 get_center() const;
 
+		QL_SOURCE ql::vec2u get_texture_dimension() const;
+
 		QL_SOURCE void centerize_origin();
 		QL_SOURCE void centerize();
 		QL_SOURCE void centerize_x();
