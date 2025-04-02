@@ -2530,7 +2530,7 @@ namespace ql
 	{
 		this->texture_ptr = &texture;
 		this->texture_tile_dimension = texture_tile_dimension;
-		this->position_tile_dimension = this->texture_tile_dimension;
+		this->tile_dimension = this->texture_tile_dimension;
 		this->texture_ptr_set = true;
 	}
 
@@ -2586,13 +2586,13 @@ namespace ql
 						((i % width) % this->max_chunk_size.x) + ((i / width) % this->max_chunk_size.y) * this->max_chunk_size.x;
 
 				chunk[chunk_index * 4 + 0].position =
-						this->position + ql::vector2u(x * this->position_tile_dimension.x, y * this->position_tile_dimension.y);
+						this->position + ql::vector2u(x * this->tile_dimension.x, y * this->tile_dimension.y);
 				chunk[chunk_index * 4 + 1].position =
-						this->position + ql::vector2u((x + 1) * this->position_tile_dimension.x, y * this->position_tile_dimension.y);
+						this->position + ql::vector2u((x + 1) * this->tile_dimension.x, y * this->tile_dimension.y);
 				chunk[chunk_index * 4 + 2].position =
-						this->position + ql::vector2u((x + 1) * this->position_tile_dimension.x, (y + 1) * this->position_tile_dimension.y);
+						this->position + ql::vector2u((x + 1) * this->tile_dimension.x, (y + 1) * this->tile_dimension.y);
 				chunk[chunk_index * 4 + 3].position =
-						this->position + ql::vector2u(x * this->position_tile_dimension.x, (y + 1) * this->position_tile_dimension.y);
+						this->position + ql::vector2u(x * this->tile_dimension.x, (y + 1) * this->tile_dimension.y);
 
 				auto tex_0 = ql::vector2u(tile_x * this->texture_tile_dimension.x, tile_y * this->texture_tile_dimension.y);
 				auto tex_1 = ql::vector2u((tile_x + 1) * this->texture_tile_dimension.x, tile_y * this->texture_tile_dimension.y);
@@ -2675,13 +2675,13 @@ namespace ql
 						((i % width) % this->max_chunk_size.x) + ((i / width) % this->max_chunk_size.y) * this->max_chunk_size.x;
 
 				chunk[chunk_index * 4 + 0].position =
-						this->position + ql::vector2u(x * this->position_tile_dimension.x, y * this->position_tile_dimension.y);
+						this->position + ql::vector2u(x * this->tile_dimension.x, y * this->tile_dimension.y);
 				chunk[chunk_index * 4 + 1].position =
-						this->position + ql::vector2u((x + 1) * this->position_tile_dimension.x, y * this->position_tile_dimension.y);
+						this->position + ql::vector2u((x + 1) * this->tile_dimension.x, y * this->tile_dimension.y);
 				chunk[chunk_index * 4 + 2].position =
-						this->position + ql::vector2u((x + 1) * this->position_tile_dimension.x, (y + 1) * this->position_tile_dimension.y);
+						this->position + ql::vector2u((x + 1) * this->tile_dimension.x, (y + 1) * this->tile_dimension.y);
 				chunk[chunk_index * 4 + 3].position =
-						this->position + ql::vector2u(x * this->position_tile_dimension.x, (y + 1) * this->position_tile_dimension.y);
+						this->position + ql::vector2u(x * this->tile_dimension.x, (y + 1) * this->tile_dimension.y);
 
 				chunk[chunk_index * 4 + 0].color = color;
 				chunk[chunk_index * 4 + 1].color = color;
@@ -2799,10 +2799,10 @@ namespace ql
 				auto chunk_index =
 						((i % width) % this->max_chunk_size.x) + ((i / width) % this->max_chunk_size.y) * this->max_chunk_size.x;
 
-				auto middle = ql::vec2(x * this->position_tile_dimension.x, y * this->position_tile_dimension.y) +
-											this->position_tile_dimension / 2;
+				auto middle = ql::vec2(x * this->tile_dimension.x, y * this->tile_dimension.y) +
+											this->tile_dimension / 2;
 
-				auto diagonal = std::sqrt(std::pow(this->position_tile_dimension.x, 2) + std::pow(this->position_tile_dimension.y, 2));
+				auto diagonal = std::sqrt(std::pow(this->tile_dimension.x, 2) + std::pow(this->tile_dimension.y, 2));
 				auto angle = tile.second + (ql::pi * 1.25);
 				auto pos_1 =
 						this->position + middle + ql::vec2(std::cos(angle + (ql::pi * 0.0)), std::sin(angle + (ql::pi * 0.0))) * diagonal / 2;
@@ -2846,10 +2846,10 @@ namespace ql
 				auto chunk_index =
 						((i % width) % this->max_chunk_size.x) + ((i / width) % this->max_chunk_size.y) * this->max_chunk_size.x;
 
-				auto middle = ql::vec2(x * this->position_tile_dimension.x, y * this->position_tile_dimension.y) +
-											this->position_tile_dimension / 2;
+				auto middle = ql::vec2(x * this->tile_dimension.x, y * this->tile_dimension.y) +
+											this->tile_dimension / 2;
 
-				auto diagonal = std::sqrt(std::pow(this->position_tile_dimension.x, 2) + std::pow(this->position_tile_dimension.y, 2));
+				auto diagonal = std::sqrt(std::pow(this->tile_dimension.x, 2) + std::pow(this->tile_dimension.y, 2));
 				auto angle = tile.second + (ql::pi * 1.25);
 				auto pos_1 =
 						this->position + middle + ql::vec2(std::cos(angle + (ql::pi * 0.0)), std::sin(angle + (ql::pi * 0.0))) * diagonal / 2;
@@ -2982,13 +2982,13 @@ namespace ql
 						((i % width) % this->max_chunk_size.x) + ((i / width) % this->max_chunk_size.y) * this->max_chunk_size.x;
 
 				chunk[chunk_index * 4 + 0].position =
-						this->position + ql::vector2u(x * this->position_tile_dimension.x, y * this->position_tile_dimension.y);
+						this->position + ql::vector2u(x * this->tile_dimension.x, y * this->tile_dimension.y);
 				chunk[chunk_index * 4 + 1].position =
-						this->position + ql::vector2u((x + 1) * this->position_tile_dimension.x, y * this->position_tile_dimension.y);
+						this->position + ql::vector2u((x + 1) * this->tile_dimension.x, y * this->tile_dimension.y);
 				chunk[chunk_index * 4 + 2].position =
-						this->position + ql::vector2u((x + 1) * this->position_tile_dimension.x, (y + 1) * this->position_tile_dimension.y);
+						this->position + ql::vector2u((x + 1) * this->tile_dimension.x, (y + 1) * this->tile_dimension.y);
 				chunk[chunk_index * 4 + 3].position =
-						this->position + ql::vector2u(x * this->position_tile_dimension.x, (y + 1) * this->position_tile_dimension.y);
+						this->position + ql::vector2u(x * this->tile_dimension.x, (y + 1) * this->tile_dimension.y);
 
 				chunk[chunk_index * 4 + 0].texCoords =
 						ql::vector2u(tile_x * this->texture_tile_dimension.x, tile_y * this->texture_tile_dimension.y);
@@ -3018,13 +3018,13 @@ namespace ql
 						((i % width) % this->max_chunk_size.x) + ((i / width) % this->max_chunk_size.y) * this->max_chunk_size.x;
 
 				chunk[chunk_index * 4 + 0].position =
-						this->position + ql::vector2u(x * this->position_tile_dimension.x, y * this->position_tile_dimension.y);
+						this->position + ql::vector2u(x * this->tile_dimension.x, y * this->tile_dimension.y);
 				chunk[chunk_index * 4 + 1].position =
-						this->position + ql::vector2u((x + 1) * this->position_tile_dimension.x, y * this->position_tile_dimension.y);
+						this->position + ql::vector2u((x + 1) * this->tile_dimension.x, y * this->tile_dimension.y);
 				chunk[chunk_index * 4 + 2].position =
-						this->position + ql::vector2u((x + 1) * this->position_tile_dimension.x, (y + 1) * this->position_tile_dimension.y);
+						this->position + ql::vector2u((x + 1) * this->tile_dimension.x, (y + 1) * this->tile_dimension.y);
 				chunk[chunk_index * 4 + 3].position =
-						this->position + ql::vector2u(x * this->position_tile_dimension.x, (y + 1) * this->position_tile_dimension.y);
+						this->position + ql::vector2u(x * this->tile_dimension.x, (y + 1) * this->tile_dimension.y);
 
 				chunk[chunk_index * 4 + 0].color = color;
 				chunk[chunk_index * 4 + 1].color = color;
@@ -3099,13 +3099,13 @@ namespace ql
 				auto tile_x = (tile.first % texture_row_tile_count);
 				auto tile_y = (tile.first / texture_row_tile_count);
 
-				auto pos_0 = this->position + ql::vector2u(x * this->position_tile_dimension.x, y * this->position_tile_dimension.y);
+				auto pos_0 = this->position + ql::vector2u(x * this->tile_dimension.x, y * this->tile_dimension.y);
 				auto pos_1 =
-						this->position + ql::vector2u((x + 1) * this->position_tile_dimension.x, y * this->position_tile_dimension.y);
+						this->position + ql::vector2u((x + 1) * this->tile_dimension.x, y * this->tile_dimension.y);
 				auto pos_2 =
-						this->position + ql::vector2u((x + 1) * this->position_tile_dimension.x, (y + 1) * this->position_tile_dimension.y);
+						this->position + ql::vector2u((x + 1) * this->tile_dimension.x, (y + 1) * this->tile_dimension.y);
 				auto pos_3 =
-						this->position + ql::vector2u(x * this->position_tile_dimension.x, (y + 1) * this->position_tile_dimension.y);
+						this->position + ql::vector2u(x * this->tile_dimension.x, (y + 1) * this->tile_dimension.y);
 
 				chunk[ctr + 0].position = pos_0;
 				chunk[ctr + 1].position = pos_1;
@@ -3196,13 +3196,13 @@ namespace ql
 				auto tile_x = (tile.first % texture_row_tile_count);
 				auto tile_y = (tile.first / texture_row_tile_count);
 
-				auto pos_0 = this->position + ql::vector2u(x * this->position_tile_dimension.x, y * this->position_tile_dimension.y);
+				auto pos_0 = this->position + ql::vector2u(x * this->tile_dimension.x, y * this->tile_dimension.y);
 				auto pos_1 =
-						this->position + ql::vector2u((x + 1) * this->position_tile_dimension.x, y * this->position_tile_dimension.y);
+						this->position + ql::vector2u((x + 1) * this->tile_dimension.x, y * this->tile_dimension.y);
 				auto pos_2 =
-						this->position + ql::vector2u((x + 1) * this->position_tile_dimension.x, (y + 1) * this->position_tile_dimension.y);
+						this->position + ql::vector2u((x + 1) * this->tile_dimension.x, (y + 1) * this->tile_dimension.y);
 				auto pos_3 =
-						this->position + ql::vector2u(x * this->position_tile_dimension.x, (y + 1) * this->position_tile_dimension.y);
+						this->position + ql::vector2u(x * this->tile_dimension.x, (y + 1) * this->tile_dimension.y);
 
 				chunk[ctr + 0].position = pos_0;
 				chunk[ctr + 1].position = pos_1;
@@ -3338,8 +3338,8 @@ namespace ql
 				auto tile_x = (tile.first % texture_row_tile_count);
 				auto tile_y = (tile.first / texture_row_tile_count);
 
-				auto middle = ql::vec2(x * this->position_tile_dimension.x, y * this->position_tile_dimension.y) +
-											this->position_tile_dimension / 2;
+				auto middle = ql::vec2(x * this->tile_dimension.x, y * this->tile_dimension.y) +
+											this->tile_dimension / 2;
 
 				auto angle = ((tile.second / 180) * ql::pi) + (ql::pi * 1.25);
 				auto pos_1 =
@@ -3388,8 +3388,8 @@ namespace ql
 				auto tile_x = (tile.first % texture_row_tile_count);
 				auto tile_y = (tile.first / texture_row_tile_count);
 
-				auto middle = ql::vec2(x * this->position_tile_dimension.x, y * this->position_tile_dimension.y) +
-											this->position_tile_dimension / 2;
+				auto middle = ql::vec2(x * this->tile_dimension.x, y * this->tile_dimension.y) +
+											this->tile_dimension / 2;
 
 				auto angle = tile.second + (ql::pi * 1.25);
 				auto pos_1 =
@@ -3478,13 +3478,13 @@ namespace ql
 				auto tile_y = (index / texture_row_tile_count);
 
 				chunk[ctr + 0].position =
-						this->position + ql::vector2u(x * this->position_tile_dimension.x, y * this->position_tile_dimension.y);
+						this->position + ql::vector2u(x * this->tile_dimension.x, y * this->tile_dimension.y);
 				chunk[ctr + 1].position =
-						this->position + ql::vector2u((x + 1) * this->position_tile_dimension.x, y * this->position_tile_dimension.y);
+						this->position + ql::vector2u((x + 1) * this->tile_dimension.x, y * this->tile_dimension.y);
 				chunk[ctr + 2].position =
-						this->position + ql::vector2u((x + 1) * this->position_tile_dimension.x, (y + 1) * this->position_tile_dimension.y);
+						this->position + ql::vector2u((x + 1) * this->tile_dimension.x, (y + 1) * this->tile_dimension.y);
 				chunk[ctr + 3].position =
-						this->position + ql::vector2u(x * this->position_tile_dimension.x, (y + 1) * this->position_tile_dimension.y);
+						this->position + ql::vector2u(x * this->tile_dimension.x, (y + 1) * this->tile_dimension.y);
 
 				chunk[ctr + 0].texCoords = ql::vector2u(tile_x * this->texture_tile_dimension.x, tile_y * this->texture_tile_dimension.y);
 				chunk[ctr + 1].texCoords =
@@ -3518,13 +3518,13 @@ namespace ql
 				auto tile_y = (index / texture_row_tile_count);
 
 				chunk[ctr + 0].position =
-						this->position + ql::vector2u(x * this->position_tile_dimension.x, y * this->position_tile_dimension.y);
+						this->position + ql::vector2u(x * this->tile_dimension.x, y * this->tile_dimension.y);
 				chunk[ctr + 1].position =
-						this->position + ql::vector2u((x + 1) * this->position_tile_dimension.x, y * this->position_tile_dimension.y);
+						this->position + ql::vector2u((x + 1) * this->tile_dimension.x, y * this->tile_dimension.y);
 				chunk[ctr + 2].position =
-						this->position + ql::vector2u((x + 1) * this->position_tile_dimension.x, (y + 1) * this->position_tile_dimension.y);
+						this->position + ql::vector2u((x + 1) * this->tile_dimension.x, (y + 1) * this->tile_dimension.y);
 				chunk[ctr + 3].position =
-						this->position + ql::vector2u(x * this->position_tile_dimension.x, (y + 1) * this->position_tile_dimension.y);
+						this->position + ql::vector2u(x * this->tile_dimension.x, (y + 1) * this->tile_dimension.y);
 
 				chunk[ctr + 0].color = color;
 				chunk[ctr + 1].color = color;
@@ -3612,11 +3612,17 @@ namespace ql
 	{
 		this->texture_ptr = &texture;
 		this->texture_tile_dimension = ql::vec(texture_tile_width, texture_tile_width);
+		this->tile_dimension = this->texture_tile_dimension;
 	}
 
 	void ql::small_tile_map::set_position(ql::vec2 position)
 	{
 		this->position = position;
+	}
+
+	void ql::small_tile_map::set_tile_dimension(ql::vec2 dimemsion)
+	{
+		this->tile_dimension = dimemsion;
 	}
 
 	void ql::small_tile_map::set_scale(ql::vec2 scale)
