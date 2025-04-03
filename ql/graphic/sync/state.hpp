@@ -1,6 +1,6 @@
 #pragma once
 
-#define ql_state_sync(param)                       \
+#define ql_sync_state(param)                       \
                                                    \
 	void init_before() override                      \
 	{                                                \
