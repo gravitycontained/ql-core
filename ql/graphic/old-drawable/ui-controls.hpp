@@ -197,24 +197,26 @@ namespace ql
 	{
 		struct line
 		{
-			ql::text text;
+			mutable ql::text text;
 			std::vector<ql::hitbox> character_hitboxes;
 			std::vector<ql::hitbox> character_mouse_hitboxes;
 			ql::hitbox line_hitbox;
 			ql::hitbox line_mouse_hitbox;
 			bool mouse_hitboxes_changed = false;
 			bool layout_changed = false;
+			bool hidden = false;
 
 			QL_SOURCE void apply(ql::vtext layout);
 			QL_SOURCE void calculate_hitboxes();
 			QL_SOURCE void calculate_mouse_hitboxes(ql::f32 max_line_width, ql::f32 extended_line_width);
 			QL_SOURCE void move(ql::vec2 delta);
 			QL_SOURCE void move(ql::f32 x, ql::f32 y);
+			QL_SOURCE void set_string(std::wstring text);
 			QL_SOURCE std::wstring wstring() const;
 			QL_SOURCE void draw(ql::render& draw) const;
 		};
 
-		text_field();
+		text_field(bool hidden = false);
 
 		QL_SOURCE void reset();
 		QL_SOURCE void set_font(std::string font);
@@ -361,6 +363,7 @@ namespace ql
 		bool dragging = false;
 		bool dragging_selection = false;
 		bool dragging_selection_before = false;
+		bool hidden = false;
 		bool edited_text = false;
 		bool copied_text = false;
 		bool pasted_text = false;

@@ -422,6 +422,11 @@ namespace ql
 		this->line_mouse_hitbox.dimension = (back.position + back.dimension) - front.position;
 	}
 
+	void ql::text_field::line::set_string(std::wstring string)
+	{
+		this->text.set_string(string);
+	}
+
 	void ql::text_field::line::move(ql::vec2 delta)
 	{
 		this->text.move(delta);
@@ -460,11 +465,28 @@ namespace ql
 		//	draw.draw(rect);
 		// }
 
-		draw.draw(this->text);
+		if (this->hidden)
+		{
+			auto str = this->text.get_wstring();
+
+			auto hidden = str;
+			for (auto &i : hidden)
+				if (i != L'\n')
+					i = L'*';
+
+			this->text.set_string(hidden);
+
+			draw.draw(this->text);
+
+			this->text.set_string(str);
+		}
+		else
+			draw.draw(this->text);
 	}
 
-	ql::text_field::text_field()
+	ql::text_field::text_field(bool hidden)
 	{
+		this->hidden = hidden;
 		this->set_dimension(ql::vec(300, 50));
 		this->set_background_color(ql::rgba::grey_shade(30));
 		this->set_background_outline_color(ql::rgba::grey_shade(220));
@@ -479,6 +501,7 @@ namespace ql
 		for (auto& i : this->lines)
 		{
 			i.layout_changed = true;
+			i.hidden = this->hidden;
 		}
 	}
 
@@ -715,9 +738,10 @@ namespace ql
 		{
 			this->lines.resize(1u);
 			this->lines.front().apply(this->text_layout);
-			this->lines.front().text.set_string(L"");
+			this->lines.front().set_string(L"");
 			this->lines.front().calculate_hitboxes();
 			this->lines.front().mouse_hitboxes_changed = true;
+			this->lines.front().hidden = this->hidden;
 			this->text_mouse_hitboxes_changed = true;
 			return;
 		}
@@ -733,7 +757,7 @@ namespace ql
 		{
 			auto diff = pos - this->lines[i].text.get_position();
 			this->lines[i].move(diff);
-			this->lines[i].text.set_string(split[i]);
+			this->lines[i].set_string(split[i]);
 			this->lines[i].calculate_hitboxes();
 			this->lines[i].mouse_hitboxes_changed = true;
 			this->text_mouse_hitboxes_changed = true;
@@ -825,7 +849,7 @@ namespace ql
 			{
 				new_string += str.substr(this->cursor_position.x);
 			}
-			line.text.set_string(new_string);
+			line.set_string(new_string);
 			line.calculate_hitboxes();
 			line.mouse_hitboxes_changed = true;
 
@@ -961,20 +985,22 @@ namespace ql
 		pos.y += this->get_line_height() * (y + 1);
 
 		auto current_str = this->lines[y].wstring();
-		this->lines[y].text.set_string(current_str.substr(0u, this->cursor_position.x));
+		this->lines[y].set_string(current_str.substr(0u, this->cursor_position.x));
 		this->lines[y].calculate_hitboxes();
 
 		ql::text_field::line line;
 		line.apply(this->text_layout);
-		line.text.set_string(current_str.substr(this->cursor_position.x));
+		line.set_string(current_str.substr(this->cursor_position.x));
 		line.text.set_position(pos);
 		line.calculate_hitboxes();
 		line.text.set_scale(this->scale);
 		line.mouse_hitboxes_changed = true;
+		line.hidden = this->hidden;
 		this->text_mouse_hitboxes_changed = true;
 		this->whole_string_changed = true;
 
 		this->lines.push_back({});
+		this->lines.back().hidden = this->hidden;
 
 		for (ql::isize i = ql::signed_cast(this->lines.size()) - 1; i > ql::signed_cast(y + 1); --i)
 		{
@@ -1012,7 +1038,7 @@ namespace ql
 				auto new_string = line_before.wstring();
 				new_string += str;
 
-				line_before.text.set_string(new_string);
+				line_before.set_string(new_string);
 				line_before.calculate_hitboxes();
 				line.mouse_hitboxes_changed = true;
 				this->text_mouse_hitboxes_changed = true;
@@ -1037,7 +1063,7 @@ namespace ql
 			{
 				new_string += str.substr(this->cursor_position.x);
 			}
-			line.text.set_string(new_string);
+			line.set_string(new_string);
 			line.calculate_hitboxes();
 			line.mouse_hitboxes_changed = true;
 			this->text_mouse_hitboxes_changed = true;
@@ -1064,7 +1090,7 @@ namespace ql
 		{
 			auto& line = this->lines[begin.y];
 			auto str = line.wstring();
-			line.text.set_string(str.substr(0u, begin.x) + str.substr(end.x));
+			line.set_string(str.substr(0u, begin.x) + str.substr(end.x));
 			line.calculate_hitboxes();
 			line.calculate_mouse_hitboxes(this->hitbox.dimension.x + this->hitbox.position.x, this->background_increase.x);
 		}
@@ -1076,7 +1102,7 @@ namespace ql
 			auto first_str = first_line.wstring().substr(0u, begin.x);
 			auto last_str = last_line.wstring().substr(end.x);
 
-			first_line.text.set_string(first_str + last_str);
+			first_line.set_string(first_str + last_str);
 			first_line.calculate_hitboxes();
 			first_line.calculate_mouse_hitboxes(this->hitbox.dimension.x + this->hitbox.position.x, this->background_increase.x);
 
@@ -1895,6 +1921,7 @@ namespace ql
 				{
 					i.apply(this->text_layout);
 					i.layout_changed = false;
+					i.hidden = this->hidden;
 				}
 			}
 			this->set_cursor_dimension();
