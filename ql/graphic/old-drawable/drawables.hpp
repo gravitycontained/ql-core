@@ -2737,6 +2737,7 @@ namespace ql
 
 		QL_SOURCE void set_dimension(ql::vec2 dimension);
 		QL_SOURCE void set_position(ql::vec2 dimension);
+		QL_SOURCE void set_hitbox(ql::hitbox hitbox);
 		QL_SOURCE void increase(ql::vec2 increase);
 		QL_SOURCE void set_color(ql::rgba color);
 		QL_SOURCE void set_scale(ql::vec2 scale);
@@ -2751,6 +2752,7 @@ namespace ql
 		QL_SOURCE void add_left(ql::f32 correction_gap = 0.0f);
 		QL_SOURCE void add_right(ql::f32 correction_gap = 0.0f);
 		QL_SOURCE void add_all_sides(ql::f32 correction_gap = 0.0f);
+		QL_SOURCE void create();
 		QL_SOURCE void draw(ql::render& object) const;
 	};
 

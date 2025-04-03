@@ -5585,6 +5585,12 @@ namespace ql
 	{
 		this->position = position;
 	}
+	void ql::border_graphic::set_hitbox(ql::hitbox hitbox)
+	{
+		this->position = hitbox.position;
+		this->dimension = hitbox.dimension;
+	}
+
 
 	void ql::border_graphic::increase(ql::vec2 delta)
 	{
@@ -5640,7 +5646,6 @@ namespace ql
 	void ql::border_graphic::clear()
 	{
 		this->sprites.clear();
-		this->position = ql::vec(0, 0);
 	}
 
 	void ql::border_graphic::add_top(ql::f32 correction_gap)
@@ -5780,6 +5785,12 @@ namespace ql
 		this->add_left(correction_gap);
 		this->add_right(correction_gap);
 		this->add_bottom(correction_gap);
+	}
+
+	void ql::border_graphic::create()
+	{
+		this->clear();
+		this->add_all_sides();
 	}
 
 	void ql::border_graphic::draw(ql::render& object) const
