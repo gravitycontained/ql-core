@@ -26,7 +26,7 @@ namespace ql
 		ql::rgba text_color = ql::rgba(220, 220, 220);
 		ql::rgba background_color_hover = ql::rgba(10, 10, 10);
 		ql::rgba text_color_hover = ql::rgba::white();
-		ql::rgba text_color_click = ql::rgba(100, 255, 100);
+		ql::rgba text_color_click = ql::rgba(255, 255, 255);
 		ql::small_clock click_timer;
 		mutable bool layout_changed = false;
 		bool simple_hitbox = false;

@@ -315,14 +315,16 @@ namespace ql
 		{
 			this->holding = true;
 			this->clicked_once = true;
-			this->click_timer.reset();
 		}
 
 		this->clicked_release = false;
 		if (event.left_mouse_released())
 		{
 			if (this->holding && this->hovering)
+			{
 				this->clicked_release = true;
+				this->click_timer.reset();
+			}
 
 			this->clicked = false;
 			this->holding = false;
@@ -363,7 +365,7 @@ namespace ql
 			}
 		}
 
-		if (this->clicked_once && this->click_timer.elapsed_f() < 1.5)
+		if (this->clicked_release && this->click_timer.elapsed_f() < 1.5)
 		{
 			auto progress = ql::slope_curve(this->click_timer.elapsed_f() / 1.5, 1.0);
 			this->text.set_color(text_color_effect.interpolated(this->text_color_click, 1.0 - progress));
