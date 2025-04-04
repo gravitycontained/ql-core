@@ -744,6 +744,16 @@ namespace ql
 			return result;
 		}
 
+		constexpr vectorN significant_precision(ql::size precision) const
+		{
+			vectorN result = *this;
+			for (auto& i : result.data)
+			{
+				i = ql::significant_precision(i, precision);
+			}
+			return result;
+		}
+
 		constexpr void clear()
 		{
 			for (auto& i : this->data)

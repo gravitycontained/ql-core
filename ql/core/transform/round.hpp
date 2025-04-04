@@ -14,4 +14,16 @@ namespace ql
 		T factor = ql::pow(T{10}, precision);
 		return static_cast<T>(static_cast<S>(value * factor + (value >= T{0} ? T{0.5} : T{-0.5})) / factor);
 	}
+
+	template <typename T>
+	requires (ql::is_arithmetic<T>())
+	constexpr auto significant_precision(T value, ql::size precision)
+	{
+		if (value == 0)
+			return T{0}; // Handle zero case separately
+
+		auto pow = std::pow(T{10}, std::floor(std::log10(std::abs(value))) - ql::signed_cast(precision) + 1);
+
+		return std::round(value / pow) * pow;
+	}
 }	 // namespace ql
