@@ -8,7 +8,7 @@ namespace ql
 	template <typename F>
 	constexpr F slope_curve(F progress, F slope = 2.0)
 	{
-		return std::pow(1 - std::pow(1 - ql::clamp(progress), slope), 1.0 / slope);
+		return std::pow(1 - std::pow(1 - ql::clamp(progress), slope), F{ 1 } / slope);
 	}
 
 	template <typename F>
