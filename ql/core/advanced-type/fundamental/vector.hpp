@@ -719,7 +719,7 @@ namespace ql
 			vectorN result = *this;
 			for (auto& i : result.data)
 			{
-				i = std::floor(i);
+				i = static_cast<T>(std::floor(i));
 			}
 			return result;
 		}
@@ -729,7 +729,7 @@ namespace ql
 			vectorN result = *this;
 			for (auto& i : result.data)
 			{
-				i = std::ceil(i);
+				i = static_cast<T>(std::ceil(i));
 			}
 			return result;
 		}
@@ -1259,6 +1259,30 @@ namespace ql
 			vectorN<ql::superior_arithmetic_type<T, U>, N> copy = *this;
 			copy %= other;
 			return copy;
+		}
+
+		template <typename U>
+		constexpr vectorN<T, N> mod_wrap(const vectorN<U, N>& other) const
+		{
+			vectorN<T, N> result;
+			for (ql::size i = 0u; i < this->data.size(); ++i)
+			{
+				auto divisor = static_cast<T>(other.data[i]);
+
+				if constexpr (ql::is_floating_point<T>())
+				{
+					result.data[i] = std::fmod(this->data[i], divisor);
+					if (result.data[i] < 0)
+					{
+						result.data[i] += divisor;
+					}
+				}
+				else
+				{
+					result.data[i] = (this->data[i] % divisor + divisor) % divisor;
+				}
+			}
+			return result;
 		}
 
 		template <typename U>
