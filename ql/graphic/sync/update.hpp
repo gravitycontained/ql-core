@@ -43,8 +43,7 @@ namespace ql
 				{
 					ql::size view_found_ctr = 0;
 
-					constexpr auto N = ql::tuple_find_index_of_type<decltype(tuple), ql::declare_unsync>();
-					ql::constexpr_iterate<N>(
+					ql::constexpr_iterate<ql::tuple_size<decltype(tuple)>()>(
 						[&](auto i)
 						{
 							auto&& tuple_element = ql::tuple_value<i>(tuple);
@@ -104,7 +103,7 @@ namespace ql
 				if constexpr (ql::is_or_has_sync<decltype(check)>())
 				{
 					auto&& sync = ql::sync_resolve(check);
-					if (!sync.declare_sync.active || !sync.declare_sync.update)
+					if (!sync.sync_options.active || !sync.sync_options.update)
 						return;
 				}
 

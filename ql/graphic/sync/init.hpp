@@ -32,7 +32,7 @@ namespace ql
 			{
 				auto&& sync = ql::sync_resolve(object);
 
-				sync.declare_sync.initialized = true;
+				sync.sync_options.initialized = true;
 			}
 
 			if constexpr (has_init_no_parameter_c<T>)
@@ -60,8 +60,7 @@ namespace ql
 
 				auto iterate = [&](auto& tuple)
 				{
-					constexpr auto N = ql::tuple_find_index_of_type<decltype(tuple), ql::declare_unsync>();
-					ql::constexpr_iterate<N>(
+					ql::constexpr_iterate<ql::tuple_size<decltype(tuple)>()>(
 						[&](auto i)
 						{
 							auto&& tuple_element = ql::tuple_value<i>(tuple);
@@ -88,7 +87,7 @@ namespace ql
 								bool all_initialized = true;
 								ql::sync_apply(value, [&](auto&& sync)
 								{
-									if (!sync.declare_sync.initialized)
+									if (!sync.sync_options.initialized)
 									{
 										if constexpr (ql::debug::print)
 											ql::println(
@@ -108,7 +107,7 @@ namespace ql
 
 							ql::sync_apply(value, [&](auto&& sync)
 							{
-								sync.declare_sync.initialized = true;
+								sync.sync_options.initialized = true;
 							});
 
 							ql::sync_check_uninitialized(manager);

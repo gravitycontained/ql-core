@@ -59,8 +59,7 @@ namespace ql
 			{
 				auto iterate = [&](auto& tuple)
 				{
-					constexpr auto N = ql::tuple_find_index_of_type<decltype(tuple), ql::declare_unsync>();
-					ql::constexpr_iterate<N>(
+					ql::constexpr_iterate<ql::tuple_size<decltype(tuple)>()>(
 						[&](auto i)
 						{
 							auto&& tuple_element = ql::tuple_value<i>(tuple);

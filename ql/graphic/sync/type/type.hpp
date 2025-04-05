@@ -12,20 +12,18 @@ namespace ql
 		QL_SOURCE extern ql::size sync_initialization_request_count;
 		QL_SOURCE extern ql::size sync_injection_request_count;
 	}
-	struct declare_sync
+	struct sync_options
 	{
 		bool initialized = false;
 		bool draw = true;
 		bool update = true;
 		bool active = true;
 
-		declare_sync()
+		sync_options()
 		{
 			++detail::sync_initialization_request_count;
 		}
 	};
-
-	struct declare_unsync{};
 
 	template <typename C>
 	concept has_sync_c = requires(C x) { ql::struct_member_size<decltype(x.sync)>(); };
@@ -47,7 +45,7 @@ namespace ql
 
 	template <typename C>
 	concept is_sync_c = requires(C x) {
-		{ x.declare_sync };
+		{ x.sync_options };
 	};
 
 	template <typename C>
@@ -104,19 +102,18 @@ namespace ql
 
 }	 // namespace ql
 
-#define ql_sync() ql::declare_sync declare_sync;
-#define ql_unsync() ql::declare_unsync declare_unsync;
+#define ql_sync() ql::sync_options sync_options;
 
 #define ql_sync_within(...) \
   struct \
   { \
-    ql::declare_sync declare_sync; \
+    ql::sync_options sync_options; \
     __VA_ARGS__ \
   } sync;
 
 #define ql_sync_extension_within(...) \
   struct \
   { \
-    ql::declare_sync declare_sync; \
+    ql::sync_options sync_options; \
     __VA_ARGS__ \
   } sync_extension;
