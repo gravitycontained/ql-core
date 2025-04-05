@@ -160,15 +160,6 @@ namespace ql
 
 		void push_view(ql::view view)
 		{
-			if (std::isnan(view.position.x) || std::isnan(view.position.y) || std::isnan(view.scale.x) || std::isnan(view.scale.y))
-			{
-				ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "ABORT setting NaN view: ", view.position, " ", view.scale);
-				if (this->views.empty())
-					view.reset();
-				else
-					view = this->views.back();
-			}
-
 			if (this->views.empty())
 				this->states_before = this->states;
 
@@ -194,14 +185,6 @@ namespace ql
 
 				this->views.back().apply_to(this->states);
 				auto new_view = this->views.back();
-
-				if (std::isnan(new_view.position.x) || std::isnan(new_view.position.y) || std::isnan(new_view.scale.x) || std::isnan(new_view.scale.y))
-				{
-					ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", "ABORT applying NaN view: ", new_view.position, " ", new_view.scale);
-					
-					this->views.back() = before;
-				}
-
 			}
 		}
 
