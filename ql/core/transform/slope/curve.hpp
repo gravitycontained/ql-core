@@ -25,6 +25,17 @@ namespace ql
 	}
 
 	template <typename F>
+	constexpr F s_curve(F t, F smoothness)
+	{
+		if (smoothness <= 1.0)
+			return t; // Linear interpolation
+
+		// A generalized smoothstep formula
+		auto p = smoothness;
+		return t * std::pow(t * (3 - 2 * t), p - 1);
+	}
+
+	template <typename F>
 	constexpr F slope_smooth_impl(F progress, F slope, F cutoff, F sub)
 	{
 		auto stretch = (1 - cutoff);

@@ -173,4 +173,9 @@ namespace ql
 		return ql::slope_double_curve(this->progress, curve);
 	}
 
+	ql::f64 ql::animation::get_s_curve_progress(ql::f64 curve) const
+	{
+		return ql::s_curve(this->progress, curve);
+	}
+
 }	 // names
