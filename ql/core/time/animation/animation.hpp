@@ -50,6 +50,7 @@ namespace ql
 		QL_SOURCE ql::f64 get_progress() const;
 		QL_SOURCE ql::f64 get_curve_progress(ql::f64 curve = 1.5) const;
 		QL_SOURCE ql::f64 get_double_curve_progress(ql::f64 curve = 1.5) const;
+		QL_SOURCE ql::f64 get_s_curve_progress(ql::f64 curve = 2) const;
 	};
 
 	template <typename T>
