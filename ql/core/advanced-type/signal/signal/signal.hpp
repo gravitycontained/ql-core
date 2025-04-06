@@ -18,8 +18,8 @@ namespace ql
 			ql::injectable<ql::signal_update_manager> update_manager;
 		);
 
-		T value;
-		T value_before;
+		T value = T{};
+		T value_before = T{};
 
 		std::vector<std::pair<ql::size, std::function<void(const T&)>>> listeners;
 		std::vector<std::pair<ql::size, std::function<void(void)>>> voidListeners;
@@ -35,7 +35,7 @@ namespace ql
 				);
 		}
 
-		constexpr T& operator=(const T& newValue)
+		constexpr auto& operator=(const T& newValue)
 		{
 			this->value = newValue;
 			return *this;
