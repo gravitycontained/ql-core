@@ -2009,6 +2009,8 @@ namespace ql
 		QL_SOURCE void set_scale(ql::vec2 scale);
 		QL_SOURCE void draw(sf::RenderTarget& window, sf::RenderStates states = sf::RenderStates::Default) const;
 
+		QL_SOURCE void set_color(ql::rgba color);
+
 		template <typename C>
 		requires (ql::is_container<C>() && ql::has_size<C>())
 		void create(const C& indices, ql::size index_width)

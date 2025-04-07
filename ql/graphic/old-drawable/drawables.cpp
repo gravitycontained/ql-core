@@ -3639,6 +3639,10 @@ namespace ql
 			this->vertices.draw(window, states);
 		}
 	}
+	void ql::small_tile_map::set_color(ql::rgba color)
+	{
+		this->vertices.set_color(color);
+	}
 
 	void ql::vgraph::draw(sf::RenderTarget& window, sf::RenderStates states) const
 	{
