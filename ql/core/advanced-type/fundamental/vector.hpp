@@ -1937,7 +1937,7 @@ namespace std
 			ql::u64 result = 9613230923329544087ull;
 			for (ql::size i = 0u; i < N; ++i)
 			{
-				result = ql::bit_rotate_right(result, 1) ^ hash(key[i]);
+				result = ql::bit_rotate_right(result, 1) ^ hash(ql::unsigned_cast(key[i]));
 			}
 			return result;
 		}
