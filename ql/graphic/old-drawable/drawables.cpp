@@ -5352,7 +5352,7 @@ namespace ql
 						else if (graph.y_axis_text_percent)
 						{
 							this->y_texts[i].set_string(
-									graph.y_axis_text.string + ql::string_precision(graph.y_axis_text_precision, ql::size_cast(y_position * 100)) +
+									graph.y_axis_text.string + ql::string_precision(y_position * 100, graph.y_axis_text_precision) +
 									"%"
 							);
 						}
@@ -5363,7 +5363,7 @@ namespace ql
 						else
 						{
 							this->y_texts[i].set_string(
-									graph.y_axis_text.string + ql::string_precision(graph.y_axis_text_precision, ql::size_cast(y_position))
+									graph.y_axis_text.string + ql::string_precision(y_position, graph.y_axis_text_precision)
 							);
 						}
 					}
@@ -5376,7 +5376,7 @@ namespace ql
 						else if (graph.y_axis_text_percent)
 						{
 							this->y_texts[i].set_string(
-									ql::string_precision(graph.y_axis_text_precision, ql::size_cast(y_position * 100)) + "%" +
+									ql::string_precision(y_position * 100, graph.y_axis_text_precision) + "%" +
 									graph.y_axis_text.string
 							);
 						}
@@ -5387,7 +5387,7 @@ namespace ql
 						else
 						{
 							this->y_texts[i].set_string(
-									ql::string_precision(graph.y_axis_text_precision, ql::size_cast(y_position)) + graph.y_axis_text.string
+									ql::string_precision(y_position, graph.y_axis_text_precision) + graph.y_axis_text.string
 							);
 						}
 					}
