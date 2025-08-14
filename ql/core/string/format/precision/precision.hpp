@@ -24,5 +24,11 @@ namespace ql
 	{
 		return ql::to_string(ql::string_precision(value * 100, precision), '%');
 	}
+	template <typename T>
+	requires (ql::is_printable<T>())
+	std::string string_percentage(const T& value)
+	{
+		return ql::string_percentage_precision(value, 2);
+	}
 
 }	 // namespace ql
