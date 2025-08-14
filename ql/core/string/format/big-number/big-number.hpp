@@ -19,10 +19,10 @@ namespace ql
 
 		ql::i64 log;
 		if constexpr (ql::is_ql_integer<T>())
-			log = (number.digits() - 1) / 3.0;
+			log = ql::i64_cast((number.digits() - 1) / 3.0);
 
 		else
-			log = static_cast<ql::i64>(std::log(number) / std::log(1000.0));
+			log = ql::i64_cast(std::log(number) / std::log(1000.0));
 
 		std::string name;
 		bool negative = false;
