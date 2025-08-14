@@ -11,6 +11,20 @@
 
 namespace ql
 {
+
+	template <ql::size N, typename T>
+	requires (ql::is_string_view<T>())
+	constexpr std::array<ql::size, N> string_split_indices_static(const T& string, ql::string_underlying_type<T> delimiter = ',')
+	{
+		std::array<ql::size, N> result{};
+		ql::size ctr = 0u;
+		for (ql::size i = 0u; i < string.size(); ++i) {
+			if (string[i] == delimiter)
+				result[ctr++] = i;
+		}
+		return result;
+	}
+
 	template <typename T>
 	requires (ql::is_string_view<T>())
 	std::vector<ql::string_view_to_basic_string<T>> string_split(const T& string, ql::string_underlying_type<T> by_what)
@@ -24,20 +38,16 @@ namespace ql
 			if (string[i] == by_what)
 			{
 				if (i - before)
-				{
 					result.emplace_back(string_type{string.substr(before, i - before)});
-				}
+
 				++i;
 				while (i < string.length() && string[i] == by_what)
-				{
 					++i;
-				}
+
 				before = i;
 			}
 			else
-			{
 				++i;
-			}
 		}
 		if (before != string.length())
 		{
@@ -196,6 +206,36 @@ namespace ql
 			static_assert("split_numbers<T>: T is not arithmetic");
 		}
 		return result;
+	}
+
+	template <typename T>
+	requires (ql::is_long_string_type<T>())
+	std::vector<T> string_split_expression(const T& string, const T& expression)
+	{
+		std::vector<T> result;
+
+		if constexpr (ql::is_wstring_type<T>())
+		{
+			std::wsmatch smatch;
+			std::wregex reg = std::wregex{ L"[^" + expression + L"]+" };
+			auto s = std::wsregex_iterator(string.cbegin(), string.cend(), reg);
+			while (s != std::wsregex_iterator()) {
+				result.push_back(s->str());
+				++s;
+			}
+			return result;
+		}
+		else
+		{
+			std::smatch smatch;
+			std::regex reg = std::regex{ "[^" + expression + "]+" };
+			auto s = std::sregex_iterator(string.cbegin(), string.cend(), reg);
+			while (s != std::sregex_iterator()) {
+				result.push_back(s->str());
+				++s;
+			}
+			return result;
+		}
 	}
 
 }	 // namespace ql
