@@ -65,7 +65,10 @@ namespace ql
 	requires (ql::has_data<C>() && ql::has_size<C>())
 	constexpr inline std::string heap_memory_to_string(const C& data)
 	{
-		return ql::container_memory_to_string(data);
+		std::string result;
+		ql::container_memory_to_string(data, result);
+
+		return result;
 	}
 
 	template <typename C>
