@@ -2,10 +2,11 @@
 
 #include <ql/core/definition/definition.hpp>
 
-#include <ql/core/string/format/options.hpp>
-#include <ql/core/string/format/memory/memory.hpp>
-#include <ql/core/string/format/precision/precision.hpp>
 #include <ql/core/string/format/join.hpp>
+#include <ql/core/string/format/big-number/big-number.hpp>
+#include <ql/core/string/format/memory/memory.hpp>
+#include <ql/core/string/format/options.hpp>
+#include <ql/core/string/format/precision/precision.hpp>
 
 #include <ql/core/type/type.hpp>
 #include <ql/core/string/to-string.hpp>
