@@ -1,4 +1,5 @@
 #include <ql/graphic/drawable/advanced/polygon/polygon.hpp>
+#include <ql/core/system/print/print.hpp>
 
 #if defined QL_GRAPHIC
 
@@ -128,27 +129,68 @@ namespace ql
 		this->shape.setPointCount(size);
 	}
 
-	bool ql::polygon_shape::collides(ql::vec2 point, ql::size increment) const
+	void ql::polygon_shape::add(ql::vec2 point)
 	{
-		bool flag = false;
+		auto current_size = this->size();
+		this->resize(current_size + 1);
+		this->set_point(current_size, point);
+	}
 
-		ql::straight_line compare;
-		compare.a = {0, 0};
-		compare.b = point;
+	bool ql::polygon_shape::collides(ql::vec2 point) const
+	{
+		double total_angle = 0.0;
 
 		auto j = this->size() - 1;
-		for (ql::size i = 0u; i < this->size(); i += increment)
+		for (ql::size i = 0; i < this->size(); ++i)
 		{
-			ql::straight_line edge_line;
-			edge_line.a = this->get_point(i);
-			edge_line.b = this->get_point(j);
-			if (compare.collides(edge_line))
-			{
-				flag = !flag;
-			}
+			ql::vec2 p1 = this->get_point(j);
+			ql::vec2 p2 = this->get_point(i);
+
+			// calculate the vectors from the test point to the vertices
+			ql::vec2 v1 = { p1.x - point.x, p1.y - point.y };
+			ql::vec2 v2 = { p2.x - point.x, p2.y - point.y };
+
+			// calculate the angle between the two vectors
+			double angle = atan2(v2.y, v2.x) - atan2(v1.y, v1.x);
+
+			// ensure the angle is in the range [-PI, PI] to handle wrapping
+			if (angle > ql::pi) angle -= 2 * ql::pi;
+			if (angle < -ql::pi) angle += 2 * ql::pi;
+
+			total_angle += angle;
 			j = i;
 		}
-		return flag;
+
+		// if the total angle is close to 2*PI (or -2*PI, etc.), the point is inside.
+		// a zero total angle means the point is outside.
+		return std::abs(total_angle) > ql::pi;
+	}
+
+	bool ql::polygon_shape::collides(const ql::straight_line& line) const
+	{
+		auto n = this->size();
+		if (n < 3)
+			return false; // not a valid polygon
+
+		// STEP 1: check if the line segment intersects any edge of the polygon.
+		auto j = n - 1;
+		for (ql::size i = 0; i < n; ++i)
+		{
+			ql::straight_line edge = { this->get_point(j), this->get_point(i) };
+
+			// Assuming line.collides(edge) correctly checks for segment-segment intersection.
+			if (line.collides(edge))
+				return true;
+
+			j = i;
+		}
+
+		// STEP 2: if no edges intersect, check if the line is fully inside.
+		if (this->collides(line.a))
+			return true;
+
+		// if no edges intersect and the start point is not inside, there is no collision.
+		return false;
 	}
 
 	void ql::polygon_shape::draw(sf::RenderTarget& window, sf::RenderStates states) const
