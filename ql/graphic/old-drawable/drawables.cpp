@@ -114,36 +114,6 @@ namespace ql
 		return this->vertices.back();
 	}
 
-	std::vector<ql::vertex>::iterator ql::vertex_array::begin()
-	{
-		return this->vertices.begin();
-	}
-
-	std::vector<ql::vertex>::const_iterator ql::vertex_array::begin() const
-	{
-		return this->vertices.begin();
-	}
-
-	std::vector<ql::vertex>::const_iterator ql::vertex_array::cbegin() const
-	{
-		return this->vertices.cbegin();
-	}
-
-	std::vector<ql::vertex>::iterator ql::vertex_array::end()
-	{
-		return this->vertices.end();
-	}
-
-	std::vector<ql::vertex>::const_iterator ql::vertex_array::end() const
-	{
-		return this->vertices.end();
-	}
-
-	std::vector<ql::vertex>::const_iterator ql::vertex_array::cend() const
-	{
-		return this->vertices.cend();
-	}
-
 	void ql::vertex_array::draw(sf::RenderTarget& window, sf::RenderStates states) const
 	{
 		window.draw(
@@ -330,10 +300,8 @@ namespace ql
 
 	void ql::va_rectangle::set_color(ql::rgba color)
 	{
-		for (auto& i : this->va)
-		{
-			i.color = color;
-		}
+		for (ql::size i = 0u; i < this->va.size(); ++i)
+			this->va[i].color = color;
 	}
 
 	void ql::va_rectangle::set_position(ql::vec2 position)

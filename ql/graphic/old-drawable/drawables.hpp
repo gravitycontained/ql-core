@@ -144,14 +144,6 @@ namespace ql
 		QL_SOURCE ql::vertex& back();
 		QL_SOURCE const ql::vertex& back() const;
 
-		QL_SOURCE std::vector<ql::vertex>::iterator begin();
-		QL_SOURCE std::vector<ql::vertex>::const_iterator begin() const;
-		QL_SOURCE std::vector<ql::vertex>::const_iterator cbegin() const;
-
-		QL_SOURCE std::vector<ql::vertex>::iterator end();
-		QL_SOURCE std::vector<ql::vertex>::const_iterator end() const;
-		QL_SOURCE std::vector<ql::vertex>::const_iterator cend() const;
-
 		QL_SOURCE void draw(sf::RenderTarget& window, sf::RenderStates states = sf::RenderStates::Default) const;
 
 		std::vector<ql::vertex> vertices;
