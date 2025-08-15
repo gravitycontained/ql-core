@@ -39,54 +39,40 @@ namespace ql
 						if constexpr (ql::is_render_texture<U>())
 						{
 							if (this->window)
-							{
 								this->window->draw(value.get_sprite(), this->states);
-							}
+
 							else if (this->texture)
-							{
 								this->texture->draw(value.get_sprite(), this->states);
-							}
 						}
 						else if constexpr (std::is_base_of<sf::Drawable, U>())
 						{
 							if (this->window)
-							{
 								this->window->draw(value, this->states);
-							}
+
 							else if (this->texture)
-							{
 								this->texture->draw(value, this->states);
-							}
 						}
 						else if constexpr (ql::has_render<U>())
-						{
 							value.draw(*this);
-						}
+
 						else if constexpr (ql::has_render_gl<U>())
-						{
 							value.draw(*this);
-						}
+
 						else if constexpr (ql::has_draw_sf_reverse<U>())
 						{
 							if (this->window)
-							{
 								this->window->draw(value, this->states);
-							}
+
 							else if (this->texture)
-							{
 								this->texture->draw(value, this->states);
-							}
 						}
 						else if constexpr (ql::has_draw_sf<U>())
 						{
 							if (this->window)
-							{
 								value.draw(*this->window, this->states);
-							}
+
 							else if (this->texture)
-							{
 								value.draw(*this->texture, this->states);
-							}
 						}
 					}
 				}
@@ -104,58 +90,47 @@ namespace ql
 		}
 
 		template <typename T>
-		requires (ql::has_draw<T>() || ql::is_container<T>())
+		requires (ql::has_draw<ql::modal_decay<T>>())
 		void draw(const T& object, sf::RenderStates states)
 		{
-			if constexpr (ql::has_draw<T>())
-			{
-				if constexpr (ql::is_render_texture<T>())
+			ql::modal_apply(object,
+				[this](const auto& value)
 				{
-					if (this->window)
+					using U = decltype(value);
+					if constexpr (ql::has_draw<U>())
 					{
-						this->window->draw(object.get_sprite(), states);
-					}
-					else if (this->texture)
-					{
-						this->texture->draw(object.get_sprite(), states);
-					}
-				}
-				else if constexpr (std::is_base_of<sf::Drawable, T>())
-				{
-					if (this->window)
-					{
-						this->window->draw(object, states);
-					}
-					else if (this->texture)
-					{
-						this->texture->draw(object, states);
-					}
-				}
-				else if constexpr (ql::has_render<T>())
-				{
-					//this->store_states();
+						if constexpr (ql::is_render_texture<U>())
+						{
+							if (this->window)
+								this->window->draw(value.get_sprite(), states);
 
-					object.draw(*this);
-				}
-				else if constexpr (ql::has_draw_sf<T>())
-				{
-					if (this->window)
-					{
-						object.draw(*this->window, states);
+							else if (this->texture)
+								this->texture->draw(value.get_sprite(), states);
+						}
+						else if constexpr (std::is_base_of<sf::Drawable, U>())
+						{
+							if (this->window)
+								this->window->draw(value, states);
+
+							else if (this->texture)
+								this->texture->draw(value, states);
+						}
+						else if constexpr (ql::has_render<U>())
+						{
+							//this->store_states();
+							value.draw(*this);
+						}
+						else if constexpr (ql::has_draw_sf<U>())
+						{
+							if (this->window)
+								value.draw(*this->window, states);
+
+							else if (this->texture)
+								value.draw(*this->texture, states);
+						}
 					}
-					else if (this->texture)
-					{
-						object.draw(*this->texture, states);
-					}
 				}
-			}
-			else
-			{
-				for (auto& i : object)
-				{
-					this->draw(i, states);
-				}
-			}
+			);
 		}
 
 		void push_view(ql::view view)
