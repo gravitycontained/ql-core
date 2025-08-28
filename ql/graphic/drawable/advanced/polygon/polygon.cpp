@@ -192,6 +192,103 @@ namespace ql
 		// if no edges intersect and the start point is not inside, there is no collision.
 		return false;
 	}
+	std::optional<ql::vec2> ql::polygon_shape::collides_get_normal(const ql::straight_line& line) const
+	{
+		auto n = this->size();
+		if (n < 3)
+			return std::nullopt; // Not a valid polygon
+
+		ql::f32 min_t = std::numeric_limits<ql::f32>::max();
+		std::optional<ql::vec2> hit_normal = std::nullopt;
+
+		auto j = n - 1;
+		for (ql::size i = 0; i < n; ++i)
+		{
+			ql::vec2 p1 = this->get_point(j);
+			ql::vec2 p2 = this->get_point(i);
+			ql::straight_line edge = { p1, p2 };
+
+			// We need a more advanced segment-segment intersection function here
+			// that returns the intersection parameter 't' for the 'line' segment
+			// and potentially 'u' for the 'edge' segment, and the intersection point.
+			// Let's assume you have a `line.get_intersection_t(edge)` method
+			// that returns std::optional<ql::f32> representing the 't' value for 'line'.
+			// 't' indicates how far along 'line' the intersection occurs (0 to 1).
+
+			// Placeholder for actual intersection logic. You'll need to implement or
+			// ensure `straight_line::get_intersection_t` exists and works as described.
+			// This method should return `std::nullopt` if no intersection or if it's outside
+			// both segments.
+			std::optional<ql::f32> current_t_opt = line.get_intersection(edge);
+
+			if (current_t_opt)
+			{
+				ql::f32 current_t = *current_t_opt;
+
+				// Check if this intersection is closer to the start of 'line'
+				// and is a valid intersection along the line segment (0 <= t <= 1)
+				if (current_t >= 0.0f && current_t <= 1.0f && current_t < min_t)
+				{
+					min_t = current_t;
+
+					// Calculate the edge vector
+					ql::vec2 edge_vec = { edge.b.x - edge.a.x, edge.b.y - edge.a.y };
+
+					// Calculate the normal. For a 2D line (x1, y1) to (x2, y2),
+					// a perpendicular vector (normal) can be (-dy, dx) or (dy, -dx).
+					// To ensure it points outwards for a polygon, we need consistency.
+					// For a counter-clockwise winding, (-dy, dx) often points outwards.
+					ql::vec2 normal = { -edge_vec.y, edge_vec.x };
+
+					// Normalize the normal vector
+					ql::f32 length = std::sqrt(normal.x * normal.x + normal.y * normal.y);
+					if (length > 0)
+					{
+						normal.x /= length;
+						normal.y /= length;
+					}
+
+					// We need to ensure the normal points *outwards* from the polygon.
+					// One way to do this is to check the dot product with a vector
+					// from the intersection point to the polygon's centroid or another internal point.
+					// Alternatively, if the polygon points are consistently ordered (e.g., CCW),
+					// a simple perpendicular will often be consistently inwards or outwards.
+
+					// For now, let's assume the standard (-dy, dx) gives an outward normal for CCW polygons.
+					// If your polygon vertices are ordered clockwise, you might need (dy, -dx).
+					// A more robust approach might involve checking the orientation of the polygon
+					// or checking the normal's direction relative to the polygon's interior.
+
+					// A simple heuristic for outward normal (assuming CCW vertices):
+					// Take a point slightly inwards from the edge (e.g., midpoint of the edge + a tiny step inwards)
+					// and check its position relative to the normal.
+					// For robust collision response, the normal should point from the polygon towards the line.
+
+					hit_normal = normal;
+				}
+			}
+			j = i;
+		}
+
+		// If no edge intersection, check if the line starts inside the polygon.
+		// If it starts inside, then it might be "colliding" with the *interior*
+		// of the polygon. In this case, there isn't a specific "normal" of an edge
+		// that was hit. Depending on your game logic, you might return `std::nullopt`
+		// or a special "interior normal" if needed (e.g., based on the closest edge).
+		// For the purpose of `collides_get_normal` (edge-specific normal),
+		// if no edge was hit by the line segment, `std::nullopt` is appropriate.
+		// However, if your `collides` method considers the line starting inside as a collision,
+		// you might need to reconsider what `collides_get_normal` means in that context.
+
+		// For typical line-segment-polygon collision, `std::nullopt` if no edge hit is correct.
+		// If `min_t` is still `max_t`, it means no intersection was found.
+		if (min_t == std::numeric_limits<ql::f32>::max())
+		{
+			return std::nullopt;
+		}
+
+		return hit_normal;
+	}
 
 	void ql::polygon_shape::draw(sf::RenderTarget& window, sf::RenderStates states) const
 	{

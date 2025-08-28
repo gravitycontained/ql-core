@@ -56,6 +56,7 @@ namespace ql
 
 		QL_SOURCE bool collides(ql::vec2 point) const;
 		QL_SOURCE bool collides(const ql::straight_line& line) const;
+		QL_SOURCE std::optional<ql::vec2> collides_get_normal(const ql::straight_line& line) const;
 
 		QL_SOURCE void draw(sf::RenderTarget& window, sf::RenderStates states = sf::RenderStates::Default) const;
 	};
