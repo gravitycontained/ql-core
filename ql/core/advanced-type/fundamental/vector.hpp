@@ -1665,6 +1665,13 @@ namespace ql
 			return result;
 		}
 
+		template <typename T, ql::size N>
+		requires (N == 2)
+		[[nodiscard]] constexpr static auto cross_product(const vectorN<T, N>& a, const vectorN<T, N>& b)
+		{
+			return a.x * b.y - a.y * b.x;
+		}
+
 		template <typename U>
 		requires (ql::is_arithmetic<U>())
 		[[nodiscard]] constexpr static vectorN<T, N> filled(U value)
