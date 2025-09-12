@@ -1415,7 +1415,7 @@ namespace ql
 		constexpr void rotate(ql::f64 delta_angle)
 		requires (N == 2)
 		{
-			this->set_rotation(-this->angle() + delta_angle);
+			this->set_rotation(this->angle() + delta_angle);
 		}
 
 		constexpr void rotate_around(vectorN center, ql::f64 delta_angle)
