@@ -38,6 +38,11 @@ namespace ql
 		{
 			return ql::vector2<float_type>{this->a.y - this->b.y, this->b.x - this->a.x} / this->length();
 		}
+		
+		ql::vector2<float_type> center() const
+		{
+			return (this->a + this->b) / 2;
+		}
 
 		float_type angle() const
 		{
