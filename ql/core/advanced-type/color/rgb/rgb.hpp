@@ -1158,7 +1158,7 @@ namespace ql
 			{
 				std::swap(h1, h2);
 			}
-			constexpr auto weights = ql::vec(1.5, 1.0, 1.7).normalized();
+			constexpr auto weights = ql::vec(1.5, 1.0, 1.7).normal();
 
 			auto vec1 = ql::vec3d(h1, this->get_intensity(), this->get_perceived_brightness()) * weights;
 			auto vec2 = ql::vec3d(h2, other.get_intensity(), other.get_perceived_brightness()) * weights;

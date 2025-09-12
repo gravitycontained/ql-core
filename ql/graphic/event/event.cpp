@@ -534,7 +534,7 @@ namespace ql
 			this->m_moved_direction = true;
 		}
 
-		this->m_move_direction = direction.normalized();
+		this->m_move_direction = direction.normal();
 	}
 
 	void ql::event::set_fast_click_duration(ql::f64 duration)

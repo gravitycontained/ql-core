@@ -305,7 +305,7 @@ namespace ql
 		{
 			vec.y = 0;
 		}
-		this->velocities += vec.normalized() * delta * this->accelerate;
+		this->velocities += vec.normal() * delta * this->accelerate;
 		this->accelerating = true;
 	}
 
@@ -319,7 +319,7 @@ namespace ql
 		{
 			vec.y = 0;
 		}
-		this->velocities += vec.normalized() * delta * this->accelerate;
+		this->velocities += vec.normal() * delta * this->accelerate;
 		this->accelerating = true;
 	}
 
@@ -333,7 +333,7 @@ namespace ql
 		{
 			vec.y = 0;
 		}
-		auto accel = vec.normalized() * delta * this->accelerate;
+		auto accel = vec.normal() * delta * this->accelerate;
 		this->velocities += accel;
 		this->accelerating = true;
 	}
@@ -348,7 +348,7 @@ namespace ql
 		{
 			vec.y = 0;
 		}
-		auto accel = vec.normalized() * delta * this->accelerate;
+		auto accel = vec.normal() * delta * this->accelerate;
 		this->velocities += accel;
 		this->accelerating = true;
 	}
@@ -379,7 +379,7 @@ namespace ql
 	{
 		if (this->velocities.length() > this->max_velocity)
 		{
-			this->velocities = this->velocities.normalized() * this->max_velocity;
+			this->velocities = this->velocities.normal() * this->max_velocity;
 		}
 	}
 

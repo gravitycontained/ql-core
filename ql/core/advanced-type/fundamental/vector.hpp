@@ -1378,10 +1378,10 @@ namespace ql
 			if (this->length() < reduction)
 				this->clear();
 			else
-				*this -= this->normalized() * reduction;
+				*this -= this->normal() * reduction;
 		}
 
-		constexpr vectorN normalized() const
+		constexpr vectorN normal() const
 		{
 			if (this->length() == 0)
 				return vectorN{};
