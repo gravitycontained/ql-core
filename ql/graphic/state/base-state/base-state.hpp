@@ -43,6 +43,7 @@ namespace ql
 		virtual void call_check_uninitialized() = 0;
 		virtual void call_provide() = 0;
 		virtual void call_update() = 0;
+		virtual void call_post_update() = 0;
 		virtual void call_update_injection() = 0;
 		virtual void call_phase_signal_run() = 0;
 		virtual void call_phase_signal_detect() = 0;
@@ -119,6 +120,13 @@ namespace ql
 			ql::render render(this->state_manager->window, this->render_states);
 			ql::update_manager update{ this->event(), *this->state_manager, this->state_manager->signal_update_manager, render, init_state };
 			ql::sync_update(object, *this->state_manager, update);
+			this->sync_check_uninitialized(*this->state_manager);
+		}
+
+		template <typename T>
+		void sync_post_update(T& object)
+		{
+			ql::sync_post_update(object, *this->state_manager);
 			this->sync_check_uninitialized(*this->state_manager);
 		}
 

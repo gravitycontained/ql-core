@@ -181,10 +181,10 @@ namespace ql
 
 	bool state_manager::game_loop_segment()
 	{
+		++this->frame_ctr;
+
 		if (!this->is_created())
-		{
 			this->create();
-		}
 
 		auto focus_before = this->focus;
 		this->internal_update();
@@ -201,6 +201,7 @@ namespace ql
 		if (this->update_if_no_focus || this->focus || (focus_before != this->focus))
 		{
 			this->states.back()->call_update();
+			this->states.back()->call_post_update();
 			this->states.back()->last_dimension = this->dimension;
 			++this->states.back()->frame_ctr;
 		}
@@ -211,9 +212,8 @@ namespace ql
 		{
 			this->states.pop_back();
 			if (this->states.empty())
-			{
 				return false;
-			}
+
 			this->init_back();
 			this->states.back()->call_on_activate();
 			this->state_size_before = this->states.size();
@@ -244,35 +244,25 @@ namespace ql
 				this->states.back()->call_phase_signal_run();
 				this->states.back()->call_phase_signal_detect();
 			}
-
 		}
-
 
 		if (allow_draw)
-		{
 			this->draw_call();
-		}
+
 		return true;
 	}
 
 	void state_manager::game_loop()
 	{
 		if (this->states.empty())
-		{
 			return;
-		}
+
 		if (!this->is_created())
-		{
 			this->create();
-		}
 
 		while (this->is_open())
-		{
 			if (!this->game_loop_segment())
-			{
 				break;
-			}
-		}
 	}
 
 #if defined QL_GLEW

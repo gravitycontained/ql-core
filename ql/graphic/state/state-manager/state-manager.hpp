@@ -193,6 +193,7 @@ namespace ql
 		ql::u32 framerate_limit = 144u;
 		ql::u32 style = sf::Style::Default;
 		ql::f64 speed_factor = 1.0;
+		ql::size frame_ctr = 0u;
 		cull_face gl_cull_face = cull_face::back;
 		bool created = false;
 		bool created_gl = false;
