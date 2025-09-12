@@ -94,7 +94,7 @@ namespace ql
 		void draw(const T& object, sf::RenderStates states)
 		{
 			ql::modal_apply(object,
-				[this](const auto& value)
+				[this, states](const auto& value)
 				{
 					using U = decltype(value);
 					if constexpr (ql::has_draw<U>())
