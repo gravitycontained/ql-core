@@ -192,14 +192,14 @@ namespace ql
 		// if no edges intersect and the start point is not inside, there is no collision.
 		return false;
 	}
-	std::optional<ql::vec2> ql::polygon_shape::collides_get_normal(const ql::straight_line& line) const
+	std::optional<ql::size> ql::polygon_shape::collides_at_edge(const ql::straight_line& line) const
 	{
 		auto n = this->size();
 		if (n < 3)
 			return std::nullopt; // Not a valid polygon
 
 		ql::f32 min_t = std::numeric_limits<ql::f32>::max();
-		std::optional<ql::vec2> hit_normal = std::nullopt;
+		std::optional<ql::size> hit_edge = std::nullopt;
 
 		auto j = n - 1;
 		for (ql::size i = 0; i < n; ++i)
@@ -231,23 +231,6 @@ namespace ql
 				{
 					min_t = current_t;
 
-					// Calculate the edge vector
-					ql::vec2 edge_vec = { edge.b.x - edge.a.x, edge.b.y - edge.a.y };
-
-					// Calculate the normal. For a 2D line (x1, y1) to (x2, y2),
-					// a perpendicular vector (normal) can be (-dy, dx) or (dy, -dx).
-					// To ensure it points outwards for a polygon, we need consistency.
-					// For a counter-clockwise winding, (-dy, dx) often points outwards.
-					ql::vec2 normal = { -edge_vec.y, edge_vec.x };
-
-					// Normalize the normal vector
-					ql::f32 length = std::sqrt(normal.x * normal.x + normal.y * normal.y);
-					if (length > 0)
-					{
-						normal.x /= length;
-						normal.y /= length;
-					}
-
 					// We need to ensure the normal points *outwards* from the polygon.
 					// One way to do this is to check the dot product with a vector
 					// from the intersection point to the polygon's centroid or another internal point.
@@ -264,7 +247,7 @@ namespace ql
 					// and check its position relative to the normal.
 					// For robust collision response, the normal should point from the polygon towards the line.
 
-					hit_normal = normal;
+					hit_edge = j;
 				}
 			}
 			j = i;
@@ -287,7 +270,7 @@ namespace ql
 			return std::nullopt;
 		}
 
-		return hit_normal;
+		return hit_edge;
 	}
 
 	void ql::polygon_shape::draw(sf::RenderTarget& window, sf::RenderStates states) const
