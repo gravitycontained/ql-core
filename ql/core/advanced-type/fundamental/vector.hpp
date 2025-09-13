@@ -545,13 +545,10 @@ namespace ql
 		constexpr operator sf::Vector2<U>() const
 		{
 			if constexpr (N == 1)
-			{
 				return sf::Vector2<U>(static_cast<U>(this->data[0]), U{0});
-			}
+
 			else
-			{
 				return sf::Vector2<U>(static_cast<U>(this->data[0]), static_cast<U>(this->data[1]));
-			}
 		}
 
 		template <typename U>
@@ -559,14 +556,58 @@ namespace ql
 		{
 			this->x = static_cast<T>(vec.x);
 			this->y = static_cast<T>(vec.y);
+
 			if constexpr (N == 1)
-			{
 				this->x = static_cast<T>(vec.x);
-			}
+
 			else
 			{
 				this->x = static_cast<T>(vec.x);
 				this->y = static_cast<T>(vec.y);
+			}
+			return *this;
+		}
+
+
+		template <typename U>
+		constexpr vectorN(const sf::Vector3<U>& other) : impl_type()
+		{
+			*this = other;
+		}
+
+		template <typename U>
+		constexpr operator sf::Vector3<U>() const
+		{
+			if constexpr (N == 1)
+				return sf::Vector3<U>(static_cast<U>(this->data[0]), U{ 0 }, U{ 0 });
+
+			else if constexpr (N == 2)
+				return sf::Vector3<U>(static_cast<U>(this->data[0]), static_cast<U>(this->data[1]), U{ 0 });
+
+			else
+				return sf::Vector3<U>(static_cast<U>(this->data[0]), static_cast<U>(this->data[1]), static_cast<U>(this->data[2]));
+		}
+
+		template <typename U>
+		constexpr vectorN& operator=(const sf::Vector3<U>& vec)
+		{
+			this->x = static_cast<T>(vec.x);
+			this->y = static_cast<T>(vec.y);
+
+			if constexpr (N == 1)
+				this->x = static_cast<T>(vec.x);
+
+			else if constexpr (N == 2)
+			{
+				this->x = static_cast<T>(vec.x);
+				this->y = static_cast<T>(vec.y);
+			}
+
+			else
+			{
+				this->x = static_cast<T>(vec.x);
+				this->y = static_cast<T>(vec.y);
+				this->z = static_cast<T>(vec.z);
 			}
 			return *this;
 		}
