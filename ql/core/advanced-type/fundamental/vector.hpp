@@ -476,6 +476,8 @@ namespace ql
 	{
 		using impl_type = ql::detail::vector_impl_conditional<T, N>;
 
+		using float_type = ql::conditional<ql::if_true<ql::is_same<T, ql::f32>()>, ql::f32, ql::default_type, ql::f64>;
+
 		constexpr vectorN() : impl_type()
 		{
 			this->clear();
@@ -1365,12 +1367,17 @@ namespace ql
 		{
 			if (std::is_constant_evaluated())
 			{
-				return ql::f64_cast(ql::sqrt(this->dot(*this)));
+				return static_cast<float_type>(ql::sqrt(this->dot(*this)));
 			}
 			else
 			{
-				return ql::f64_cast(std::sqrt(this->dot(*this)));
+				return static_cast<float_type>(std::sqrt(this->dot(*this)));
 			}
+		}
+
+		constexpr auto length_sq() const
+		{
+			return this->dot(*this);
 		}
 
 		constexpr void reduce_length_by(auto reduction)
