@@ -11,6 +11,39 @@ namespace ql
 	template <typename T>
 	struct view_control_t : public ql::view_type<T>
 	{
+		ql::hitbox hitbox;
+		ql::vector2<T> dimension;
+		ql::vector2<T> mouse_position;
+
+		ql::vector2<T> click_position;
+		ql::vector2<T> click_mouse_position;
+
+		ql::vector2<T> animation_position_a;
+		ql::vector2<T> animation_position_b;
+		ql::vector2<T> animation_dimension_a;
+		ql::vector2<T> animation_dimension_b;
+		ql::vector2<T> animation_scale_a;
+		ql::vector2<T> animation_scale_b;
+
+		ql::vector2<T> smooth_position;
+		ql::vector2<T> smooth_scale;
+
+		ql::animation smooth_zoom_animation;
+		ql::f64 smooth_zoom_duration = 0.07;
+		ql::f64 smooth_zoom_slope = 1.3;
+		T zoom_delta = 0.25;
+		bool hitbox_set = false;
+		bool hovering = false;
+		bool dragging = false;
+		bool allow_dragging = true;
+		bool enabled = true;
+		bool use_smooth_zoom = true;
+		bool ignore_input = false;
+		bool use_smooth_values = false;
+		bool changed = false;
+		bool zoomed = false;
+		bool interactive = true;
+
 		sf::Mouse::Button drag_mouse_button = sf::Mouse::Left;
 
 		view_control_t()
@@ -28,7 +61,10 @@ namespace ql
 
 		void move(ql::vector2<T> delta)
 		{
-			this->move(delta);
+			ql::view_type<T>::move(delta);
+			//this->animation_position_a += delta;
+			this->animation_position_b += delta;
+
 			this->changed = true;
 		}
 
@@ -47,10 +83,13 @@ namespace ql
 		{
 			this->set_scale(ql::vec(scale, scale));
 		}
-
 		void set_position(ql::vector2<T> position)
 		{
+			auto diff = position - this->position;
+
 			this->position = position;
+			this->animation_position_b += diff;
+
 			this->changed = true;
 		}
 
@@ -69,7 +108,12 @@ namespace ql
 			this->use_smooth_zoom = false;
 		}
 
-		void set_smooth_zoom_time(ql::f64 delta)
+		void enable_using_smooth_values()
+		{
+			this->use_smooth_values = true;
+		}
+
+		void set_smooth_zoom_duraton(ql::f64 delta)
 		{
 			this->smooth_zoom_duration = delta;
 			this->smooth_zoom_animation.set_duration(this->smooth_zoom_duration);
@@ -164,7 +208,7 @@ namespace ql
 				this->smooth_zoom_animation.update(event);
 				if (this->smooth_zoom_animation.is_running() && this->use_smooth_zoom)
 				{
-					auto p = this->smooth_zoom_animation.get_curve_progress(this->smooth_zoom_slope);
+					auto p = this->smooth_zoom_animation.get_s_curve_progress(this->smooth_zoom_slope);
 
 					this->scale = ql::linear_interpolation(this->animation_scale_a, this->animation_scale_b, p);
 					this->position = ql::linear_interpolation(this->animation_position_a, this->animation_position_b, p);
@@ -195,7 +239,7 @@ namespace ql
 					if (this->allow_dragging && this->dragging && event.mouse_moved())
 					{
 						auto delta = (this->click_mouse_position - mouse_relative);
-						this->position = this->click_position + delta * this->scale;
+						this->move((this->click_position + delta * this->scale) - this->position);
 
 						if (delta != ql::vec(0.f, 0.f))
 						{
@@ -258,37 +302,11 @@ namespace ql
 		template <typename U>
 		operator ql::view_type<U>() const
 		{
+			if (this->use_smooth_values)
+				return ql::view_type<U>(this->smooth_position, this->delta, this->smooth_scale, static_cast<U>(this->rotation));
+
 			return ql::view_type<U>(this->position, this->delta, this->scale, static_cast<U>(this->rotation));
 		}
-
-		ql::hitbox hitbox;
-		ql::vector2<T> dimension;
-		ql::vector2<T> mouse_position;
-
-		ql::vector2<T> click_position;
-		ql::vector2<T> click_mouse_position;
-
-		ql::vector2<T> animation_position_a;
-		ql::vector2<T> animation_position_b;
-		ql::vector2<T> animation_dimension_a;
-		ql::vector2<T> animation_dimension_b;
-		ql::vector2<T> animation_scale_a;
-		ql::vector2<T> animation_scale_b;
-
-		ql::animation smooth_zoom_animation;
-		ql::f64 smooth_zoom_duration = 0.07;
-		ql::f64 smooth_zoom_slope = 1.3;
-		T zoom_delta = 0.25;
-		bool hitbox_set = false;
-		bool hovering = false;
-		bool dragging = false;
-		bool allow_dragging = true;
-		bool enabled = true;
-		bool use_smooth_zoom = true;
-		bool ignore_input = false;
-		bool changed = false;
-		bool zoomed = false;
-		bool interactive = true;
 	};
 
 	using view_control = view_control_t<ql::f64>;
