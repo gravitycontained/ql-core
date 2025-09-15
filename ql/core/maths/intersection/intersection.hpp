@@ -46,7 +46,7 @@ namespace ql
 		ql::vector2<T> incident_vector = (line_end_target - line_start).normal();
 
 		// 3. get the normal of line b
-		ql::vector2<T> normal_b = reflector.normal();
+		ql::vector2<T> normal_b = reflector.perpendicular_normal();
 
 		// 4. calculate the reflected vector
 		// the reflection formula is: R = I - 2 * (I . N) * N
