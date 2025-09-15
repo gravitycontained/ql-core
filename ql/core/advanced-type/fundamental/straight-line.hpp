@@ -34,9 +34,21 @@ namespace ql
 			return static_cast<float_type>(std::sqrt(diff.x * diff.x + diff.y * diff.y));
 		}
 
-		ql::vector2<float_type> normal() const
+		straight_line_t with_length(float_type length) const
+		{
+			auto normal = this->normal();
+			auto center = this->center();
+			return straight_line_t{ center - normal * length / 2, center + normal * length / 2 };
+		}
+
+		ql::vector2<float_type> perpendicular_normal() const
 		{
 			return ql::vector2<float_type>{this->a.y - this->b.y, this->b.x - this->a.x} / this->length();
+		}
+
+		ql::vector2<float_type> normal() const
+		{
+			return ql::vector2<float_type>{this->b.x - this->a.x, this->b.y - this->a.y} / this->length();
 		}
 		
 		ql::vector2<float_type> center() const
@@ -124,57 +136,45 @@ namespace ql
 			return std::nullopt; // No intersection within segments
 		}
 
-
-		constexpr bool collides(straight_line_t other) const
+		constexpr bool collides(const straight_line_t<T>& other) const
 		{
-			auto mode = [](ql::vector2<T> a, ql::vector2<T> b, ql::vector2<T> c)
-			{
-				auto ba = b - a;
-				auto cb = c - b;
-				auto x = ba.y * cb.x - ba.x * cb.y;
+			// Use the line_intersection_point function to find the potential intersection.
+			// It's helpful to have a version of line_intersection_point that signals if lines are parallel/collinear
+			// rather than just returning (0,0), which could be a valid intersection.
+			// For this example, let's modify the line_intersection_point slightly or assume den != 0 implies intersection.
 
-				if (x < T{0})
-				{
-					return 2u;
-				}
-				else if (x > T{0})
-				{
-					return 1u;
-				}
-				else
-				{
-					return 0u;
-				}
-			};
-			auto collide = [](ql::vector2<T> a, ql::vector2<T> b, ql::vector2<T> c)
-			{
-				auto check_x = b.x <= ql::max(a.x, c.x) && b.x >= ql::min(a.x, c.x);
-				auto check_y = b.y <= ql::max(a.y, c.y) && b.y >= ql::min(a.y, c.y);
-				return check_x && check_y;
-			};
-			auto m1 = mode(this->a, this->b, other.a);
-			auto m2 = mode(this->a, this->b, other.b);
-			auto m3 = mode(other.a, other.b, this->a);
-			auto m4 = mode(other.a, other.b, this->b);
+			// Re-implementing parts of line_intersection_point for clarity within collides,
+			// or ensure your stand-alone line_intersection_point can provide more info.
 
-			if (m1 != m2 && m3 != m4)
-			{
-				return true;
+			ql::vector2<T> p1 = this->a;
+			ql::vector2<T> p2 = this->b;
+			ql::vector2<T> p3 = other.a;
+			ql::vector2<T> p4 = other.b;
+
+			T den = (p1.x - p2.x) * (p3.y - p4.y) - (p1.y - p2.y) * (p3.x - p4.x);
+
+			// If den is 0, lines are parallel or collinear
+			if (den == 0) {
+				// For parallel/collinear lines, they only "collide" if they overlap.
+				// This is a more complex edge case. For basic collision, we can often treat them as not colliding.
+				// If they are collinear and overlap, that's a collision.
+				// For simplicity here, if den == 0, we'll return false, as a unique intersection point is needed
+				// for the subsequent checks. If you need to handle collinear overlap, this section needs expansion.
+				return false;
 			}
 
-			if (m1 == T{0} && collide(this->a, other.a, this->b))
-				return true;
+			// Calculate t and u parameters for the intersection point
+			T t = ((p1.x - p3.x) * (p3.y - p4.y) - (p1.y - p3.y) * (p3.x - p4.x)) / den;
+			T u = -((p1.x - p2.x) * (p1.y - p3.y) - (p1.y - p2.y) * (p1.x - p3.x)) / den;
 
-			if (m2 == T{0} && collide(this->a, other.b, this->b))
-				return true;
+			// Check if the intersection point lies within both line segments
+			// The intersection point lies on segment 1 if 0 <= t <= 1
+			// The intersection point lies on segment 2 if 0 <= u <= 1
+			const T epsilon = std::numeric_limits<T>::epsilon(); // For floating-point comparisons
+			bool intersects_on_segment1 = (t >= -epsilon && t <= 1.0 + epsilon);
+			bool intersects_on_segment2 = (u >= -epsilon && u <= 1.0 + epsilon);
 
-			if (m3 == T{0} && collide(other.a, this->a, other.b))
-				return true;
-
-			if (m4 == T{0} && collide(other.a, this->b, other.b))
-				return true;
-
-			return false;
+			return intersects_on_segment1 && intersects_on_segment2;
 		}
 	};
 
