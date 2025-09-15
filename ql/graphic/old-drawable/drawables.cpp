@@ -1252,6 +1252,8 @@ namespace ql
 		this->shape.setRadius(circle.shape.getRadius());
 		this->shape.setFillColor(circle.shape.getFillColor());
 		this->shape.setOrigin(circle.shape.getOrigin());
+		this->shape.setOutlineThickness(circle.shape.getOutlineThickness());
+		this->shape.setOutlineColor(circle.shape.getOutlineColor());
 		return *this;
 	}
 
