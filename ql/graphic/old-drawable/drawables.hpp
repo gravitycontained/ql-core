@@ -726,6 +726,10 @@ namespace ql
 		QL_SOURCE void set_color(ql::rgba color);
 		QL_SOURCE void set_a_color(ql::rgba color);
 		QL_SOURCE void set_b_color(ql::rgba color);
+
+		QL_SOURCE void set(ql::straight_line line);
+		QL_SOURCE void set(ql::straight_line line, ql::rgba color);
+
 		QL_SOURCE vpoint get_a() const;
 		QL_SOURCE vpoint get_b() const;
 

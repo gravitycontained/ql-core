@@ -1605,6 +1605,17 @@ namespace ql
 		this->vertices[1].color = color;
 	}
 
+	void ql::line::set(ql::straight_line line)
+	{
+		*this = line;
+	}
+
+	void ql::line::set(ql::straight_line line, ql::rgba color)
+	{
+		*this = line;
+		this->set_color(color);
+	}
+
 	ql::vpoint ql::line::get_a() const
 	{
 		return ql::vpoint(this->vertices[0].position, this->vertices[0].color);
