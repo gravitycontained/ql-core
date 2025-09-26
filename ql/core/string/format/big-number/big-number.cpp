@@ -26,10 +26,10 @@ namespace ql
 				// handle the first 9 -illions (Million to Nonillion) via direct lookup.
 				if (n >= 1 && n <= 9)
 				{
-					constexpr std::array<std::string, 10> base_names_long = {
+					const std::array<std::string, 10> base_names_long = {
 						"", "Million", "Billion", "Trillion", "Quadrillion", "Quintillion", "Sextillion", "Septillion", "Octillion", "Nonillion"
 					};
-					constexpr std::array<std::string, 10> base_names_short = { "", "M", "B", "T", "Qd", "Qn", "Sx", "Sp", "Oc", "No" };
+					const std::array<std::string, 10> base_names_short = { "", "M", "B", "T", "Qd", "Qn", "Sx", "Sp", "Oc", "No" };
 
 					return short_format ? base_names_short[n] : base_names_long[n];
 				}
@@ -55,17 +55,17 @@ namespace ql
 						}
 
 						// define the Latin prefixes for units, tens, and hundreds.
-						constexpr std::array<std::string, 10> units_long = { "",			"un",	 "duo",		 "tre",	 "quattuor",
+						const std::array<std::string, 10> units_long = { "",			"un",	 "duo",		 "tre",	 "quattuor",
 																																"quin", "sex", "septem", "octo", "novem" };
-						constexpr std::array<std::string, 10> tens_long = {
+						const std::array<std::string, 10> tens_long = {
 							"", "deci", "viginti", "triginti", "quadraginti", "quinquaginti", "sexaginti", "septuaginti", "octoginti", "nonaginti"
 						};
-						constexpr std::array<std::string, 10> hundreds_long = { "",					"centi",		"ducenti",		 "trecenti",	 "quadringenti",
+						const std::array<std::string, 10> hundreds_long = { "",					"centi",		"ducenti",		 "trecenti",	 "quadringenti",
 																																	 "quingenti", "sescenti", "septingenti", "octingenti", "noningenti" };
 
-						constexpr std::array<std::string, 10> units_short = { "", "U", "D", "T", "Qd", "Qn", "Sx", "Sp", "Oc", "No" };
-						constexpr std::array<std::string, 10> tens_short = { "", "De", "Vt", "Tg", "qg", "Qg", "Sg", "Spg", "Ocg", "Nog" };
-						constexpr std::array<std::string, 10> hundreds_short = { "", "C", "DC", "TC", "QdC", "QnC", "SxC", "SpC", "OcC", "NoC" };
+						const std::array<std::string, 10> units_short = { "", "U", "D", "T", "Qd", "Qn", "Sx", "Sp", "Oc", "No" };
+						const std::array<std::string, 10> tens_short = { "", "De", "Vt", "Tg", "qg", "Qg", "Sg", "Spg", "Ocg", "Nog" };
+						const std::array<std::string, 10> hundreds_short = { "", "C", "DC", "TC", "QdC", "QnC", "SxC", "SpC", "OcC", "NoC" };
 
 						// Select vectors based on format
 						const auto& units = short_format ? units_short : units_long;
