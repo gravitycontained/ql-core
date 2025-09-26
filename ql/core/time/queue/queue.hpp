@@ -1,0 +1,1 @@
+#include <ql/core/time/queue/queue-manager.hpp>
