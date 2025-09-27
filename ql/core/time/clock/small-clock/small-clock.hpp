@@ -33,6 +33,8 @@ namespace ql
 		QL_SOURCE bool has_elapsed(ql::time duration) const;
 		QL_SOURCE bool has_elapsed_reset(ql::f64 seconds);
 		QL_SOURCE bool has_elapsed_reset(ql::time duration);
+		QL_SOURCE ql::size has_elapsed_subtract(ql::f64 seconds);
+		QL_SOURCE ql::size has_elapsed_subtract(ql::time duration);
 
 		ql::time m_begin;
 	};

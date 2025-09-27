@@ -78,9 +78,8 @@ namespace ql
 	{
 		auto result = this->has_elapsed(seconds);
 		if (result)
-		{
 			this->reset();
-		}
+
 		return result;
 	}
 
@@ -88,10 +87,29 @@ namespace ql
 	{
 		auto result = this->has_elapsed(duration);
 		if (result)
-		{
 			this->reset();
-		}
+
 		return result;
+	}
+
+	ql::size ql::small_clock::has_elapsed_subtract(ql::f64 seconds)
+	{
+		auto delta = ql::u64_cast(seconds * ql::time::nsecs_in_sec);
+		auto [d, m] = ql::div_mod(this->elapsed().nsecs(), delta);
+		if (d > 0)
+			this->add(ql::time{ d * delta });
+
+		return d;
+	}
+
+	ql::size ql::small_clock::has_elapsed_subtract(ql::time duration)
+	{
+		auto delta = duration.nsecs();
+		auto [d, m] = ql::div_mod(this->elapsed().nsecs(), duration.nsecs());
+		if (d > 0)
+			this->add(ql::time{ d * delta });
+
+		return d;
 	}
 
 }	 // namespace ql
