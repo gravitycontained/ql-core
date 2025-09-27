@@ -69,7 +69,7 @@ namespace ql
 		void add_state(C& state)
 		{
 			this->states.push_back(std::make_unique<C>(state));
-			this->states.back()->framework = this;
+			this->states.back()->state_manager = this;
 			this->states.back()->call_before_create();
 			this->states.back()->last_dimension = this->dimension;
 			if (this->is_created())
