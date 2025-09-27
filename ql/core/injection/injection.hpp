@@ -59,8 +59,7 @@ namespace ql
 						ql::string_left_spaced("update injection ", 24), ql::color::aqua, this, " ", ql::color::bright_blue, ql::type_name<T>()
 					);
 
-				if (ql::detail::sync_injection_request_count)
-					--ql::detail::sync_injection_request_count;
+				++ql::detail::sync_injection_request_count;
 
 				manager.provide();
 			}
