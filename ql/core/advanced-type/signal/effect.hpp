@@ -34,15 +34,19 @@ namespace ql
 			ql::tuple_value<i>(tied).addListener(function);
 		});
 
-		host.signal_connection.emplace_back(std::make_unique<ql::signal_connection_single>(std::move(
-			[tied, function]() mutable
-			{
-				ql::constexpr_iterate<size - 1>([&](auto i)
+		host.signal_connection.emplace_back
+		(
+			std::make_unique<ql::signal_connection_single>
+			(
+				std::move([tied, function]() mutable
 				{
-					ql::tuple_value<i>(tied).removeListener(function);
-				});
-			}
-		)));
+					ql::constexpr_iterate<size - 1>([&](auto i)
+					{
+						ql::tuple_value<i>(tied).removeListener(function);
+					});
+				})
+			)
+		);
 	}
 
 	#define ql_signal_connection() ql::signal_connection signal_connection;
