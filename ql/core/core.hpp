@@ -5,6 +5,7 @@
 #include <ql/core/algorithm/algorithm.hpp>
 #include <ql/core/constexpr/constexpr.hpp>
 #include <ql/core/container/container.hpp>
+#include <ql/core/debug/debug.hpp>
 #include <ql/core/definition/definition.hpp>
 #include <ql/core/encryption/encryption.hpp>
 #include <ql/core/file-system/file-system.hpp>

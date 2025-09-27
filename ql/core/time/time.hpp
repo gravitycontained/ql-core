@@ -5,5 +5,6 @@
 #include <ql/core/time/clock/clock.hpp>
 #include <ql/core/time/date/date.hpp>
 #include <ql/core/time/fps-counter/fps-counter.hpp>
+#include <ql/core/time/queue/queue.hpp>
 #include <ql/core/time/time/time.hpp>
 #include <ql/core/time/timed-task/timed-task.hpp>
