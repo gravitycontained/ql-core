@@ -22,6 +22,11 @@
 		this->sync_update(param);                      \
 	}                                                \
                                                    \
+	void call_post_update() override						     \
+	{                                                \
+		this->sync_post_update(param);				         \
+	}                                                \
+                                                   \
 	void call_update_injection() override            \
 	{                                                \
 		this->sync_update_injection(param);            \

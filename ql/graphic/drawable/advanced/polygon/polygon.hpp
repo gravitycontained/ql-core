@@ -54,7 +54,9 @@ namespace ql
 		QL_SOURCE void resize(ql::size size);
 		QL_SOURCE void add(ql::vec2 point);
 
-		QL_SOURCE bool collides(ql::vec2 point, ql::size increment = 1u) const;
+		QL_SOURCE bool collides(ql::vec2 point) const;
+		QL_SOURCE bool collides(const ql::straight_line& line) const;
+		QL_SOURCE std::optional<ql::size> collides_at_edge(const ql::straight_line& line) const;
 
 		QL_SOURCE void draw(sf::RenderTarget& window, sf::RenderStates states = sf::RenderStates::Default) const;
 	};

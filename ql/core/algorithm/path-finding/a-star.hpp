@@ -48,8 +48,6 @@ namespace ql
 		std::shared_ptr<ql::astar_node> starting_node = std::make_shared<ql::astar_node>(start, nullptr);
 		queue.push_back(starting_node);
 
-		std::unordered_set<ql::vec2s> visited;
-
 		constexpr auto direction = [&]()
 			{
 				if constexpr (allow_diagonal)
@@ -58,6 +56,8 @@ namespace ql
 				else
 					return ql::vec_cross4;
 			}();
+
+		std::unordered_set<ql::vec2s> visited;
 
 		while (!queue.empty())
 		{
@@ -99,13 +99,11 @@ namespace ql
 				{
 					bool valid = false;
 					if constexpr (ql::parameter_size(valid_check) == 2u)
-					{
 						valid = valid_check(maze[check.y][check.x], maze[current_node->position.y][current_node->position.x]);
-					}
+
 					else
-					{
 						valid = valid_check(maze[check.y][check.x]);
-					}
+
 					if (valid)
 					{
 						bool found = visited.find(check) != visited.cend();

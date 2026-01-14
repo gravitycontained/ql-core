@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ql/core/definition/definition.hpp>
+#include <ql/core/maths/circular/line-circle.hpp>
 #include <ql/core/maths/circular/rotate.hpp>
 
 #include <ql/core/type/type.hpp>

@@ -59,8 +59,7 @@ namespace ql
 						ql::string_left_spaced("update injection ", 24), ql::color::aqua, this, " ", ql::color::bright_blue, ql::type_name<T>()
 					);
 
-				if (ql::detail::sync_injection_request_count)
-					--ql::detail::sync_injection_request_count;
+				++ql::detail::sync_injection_request_count;
 
 				manager.provide();
 			}
@@ -82,7 +81,7 @@ namespace ql
 			{
 				ql::println('\n',
 					ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::bright_red,
-					ql::to_string("ql::injectable<", ql::type_name<T>(), ">: no injection received -> calling manual provide")
+					ql::to_string("ql::injectable<", ql::type_name<T>(), ">: no injection received -> calling manual provide"), " (adress ", ql::color::aqua, this, ")"
 				);
 				ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::color::aqua, "-> the state management needs to be extended OR the order of operations outside this framework need to be reworked.\n");
 

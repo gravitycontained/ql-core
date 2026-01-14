@@ -2,6 +2,7 @@
 
 #include <ql/graphic/drawable/drawable.hpp>
 
+#include <ql/graphic/start/start.hpp>
 #include <ql/graphic/state/state.hpp>
 #include <ql/graphic/event/event.hpp>
 #include <ql/graphic/init/init.hpp>

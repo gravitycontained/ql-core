@@ -476,6 +476,8 @@ namespace ql
 	{
 		using impl_type = ql::detail::vector_impl_conditional<T, N>;
 
+		using float_type = ql::conditional<ql::if_true<ql::is_same<T, ql::f32>()>, ql::f32, ql::default_type, ql::f64>;
+
 		constexpr vectorN() : impl_type()
 		{
 			this->clear();
@@ -543,13 +545,10 @@ namespace ql
 		constexpr operator sf::Vector2<U>() const
 		{
 			if constexpr (N == 1)
-			{
 				return sf::Vector2<U>(static_cast<U>(this->data[0]), U{0});
-			}
+
 			else
-			{
 				return sf::Vector2<U>(static_cast<U>(this->data[0]), static_cast<U>(this->data[1]));
-			}
 		}
 
 		template <typename U>
@@ -557,14 +556,58 @@ namespace ql
 		{
 			this->x = static_cast<T>(vec.x);
 			this->y = static_cast<T>(vec.y);
+
 			if constexpr (N == 1)
-			{
 				this->x = static_cast<T>(vec.x);
-			}
+
 			else
 			{
 				this->x = static_cast<T>(vec.x);
 				this->y = static_cast<T>(vec.y);
+			}
+			return *this;
+		}
+
+
+		template <typename U>
+		constexpr vectorN(const sf::Vector3<U>& other) : impl_type()
+		{
+			*this = other;
+		}
+
+		template <typename U>
+		constexpr operator sf::Vector3<U>() const
+		{
+			if constexpr (N == 1)
+				return sf::Vector3<U>(static_cast<U>(this->data[0]), U{ 0 }, U{ 0 });
+
+			else if constexpr (N == 2)
+				return sf::Vector3<U>(static_cast<U>(this->data[0]), static_cast<U>(this->data[1]), U{ 0 });
+
+			else
+				return sf::Vector3<U>(static_cast<U>(this->data[0]), static_cast<U>(this->data[1]), static_cast<U>(this->data[2]));
+		}
+
+		template <typename U>
+		constexpr vectorN& operator=(const sf::Vector3<U>& vec)
+		{
+			this->x = static_cast<T>(vec.x);
+			this->y = static_cast<T>(vec.y);
+
+			if constexpr (N == 1)
+				this->x = static_cast<T>(vec.x);
+
+			else if constexpr (N == 2)
+			{
+				this->x = static_cast<T>(vec.x);
+				this->y = static_cast<T>(vec.y);
+			}
+
+			else
+			{
+				this->x = static_cast<T>(vec.x);
+				this->y = static_cast<T>(vec.y);
+				this->z = static_cast<T>(vec.z);
 			}
 			return *this;
 		}
@@ -1365,12 +1408,17 @@ namespace ql
 		{
 			if (std::is_constant_evaluated())
 			{
-				return ql::f64_cast(ql::sqrt(this->dot(*this)));
+				return static_cast<float_type>(ql::sqrt(this->dot(*this)));
 			}
 			else
 			{
-				return ql::f64_cast(std::sqrt(this->dot(*this)));
+				return static_cast<float_type>(std::sqrt(this->dot(*this)));
 			}
+		}
+
+		constexpr auto length_sq() const
+		{
+			return this->dot(*this);
 		}
 
 		constexpr void reduce_length_by(auto reduction)
@@ -1378,10 +1426,10 @@ namespace ql
 			if (this->length() < reduction)
 				this->clear();
 			else
-				*this -= this->normalized() * reduction;
+				*this -= this->normal() * reduction;
 		}
 
-		constexpr vectorN normalized() const
+		constexpr vectorN normal() const
 		{
 			if (this->length() == 0)
 				return vectorN{};
@@ -1415,7 +1463,7 @@ namespace ql
 		constexpr void rotate(ql::f64 delta_angle)
 		requires (N == 2)
 		{
-			this->set_rotation(-this->angle() + delta_angle);
+			this->set_rotation(this->angle() + delta_angle);
 		}
 
 		constexpr void rotate_around(vectorN center, ql::f64 delta_angle)
@@ -1663,6 +1711,13 @@ namespace ql
 			result.y = a.z * b.x - b.z * a.x;
 			result.z = a.x * b.y - b.x * a.y;
 			return result;
+		}
+
+		template <typename T, ql::size N>
+		requires (N == 2)
+		[[nodiscard]] constexpr static auto cross_product(const vectorN<T, N>& a, const vectorN<T, N>& b)
+		{
+			return a.x * b.y - a.y * b.x;
 		}
 
 		template <typename U>
@@ -1937,7 +1992,7 @@ namespace std
 			ql::u64 result = 9613230923329544087ull;
 			for (ql::size i = 0u; i < N; ++i)
 			{
-				result = ql::bit_rotate_right(result, 1) ^ hash(key[i]);
+				result = ql::bit_rotate_right(result, 1) ^ hash(ql::unsigned_cast(key[i]));
 			}
 			return result;
 		}

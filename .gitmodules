@@ -1,0 +1,3 @@
+[submodule "ql/ta"]
+	path = ql/ta
+	url = https://github.com/gravitycontained/ql-ta.git

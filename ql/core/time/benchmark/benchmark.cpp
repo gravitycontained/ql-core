@@ -147,15 +147,15 @@ namespace ql
 					auto p = ql::size_cast(sorted.back().second / i.second.elapsed_f());
 					ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::to_string(
 							sub.first, ": ", ql::string_left_spaced(i.first, length_max + 1), " - ",
-							ql::string_left_spaced(ql::string_precision(7, ql::size_cast(f * 100)), 14),
-							"% time usage : ", i.second.elapsed().string(), " [ ", ql::string_precision(3, p), "x ]"
+							ql::string_left_spaced(ql::string_precision(f * 100, 7), 14),
+							"% time usage : ", i.second.elapsed().string(), " [ ", ql::string_precision(p, 3), "x ]"
 					));
 				}
 				else
 				{
 					ql::println(ql::color::bright_yellow, "core ", ql::color::bright_gray, ":: ", ql::to_string(
 							sub.first, ": ", ql::string_left_spaced(i.first, length_max + 1), " - ",
-							ql::string_left_spaced(ql::string_precision(7, ql::size_cast(f * 100)), 14),
+							ql::string_left_spaced(ql::string_precision(f * 100, 7), 14),
 							"% time usage : ", i.second.elapsed().string()
 					));
 				}

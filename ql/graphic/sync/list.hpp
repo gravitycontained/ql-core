@@ -10,6 +10,7 @@
 namespace ql
 {
 	ql_sync_function(init_before, true);
+	ql_sync_function(post_update, false);
 	ql_sync_function(update_injection, false);
 	ql_sync_function(update_phase_signal_run, false);
 	ql_sync_function(update_phase_signal_detect, false);

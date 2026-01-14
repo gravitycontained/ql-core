@@ -117,7 +117,7 @@ namespace ql
 		}
 	}
 
-	void ql::resources::play_sound(const std::string& name, ql::f32 volume, ql::f32 speed)
+	void ql::resources::play_sound(const std::string& name, ql::f32 volume, ql::f32 speed, ql::vec3 position)
 	{
 		if (!this->find_sound(name))
 		{
@@ -127,6 +127,7 @@ namespace ql
 		this->active_sounds.back().setBuffer(this->sounds[name]);
 		this->active_sounds.back().setVolume(volume);
 		this->active_sounds.back().setPitch(speed);
+		this->active_sounds.back().setPosition(position);
 		this->active_sounds.back().play();
 	}
 
@@ -137,14 +138,10 @@ namespace ql
 		for (auto it = this->active_sounds.begin(); it != this->active_sounds.end(); ++it)
 		{
 			if (it->getStatus() == sf::SoundSource::Status::Stopped)
-			{
 				remove.push_back(it);
-			}
 		}
 		for (auto& i : remove)
-		{
 			this->active_sounds.erase(i);
-		}
 	}
 
 	void ql::resources::add_font(const std::string& name, const std::string& path)
@@ -351,9 +348,9 @@ namespace ql
 
 	ql::resources ql::detail::resources;
 
-	void ql::play_sound(const std::string& name, ql::f32 volume, ql::f32 speed)
+	void ql::play_sound(const std::string& name, ql::f32 volume, ql::f32 speed, ql::vec3 position)
 	{
-		ql::detail::resources.play_sound(name, volume, speed);
+		ql::detail::resources.play_sound(name, volume, speed, position);
 	}
 
 	void ql::update_sounds()

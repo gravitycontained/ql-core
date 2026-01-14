@@ -379,7 +379,7 @@ namespace ql
 			auto c = std::cos(angle);
 			auto s = std::sin(angle);
 
-			auto axis = vec.normalized();
+			auto axis = vec.normal();
 			auto temp = (A{1} - c) * axis;
 
 			matrixN rotate;

@@ -69,7 +69,7 @@ namespace ql
 		void add_state(C& state)
 		{
 			this->states.push_back(std::make_unique<C>(state));
-			this->states.back()->framework = this;
+			this->states.back()->state_manager = this;
 			this->states.back()->call_before_create();
 			this->states.back()->last_dimension = this->dimension;
 			if (this->is_created())
@@ -193,6 +193,7 @@ namespace ql
 		ql::u32 framerate_limit = 144u;
 		ql::u32 style = sf::Style::Default;
 		ql::f64 speed_factor = 1.0;
+		ql::size frame_ctr = 0u;
 		cull_face gl_cull_face = cull_face::back;
 		bool created = false;
 		bool created_gl = false;

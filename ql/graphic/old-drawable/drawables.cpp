@@ -114,36 +114,6 @@ namespace ql
 		return this->vertices.back();
 	}
 
-	std::vector<ql::vertex>::iterator ql::vertex_array::begin()
-	{
-		return this->vertices.begin();
-	}
-
-	std::vector<ql::vertex>::const_iterator ql::vertex_array::begin() const
-	{
-		return this->vertices.begin();
-	}
-
-	std::vector<ql::vertex>::const_iterator ql::vertex_array::cbegin() const
-	{
-		return this->vertices.cbegin();
-	}
-
-	std::vector<ql::vertex>::iterator ql::vertex_array::end()
-	{
-		return this->vertices.end();
-	}
-
-	std::vector<ql::vertex>::const_iterator ql::vertex_array::end() const
-	{
-		return this->vertices.end();
-	}
-
-	std::vector<ql::vertex>::const_iterator ql::vertex_array::cend() const
-	{
-		return this->vertices.cend();
-	}
-
 	void ql::vertex_array::draw(sf::RenderTarget& window, sf::RenderStates states) const
 	{
 		window.draw(
@@ -330,10 +300,8 @@ namespace ql
 
 	void ql::va_rectangle::set_color(ql::rgba color)
 	{
-		for (auto& i : this->va)
-		{
-			i.color = color;
-		}
+		for (ql::size i = 0u; i < this->va.size(); ++i)
+			this->va[i].color = color;
 	}
 
 	void ql::va_rectangle::set_position(ql::vec2 position)
@@ -1284,6 +1252,8 @@ namespace ql
 		this->shape.setRadius(circle.shape.getRadius());
 		this->shape.setFillColor(circle.shape.getFillColor());
 		this->shape.setOrigin(circle.shape.getOrigin());
+		this->shape.setOutlineThickness(circle.shape.getOutlineThickness());
+		this->shape.setOutlineColor(circle.shape.getOutlineColor());
 		return *this;
 	}
 
@@ -1635,6 +1605,17 @@ namespace ql
 	void ql::line::set_b_color(ql::rgba color)
 	{
 		this->vertices[1].color = color;
+	}
+
+	void ql::line::set(ql::straight_line line)
+	{
+		*this = line;
+	}
+
+	void ql::line::set(ql::straight_line line, ql::rgba color)
+	{
+		*this = line;
+		this->set_color(color);
 	}
 
 	ql::vpoint ql::line::get_a() const
@@ -5352,7 +5333,7 @@ namespace ql
 						else if (graph.y_axis_text_percent)
 						{
 							this->y_texts[i].set_string(
-									graph.y_axis_text.string + ql::string_precision(graph.y_axis_text_precision, ql::size_cast(y_position * 100)) +
+									graph.y_axis_text.string + ql::string_precision(y_position * 100, graph.y_axis_text_precision) +
 									"%"
 							);
 						}
@@ -5363,7 +5344,7 @@ namespace ql
 						else
 						{
 							this->y_texts[i].set_string(
-									graph.y_axis_text.string + ql::string_precision(graph.y_axis_text_precision, ql::size_cast(y_position))
+									graph.y_axis_text.string + ql::string_precision(y_position, graph.y_axis_text_precision)
 							);
 						}
 					}
@@ -5376,7 +5357,7 @@ namespace ql
 						else if (graph.y_axis_text_percent)
 						{
 							this->y_texts[i].set_string(
-									ql::string_precision(graph.y_axis_text_precision, ql::size_cast(y_position * 100)) + "%" +
+									ql::string_precision(y_position * 100, graph.y_axis_text_precision) + "%" +
 									graph.y_axis_text.string
 							);
 						}
@@ -5387,7 +5368,7 @@ namespace ql
 						else
 						{
 							this->y_texts[i].set_string(
-									ql::string_precision(graph.y_axis_text_precision, ql::size_cast(y_position)) + graph.y_axis_text.string
+									ql::string_precision(y_position, graph.y_axis_text_precision) + graph.y_axis_text.string
 							);
 						}
 					}

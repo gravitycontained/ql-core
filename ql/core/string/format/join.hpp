@@ -2,7 +2,7 @@
 
 #include <ql/core/definition/definition.hpp>
 #include <ql/core/type/type.hpp>
-#include <ql/core/string/cast/cast.hpp>
+#include <ql/core/string/to-string.hpp>
 
 namespace ql
 {

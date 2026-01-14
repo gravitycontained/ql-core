@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ql/core/definition/definition.hpp>
+#include <ql/core/advanced-type/fundamental/vector.hpp>
 
 #if defined QL_GRAPHIC
 
@@ -26,7 +27,7 @@ namespace ql
 
 	struct resources
 	{
-		QL_SOURCE void play_sound(const std::string& name, ql::f32 volume = 100.0f, ql::f32 speed = 1.0f);
+		QL_SOURCE void play_sound(const std::string& name, ql::f32 volume = 100.0f, ql::f32 speed = 1.0f, ql::vec3 position = {});
 		QL_SOURCE void update_sounds();
 
 		QL_SOURCE void add_font(const std::string& name, const std::string& path);
@@ -78,7 +79,7 @@ namespace ql
 		QL_SOURCE extern ql::resources resources;
 	}
 
-	QL_SOURCE void play_sound(const std::string& name, ql::f32 volume = 100.0f, ql::f32 speed = 1.0f);
+	QL_SOURCE void play_sound(const std::string& name, ql::f32 volume = 100.0f, ql::f32 speed = 1.0f, ql::vec3 position = {});
 	QL_SOURCE void update_sounds();
 
 	QL_SOURCE void add_font(const std::string& name, const std::string& path);
