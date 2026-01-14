@@ -19,8 +19,8 @@ namespace ql
 	template <class T, ql::size N = 0u>
 	constexpr auto is_constructible()
 	{
-		constexpr auto unpack = [&]<qpl::size... Ints>(std::index_sequence<Ints...>)
-		{ return qpl::detail::is_constructible_c<T, Ints...>; };
+		constexpr auto unpack = [&]<ql::size... Ints>(std::index_sequence<Ints...>)
+		{ return ql::detail::is_constructible_c<T, Ints...>; };
 		return unpack(std::make_index_sequence<N>{});
 	}
 
