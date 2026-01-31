@@ -1,6 +1,6 @@
 #include <ql/core/advanced-type/memory/save-state.hpp>
 
-#include <ql/core/encryption/encryption.hpp>
+#include <ql/core/encryption/cipher/cipher.hpp>
 
 #include <ql/core/file-system/file-system.hpp>
 

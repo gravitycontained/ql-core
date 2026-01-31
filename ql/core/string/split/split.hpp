@@ -122,9 +122,8 @@ namespace ql
 		for (ql::u32 i = 0u;; ++i)
 		{
 			if (string.length() <= pos)
-			{
 				return result;
-			}
+
 			auto size = ql::min(string.length() - pos, n);
 
 			std::string s;

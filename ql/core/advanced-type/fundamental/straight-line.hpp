@@ -3,6 +3,7 @@
 #include <ql/core/type/type.hpp>
 #include <ql/core/advanced-type/fundamental/vector.hpp>
 
+#include <algorithm>
 #include <optional>
 
 namespace ql

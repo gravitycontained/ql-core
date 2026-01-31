@@ -2,6 +2,8 @@
 #include <ql/core/time/clock/small-clock/small-clock.hpp>
 #include <ql/core/async/promise.hpp>
 
+#if defined QL_GRAPHIC
+
 namespace ql
 {
 	std::shared_ptr<ql::subject> create_interval(ql::f64 time)
@@ -25,3 +27,5 @@ namespace ql
 		return signal;
 	}
 }
+
+#endif

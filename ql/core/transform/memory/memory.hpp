@@ -5,6 +5,8 @@
 
 #include <ql/core/transform/limit.hpp>
 
+#include <ql/core/type/container/method.hpp>
+
 namespace ql
 {
 	template <typename R, typename T>
