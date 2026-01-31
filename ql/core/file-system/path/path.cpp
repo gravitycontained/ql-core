@@ -282,6 +282,10 @@ namespace ql::filesys
 		file << data;
 		file.close();
 	}
+	void ql::filesys::path::write_data_file(const std::string& data) const
+	{
+		ql::filesys::write_data_file(data, this->to_string());
+	}
 
 	void ql::filesys::path::writeUtf8(const std::string& data) const
 	{

@@ -583,9 +583,7 @@ namespace ql
 			std::ifstream file(path, std::ios::ate | std::ios::binary);
 
 			if (!file.is_open())
-			{
 				throw std::runtime_error(ql::to_string("ql::filesys::read_file: failed to open file \"", path, "\"").c_str());
-			}
 
 			auto file_size = (size_t)file.tellg();
 			std::string buffer;
@@ -686,38 +684,6 @@ namespace ql
 		ql::filesys::path ql::filesys::get_current_location()
 		{
 			return ql::filesys::path::current_path();
-		}
-
-		std::string ql::filesys::file_encrypt(const std::string& path, const std::string& key, ql::aes::mode mode)
-		{
-			return ql::encrypted_keep_size(ql::filesys::read_file(path), key, mode);
-		}
-
-		void ql::filesys::file_encrypt_to(
-				const std::string& source_path,
-				const std::string& dest_path,
-				const std::string& key,
-				ql::aes::mode mode
-		)
-		{
-			auto content = ql::filesys::file_encrypt(source_path, key, mode);
-			ql::filesys::write_data_file(content, dest_path);
-		}
-
-		std::string ql::filesys::file_decrypt(const std::string& path, const std::string& key, ql::aes::mode mode)
-		{
-			return ql::decrypted_keep_size(ql::filesys::read_file(path), key, mode);
-		}
-
-		void ql::filesys::file_decrypt_to(
-				const std::string& source_path,
-				const std::string& dest_path,
-				const std::string& key,
-				ql::aes::mode mode
-		)
-		{
-			auto content = ql::filesys::file_decrypt(source_path, key, mode);
-			ql::filesys::write_data_file(content, dest_path);
 		}
 	}	 // namespace filesys
 

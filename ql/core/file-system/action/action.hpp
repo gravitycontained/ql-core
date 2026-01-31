@@ -1,7 +1,9 @@
 #pragma once
 
 #include <ql/core/definition/definition.hpp>
-#include <ql/core/encryption/encryption.hpp>
+#include <ql/core/transform/memory/memory.hpp>
+#include <ql/core/string/to-string.hpp>
+#include <ql/core/type/type.hpp>
 
 #include <filesystem>
 #include <regex>
@@ -164,22 +166,6 @@ namespace ql
 				file.close();
 			}
 		}
-
-		QL_SOURCE std::string file_encrypt(const std::string& path, const std::string& key, ql::aes::mode mode = ql::aes::mode::_256);
-		QL_SOURCE void file_encrypt_to(
-				const std::string& source_path,
-				const std::string& dest_path,
-				const std::string& key,
-				ql::aes::mode mode = ql::aes::mode::_256
-		);
-		QL_SOURCE std::string file_decrypt(const std::string& path, const std::string& key, ql::aes::mode mode = ql::aes::mode::_256);
-		QL_SOURCE void file_decrypt_to(
-				const std::string& source_path,
-				const std::string& dest_path,
-				const std::string& key,
-				ql::aes::mode mode = ql::aes::mode::_256
-		);
-
 	}	 // namespace filesys
 
 	QL_SOURCE std::string read_file(const std::string& path);

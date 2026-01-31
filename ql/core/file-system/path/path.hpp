@@ -1,7 +1,7 @@
 #pragma once
 
 #include <ql/core/definition/definition.hpp>
-#include <ql/core/encryption/encryption.hpp>
+#include <ql/core/encryption/cipher/cipher.hpp>
 
 #include <ql/core/type/type.hpp>
 #include <filesystem>
@@ -93,6 +93,7 @@ namespace ql::filesys
 		QL_SOURCE ql::filesys::path make_file(std::string file_name) const;
 		QL_SOURCE std::string read() const;
 		QL_SOURCE void write(const std::string& data) const;
+		QL_SOURCE void write_data_file(const std::string& data) const;
 		QL_SOURCE void writeUtf8(const std::string& data) const;
 
 		QL_SOURCE std::filesystem::file_time_type last_write_time() const;
