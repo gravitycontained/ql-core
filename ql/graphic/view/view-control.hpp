@@ -44,7 +44,7 @@ namespace ql
 		bool zoomed = false;
 		bool interactive = true;
 
-		sf::Mouse::Button drag_mouse_button = sf::Mouse::Left;
+		sf::Mouse::Button drag_mouse_button = sf::Mouse::Button::Left;
 
 		view_control_t()
 		{

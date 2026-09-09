@@ -10,17 +10,12 @@ namespace ql
 {
 	struct sprite
 	{
-		sf::Sprite m_sprite;
+		std::unique_ptr<sf::Sprite> m_sprite;
 
 		sprite()
 		{
+			this->m_sprite = std::make_unique<sf::Sprite>();
 		}
-
-		sprite(const ql::sprite& sprite)
-		{
-			*this = sprite;
-		}
-
 		sprite(const sf::Sprite& sprite)
 		{
 			*this = sprite;

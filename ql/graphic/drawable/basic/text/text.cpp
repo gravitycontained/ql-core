@@ -72,7 +72,7 @@ namespace ql
 
 	const sf::Font& ql::text::get_sf_font() const
 	{
-		return *this->m_text.getFont();
+		return this->m_text->getFont();
 	}
 
 	const sf::Glyph& ql::text::get_glyph(ql::wchar_type c) const
@@ -87,7 +87,7 @@ namespace ql
 	ql::hitbox ql::text::get_glyph_hitbox(ql::wchar_type c) const
 	{
 		auto rect = this->get_glyph(c).textureRect;
-		return ql::hitbox({rect.left, rect.top}, {rect.width, rect.height});
+		return ql::hitbox({rect.position.x, rect.position.y}, {rect.size.x, rect.size.y});
 	}
 
 	ql::f32 ql::text::get_character_advance(ql::wchar_type current) const
@@ -117,10 +117,10 @@ namespace ql
 
 				if (w.length() > 1)
 				{
-					auto before_left = this->get_glyph(w[w.length() - 2]).bounds.left;
+					auto before_left = this->get_glyph(w[w.length() - 2]).bounds.position.x;
 					if (std::iswspace(cw))
 					{
-						before_left -= this->get_glyph(cw).bounds.left;
+						before_left -= this->get_glyph(cw).bounds.position.x;
 					}
 					diff += before_left;
 				}
@@ -133,13 +133,13 @@ namespace ql
 
 	ql::f32 ql::text::get_line_spacing_pixels() const
 	{
-		return this->get_sf_font().getLineSpacing(this->get_character_size()) * this->m_text.getLineSpacing();
+		return this->get_sf_font().getLineSpacing(this->get_character_size()) * this->m_text->getLineSpacing();
 	}
 
 	ql::f32 ql::text::get_line_spacing() const
 	{
 		return this->get_line_height();
-		// return this->m_text.getLineSpacing();
+		// return this->m_text->getLineSpacing();
 	}
 
 	ql::f32 ql::text::get_letter_spacing_pixels() const
@@ -175,37 +175,37 @@ namespace ql
 
 	ql::u32 ql::text::get_style() const
 	{
-		return this->m_text.getStyle();
+		return this->m_text->getStyle();
 	}
 
 	ql::u32 ql::text::get_character_size() const
 	{
-		return this->m_text.getCharacterSize();
+		return this->m_text->getCharacterSize();
 	}
 
 	ql::rgba ql::text::get_color() const
 	{
-		return this->m_text.getFillColor();
+		return this->m_text->getFillColor();
 	}
 
 	ql::f32 ql::text::get_outline_thickness() const
 	{
-		return this->m_text.getOutlineThickness();
+		return this->m_text->getOutlineThickness();
 	}
 
 	ql::rgba ql::text::get_outline_color() const
 	{
-		return this->m_text.getOutlineColor();
+		return this->m_text->getOutlineColor();
 	}
 
 	ql::f32 ql::text::get_letter_spacing() const
 	{
-		return this->m_text.getLetterSpacing();
+		return this->m_text->getLetterSpacing();
 	}
 
 	ql::vec2 ql::text::get_position() const
 	{
-		return this->m_text.getPosition();
+		return this->m_text->getPosition();
 	}
 
 	ql::vec2 ql::text::get_center() const
@@ -215,23 +215,23 @@ namespace ql
 
 	std::string ql::text::get_string() const
 	{
-		return this->m_text.getString().toAnsiString();
+		return this->m_text->getString().toAnsiString();
 	}
 
 	std::wstring ql::text::get_wstring() const
 	{
-		return this->m_text.getString().toWideString();
+		return this->m_text->getString().toWideString();
 	}
 
 	sf::String ql::text::get_sfstring() const
 	{
-		return this->m_text.getString();
+		return this->m_text->getString();
 	}
 
 	void ql::text::set_font(const sf::Font& font)
 	{
 		this->m_font = font.getInfo().family;
-		this->m_text.setFont(font);
+		this->m_text->setFont(font);
 	}
 
 	void ql::text::set_font(const std::string& font_name)
@@ -241,7 +241,7 @@ namespace ql
 			return;
 		if (ql::find_font(font_name))
 		{
-			this->m_text.setFont(ql::get_font(font_name));
+			this->m_text->setFont(ql::get_font(font_name));
 		}
 		else
 		{
@@ -251,47 +251,47 @@ namespace ql
 
 	void ql::text::set_style(ql::u32 style)
 	{
-		this->m_text.setStyle(style);
+		this->m_text->setStyle(style);
 	}
 
 	void ql::text::set_character_size(ql::u32 character_size)
 	{
-		this->m_text.setCharacterSize(character_size);
+		this->m_text->setCharacterSize(character_size);
 	}
 
 	void ql::text::set_color(ql::rgba color)
 	{
-		this->m_text.setFillColor(color);
+		this->m_text->setFillColor(color);
 	}
 
 	void ql::text::set_outline_thickness(ql::f32 outline_thickness)
 	{
-		this->m_text.setOutlineThickness(outline_thickness);
+		this->m_text->setOutlineThickness(outline_thickness);
 	}
 
 	void ql::text::set_outline_color(ql::rgba color)
 	{
-		this->m_text.setOutlineColor(color);
+		this->m_text->setOutlineColor(color);
 	}
 
 	void ql::text::set_rotation(ql::f32 angle)
 	{
-		this->m_text.setRotation(angle);
+		this->m_text->setRotation(angle);
 	}
 
 	void ql::text::set_letter_spacing(ql::f32 spacing)
 	{
-		this->m_text.setLetterSpacing(spacing);
+		this->m_text->setLetterSpacing(spacing);
 	}
 
 	void ql::text::set_line_spacing(ql::f32 spacing)
 	{
-		this->m_text.setLineSpacing(spacing);
+		this->m_text->setLineSpacing(spacing);
 	}
 
 	void ql::text::set_position(ql::vec2 position)
 	{
-		this->m_text.setPosition(position);
+		this->m_text->setPosition(position);
 	}
 
 	void ql::text::set_center(ql::vec2 position)
@@ -302,61 +302,61 @@ namespace ql
 
 	void ql::text::set_string(const std::string& string)
 	{
-		this->m_text.setString(string);
+		this->m_text->setString(string);
 	}
 
 	void ql::text::set_string(const std::wstring& string)
 	{
-		this->m_text.setString(string);
+		this->m_text->setString(string);
 	}
 
 	void ql::text::set_string(const sf::String& string)
 	{
-		this->m_text.setString(string);
+		this->m_text->setString(string);
 	}
 
 	void ql::text::centerize()
 	{
-		auto pos = this->m_text.getPosition();
-		sf::FloatRect textRect = this->m_text.getLocalBounds();
-		this->m_text.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
-		this->m_text.setPosition(pos);
+		auto pos = this->m_text->getPosition();
+		sf::FloatRect textRect = this->m_text->getLocalBounds();
+		this->m_text->setOrigin({ textRect.position.x + textRect.size.x / 2.0f, textRect.position.y + textRect.size.y / 2.0f });
+		this->m_text->setPosition(pos);
 	}
 
 	void ql::text::centerize_x()
 	{
-		auto pos = this->m_text.getPosition();
-		sf::FloatRect textRect = this->m_text.getLocalBounds();
-		this->m_text.setOrigin(textRect.left + textRect.width / 2.0f, 0.0f);
-		this->m_text.setPosition(pos);
+		auto pos = this->m_text->getPosition();
+		sf::FloatRect textRect = this->m_text->getLocalBounds();
+		this->m_text->setOrigin({ textRect.position.x + textRect.size.x / 2.0f, 0.0f });
+		this->m_text->setPosition(pos);
 	}
 
 	void ql::text::centerize_y()
 	{
-		auto pos = this->m_text.getPosition();
-		sf::FloatRect textRect = this->m_text.getLocalBounds();
-		this->m_text.setOrigin(0.0f, textRect.top + textRect.height / 2.0f);
-		this->m_text.setPosition(pos);
+		auto pos = this->m_text->getPosition();
+		sf::FloatRect textRect = this->m_text->getLocalBounds();
+		this->m_text->setOrigin({ 0.0f, textRect.position.y + textRect.size.y / 2.0f });
+		this->m_text->setPosition(pos);
 	}
 
 	void ql::text::move(ql::vec2 delta)
 	{
-		this->m_text.move(delta);
+		this->m_text->move(delta);
 	}
 
 	ql::vec2 ql::text::find_character_position(ql::size index) const
 	{
-		return this->m_text.findCharacterPos(index);
+		return this->m_text->findCharacterPos(index);
 	}
 
 	ql::f32 ql::text::get_underline_baseline() const
 	{
-		return this->m_text.getFont()->getUnderlinePosition(this->get_character_size());
+		return this->m_text->getFont()->getUnderlinePosition(this->get_character_size());
 	}
 
 	ql::f32 ql::text::get_underline_thickness() const
 	{
-		return this->m_text.getFont()->getUnderlineThickness(this->get_character_size());
+		return this->m_text->getFont()->getUnderlineThickness(this->get_character_size());
 	}
 
 	ql::f32 ql::text::get_character_size_plus_baseline() const
@@ -415,10 +415,10 @@ namespace ql
 					continue;
 			}
 
-			auto left = glyph.bounds.left;
-			auto top = glyph.bounds.top;
-			auto right = glyph.bounds.left + glyph.bounds.width;
-			auto bottom = glyph.bounds.top + glyph.bounds.height;
+			auto left = glyph.bounds.position.x;
+			auto top = glyph.bounds.position.y;
+			auto right = left + glyph.bounds.size.x;
+			auto bottom = top + glyph.bounds.size.y;
 
 			left = x + left - this->get_italic_shear() * bottom;
 			right = x + right - this->get_italic_shear() * top;
@@ -495,10 +495,10 @@ namespace ql
 					break;
 			}
 
-			auto left = glyph.bounds.left;
-			auto top = glyph.bounds.top;
-			auto right = glyph.bounds.left + glyph.bounds.width;
-			auto bottom = glyph.bounds.top + glyph.bounds.height;
+			auto left = glyph.bounds.position.x;
+			auto top = glyph.bounds.position.y;
+			auto right = left + glyph.bounds.size.x;
+			auto bottom = top + glyph.bounds.size.y;
 
 			left = x + left - this->get_italic_shear() * bottom;
 			right = x + right - this->get_italic_shear() * top;
@@ -531,10 +531,10 @@ namespace ql
 		auto x = this->find_character_position(0).x;
 		auto y = this->get_character_size();
 
-		auto left = glyph.bounds.left;
-		auto top = glyph.bounds.top;
-		auto right = glyph.bounds.left + glyph.bounds.width;
-		auto bottom = glyph.bounds.top + glyph.bounds.height;
+		auto left = glyph.bounds.position.x;
+		auto top = glyph.bounds.position.y;
+		auto right = left + glyph.bounds.size.x;
+		auto bottom = top + glyph.bounds.size.y;
 
 		left = x + left - this->get_italic_shear() * bottom;
 		right = x + right - this->get_italic_shear() * top;
@@ -547,13 +547,13 @@ namespace ql
 		auto glyph = this->get_glyph(L'A');
 
 		auto y = this->get_character_size();
-		auto top = glyph.bounds.top;
+		auto top = glyph.bounds.position.y;
 		auto a_top = this->get_position().y + y + top;
 
 		glyph = this->get_glyph(L'g');
 
 		y = this->get_character_size();
-		auto bottom = glyph.bounds.top + glyph.bounds.height;
+		auto bottom = glyph.bounds.position.y + glyph.bounds.size.y;
 		auto g_bottom = this->get_position().y + y + bottom;
 
 		return (g_bottom - a_top);
@@ -564,13 +564,13 @@ namespace ql
 		auto glyph = this->get_glyph(L'x');
 
 		auto y = this->get_character_size();
-		auto bottom = glyph.bounds.top + glyph.bounds.height;
+		auto bottom = glyph.bounds.position.y + glyph.bounds.size.y;
 		auto x_bottom = this->get_position().y + y + bottom;
 
 		glyph = this->get_glyph(L'g');
 
 		y = this->get_character_size();
-		bottom = glyph.bounds.top + glyph.bounds.height;
+		bottom = glyph.bounds.position.y + glyph.bounds.size.y;
 		auto g_bottom = this->get_position().y + y + bottom;
 
 		return g_bottom - x_bottom;
@@ -580,10 +580,10 @@ namespace ql
 	{
 		auto glyph = this->get_glyph(character);
 
-		auto left = glyph.bounds.left;
-		auto top = glyph.bounds.top;
-		auto right = glyph.bounds.left + glyph.bounds.width;
-		auto bottom = glyph.bounds.top + glyph.bounds.height;
+		auto left = glyph.bounds.position.x;
+		auto top = glyph.bounds.position.y;
+		auto right = glyph.bounds.position.x + glyph.bounds.size.x;
+		auto bottom = glyph.bounds.position.y + glyph.bounds.size.y;
 
 		left = left - this->get_italic_shear() * bottom;
 		right = right - this->get_italic_shear() * top;
@@ -610,16 +610,16 @@ namespace ql
 	ql::hitbox ql::text::get_visible_hitbox(bool ignore_outline) const
 	{
 		ql::hitbox rectangle;
-		auto local_bounds = this->m_text.getLocalBounds();
-		auto global_bounds = this->m_text.getGlobalBounds();
+		auto local_bounds = this->m_text->getLocalBounds();
+		auto global_bounds = this->m_text->getGlobalBounds();
 
-		rectangle.set_position({global_bounds.left, global_bounds.top});
-		rectangle.set_dimension({local_bounds.width, local_bounds.height});
+		rectangle.set_position({global_bounds.position.x, global_bounds.position.y});
+		rectangle.set_dimension({local_bounds.size.x, local_bounds.size.y});
 
 		if (ignore_outline)
 		{
-			rectangle.position -= this->m_text.getOutlineThickness();
-			rectangle.dimension -= this->m_text.getOutlineThickness() * 2;
+			rectangle.position -= this->m_text->getOutlineThickness();
+			rectangle.dimension -= this->m_text->getOutlineThickness() * 2;
 		}
 		return rectangle;
 	}
@@ -627,41 +627,41 @@ namespace ql
 	ql::hitbox ql::text::get_standard_hitbox() const
 	{
 		ql::hitbox rectangle;
-		auto local_bounds = this->m_text.getLocalBounds();
+		auto local_bounds = this->m_text->getLocalBounds();
 
-		rectangle.set_position(this->m_text.getPosition());
-		rectangle.set_dimension({local_bounds.width, local_bounds.height});
+		rectangle.set_position(this->m_text->getPosition());
+		rectangle.set_dimension({local_bounds.size.x, local_bounds.size.y});
 
 		return rectangle;
 	}
 
 	ql::vec2 ql::text::get_offset() const
 	{
-		auto global_bounds = this->m_text.getGlobalBounds();
-		return ql::vec(global_bounds.left, global_bounds.top) - this->get_position();
+		auto global_bounds = this->m_text->getGlobalBounds();
+		return ql::vec(global_bounds.position.x, global_bounds.position.y) - this->get_position();
 	}
 
 	ql::size ql::text::size() const
 	{
-		return this->m_text.getString().getSize();
+		return this->m_text->getString().getSize();
 	}
 
 	std::string ql::text::string() const
 	{
-		return this->m_text.getString().toAnsiString();
+		return this->m_text->getString().toAnsiString();
 	}
 
 	void ql::text::clear()
 	{
 		sf::String s = L"";
-		this->m_text.setString(s);
+		this->m_text->setString(s);
 	}
 
 	ql::text& ql::text::operator<<(const std::string& string)
 	{
 		sf::String s = this->get_sfstring();
 		s += string;
-		this->m_text.setString(s);
+		this->m_text->setString(s);
 		return *this;
 	}
 
@@ -669,7 +669,7 @@ namespace ql
 	{
 		sf::String s = this->get_sfstring();
 		s += string;
-		this->m_text.setString(s);
+		this->m_text->setString(s);
 		return *this;
 	}
 
@@ -677,7 +677,7 @@ namespace ql
 	{
 		sf::String s = this->get_sfstring();
 		s += string;
-		this->m_text.setString(s);
+		this->m_text->setString(s);
 		return *this;
 	}
 
@@ -698,7 +698,7 @@ namespace ql
 
 	void ql::text::draw(sf::RenderTarget& window, sf::RenderStates states) const
 	{
-		window.draw(this->m_text, states);
+		window.draw(*this->m_text, states);
 	}
 
 	ql::f32 ql::text::get_letter_kerning(ql::wchar_type c) const
@@ -730,12 +730,12 @@ namespace ql
 	{
 		const auto& glyph =
 				this->get_sf_font().getGlyph(c, this->get_character_size(), this->is_bold(), this->get_outline_thickness());
-		return glyph.bounds.width;
+		return glyph.bounds.size.x;
 	}
 
 	void ql::text::set_scale(ql::vec2 scale)
 	{
-		this->m_text.setScale(scale);
+		this->m_text->setScale(scale);
 	}
 }	 // namespace ql
 
