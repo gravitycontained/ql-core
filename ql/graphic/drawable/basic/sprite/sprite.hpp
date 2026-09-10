@@ -10,12 +10,17 @@ namespace ql
 {
 	struct sprite
 	{
-		std::unique_ptr<sf::Sprite> m_sprite;
+		sf::Sprite m_sprite;
 
 		sprite()
 		{
-			this->m_sprite = std::make_unique<sf::Sprite>();
 		}
+
+		sprite(const ql::sprite& sprite)
+		{
+			*this = sprite;
+		}
+
 		sprite(const sf::Sprite& sprite)
 		{
 			*this = sprite;
@@ -59,6 +64,6 @@ namespace ql
 		QL_SOURCE void draw(sf::RenderTarget& window, sf::RenderStates states = sf::RenderStates::Default) const;
 	};
 
-}
+}	 // namespace ql
 
 #endif

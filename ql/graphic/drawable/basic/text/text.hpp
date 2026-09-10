@@ -45,9 +45,12 @@ namespace ql
 	{
 		ql::text()
 		{
-			this->m_text = std::make_unique<sf::Text>();
 		}
 
+		ql::text(const ql::vtext& other)
+		{
+			*this = other;
+		}
 
 		QL_SOURCE const sf::Font& get_sf_font() const;
 		QL_SOURCE const sf::Glyph& get_glyph(ql::wchar_type c) const;
@@ -136,8 +139,8 @@ namespace ql
 		QL_SOURCE void set_scale(ql::vec2 scale);
 
 		std::string m_font;
-		std::unique_ptr<sf::Text> m_text;
+		sf::Text m_text;
 	};
-}
+}	 // namespace ql
 
 #endif
