@@ -9,6 +9,10 @@
 
 #include <ql/core/transform/round.hpp>
 
+#if defined QL_GRAPHIC
+#include <SFML/Graphics.hpp>
+#endif
+
 namespace ql
 {
 	namespace detail
@@ -357,26 +361,26 @@ namespace ql
 
 			if constexpr (N == 1)
 			{
-				return sf::Color(static_cast<sf::Uint8>(std::round(this->r * delta)), 0, 0);
+				return sf::Color(static_cast<ql::u8>(std::round(this->r * delta)), 0, 0);
 			}
 			else if constexpr (N == 2)
 			{
 				return sf::Color(
-						static_cast<sf::Uint8>(std::round(this->r * delta)), static_cast<sf::Uint8>(std::round(this->g * delta)), 0
+						static_cast<ql::u8>(std::round(this->r * delta)), static_cast<ql::u8>(std::round(this->g * delta)), 0
 				);
 			}
 			else if constexpr (N == 3)
 			{
 				return sf::Color(
-						static_cast<sf::Uint8>(std::round(this->r * delta)), static_cast<sf::Uint8>(std::round(this->g * delta)),
-						static_cast<sf::Uint8>(std::round(this->b * delta))
+						static_cast<ql::u8>(std::round(this->r * delta)), static_cast<ql::u8>(std::round(this->g * delta)),
+						static_cast<ql::u8>(std::round(this->b * delta))
 				);
 			}
 			else
 			{
 				return sf::Color(
-						static_cast<sf::Uint8>(std::round(this->r * delta)), static_cast<sf::Uint8>(std::round(this->g * delta)),
-						static_cast<sf::Uint8>(std::round(this->b * delta)), static_cast<sf::Uint8>(std::round(this->a * delta))
+						static_cast<ql::u8>(std::round(this->r * delta)), static_cast<ql::u8>(std::round(this->g * delta)),
+						static_cast<ql::u8>(std::round(this->b * delta)), static_cast<ql::u8>(std::round(this->a * delta))
 				);
 			}
 		}

@@ -2543,7 +2543,7 @@ namespace ql
 		this->chunks.resize(chunk_dim);
 		for (auto& chunk : this->chunks)
 		{
-			chunk.setPrimitiveType(sf::Quads);
+			chunk.setPrimitiveType(sf::PrimitiveType::Quads);
 			chunk.resize(this->max_chunk_size.y * this->max_chunk_size.x * 4);
 		}
 
@@ -2757,7 +2757,7 @@ namespace ql
 		this->chunks.resize(chunk_dim);
 		for (auto& chunk : this->chunks)
 		{
-			chunk.setPrimitiveType(sf::Quads);
+			chunk.setPrimitiveType(sf::PrimitiveType::Quads);
 			chunk.resize(this->max_chunk_size.y * this->max_chunk_size.x * 4);
 		}
 
@@ -2939,7 +2939,7 @@ namespace ql
 		this->chunks.resize(chunk_dim);
 		for (auto& chunk : this->chunks)
 		{
-			chunk.setPrimitiveType(sf::Quads);
+			chunk.setPrimitiveType(sf::PrimitiveType::Quads);
 			chunk.resize(this->max_chunk_size.y * this->max_chunk_size.x * 4);
 		}
 
@@ -3054,7 +3054,7 @@ namespace ql
 		this->chunks.resize(chunk_dim);
 		for (auto& chunk : this->chunks)
 		{
-			chunk.setPrimitiveType(sf::Quads);
+			chunk.setPrimitiveType(sf::PrimitiveType::Quads);
 		}
 
 		if (color == ql::rgba::white())
@@ -3291,7 +3291,7 @@ namespace ql
 		this->chunks.resize(chunk_dim);
 		for (auto& chunk : this->chunks)
 		{
-			chunk.setPrimitiveType(sf::Quads);
+			chunk.setPrimitiveType(sf::PrimitiveType::Quads);
 		}
 
 		auto diagonal = std::sqrt(std::pow(this->texture_tile_dimension.x, 2) + std::pow(this->texture_tile_dimension.y, 2));
@@ -3430,7 +3430,7 @@ namespace ql
 		this->chunks.resize(chunk_dim);
 		for (auto& chunk : this->chunks)
 		{
-			chunk.setPrimitiveType(sf::Quads);
+			chunk.setPrimitiveType(sf::PrimitiveType::Quads);
 		}
 
 		auto texture_row_tile_count = texture_ptr->getSize().x / this->texture_tile_dimension.x;

@@ -1861,7 +1861,7 @@ namespace ql
 			this->chunks.resize(chunk_dim);
 			for (auto& chunk : this->chunks)
 			{
-				chunk.setPrimitiveType(sf::Quads);
+				chunk.setPrimitiveType(sf::PrimitiveType::Quads);
 			}
 
 			auto texture_row_tile_count = texture_ptr->getSize().x / this->texture_tile_dimension.x;
@@ -2019,7 +2019,7 @@ namespace ql
 			}
 
 			this->vertices.clear();
-			this->vertices.set_primitive_type(sf::Quads);
+			this->vertices.set_primitive_type(sf::PrimitiveType::Triangles);
 			this->vertices.resize(indices.size() * 4);
 
 			auto texture_row_tile_count = this->texture_ptr->getSize().x / this->texture_tile_dimension.x;
@@ -2058,7 +2058,7 @@ namespace ql
 			ql::vec2 dimf = (dimension) / (this->scale * this->texture_tile_dimension);
 
 			this->vertices.clear();
-			this->vertices.set_primitive_type(sf::Quads);
+			this->vertices.set_primitive_type(sf::PrimitiveType::Triangles);
 			this->vertices.resize(dim.x * dim.y * 4);
 
 			auto texture_row_tile_count = this->texture_ptr->getSize().x / this->texture_tile_dimension.x;
@@ -2123,7 +2123,7 @@ namespace ql
 			}
 
 			this->vertices.clear();
-			this->vertices.set_primitive_type(sf::Quads);
+			this->vertices.set_primitive_type(sf::PrimitiveType::Quads);
 			this->vertices.resize(indices.size() * 4);
 
 			auto texture_row_tile_count = this->texture_ptr->getSize().x / this->texture_tile_dimension.x;
@@ -2171,7 +2171,7 @@ namespace ql
 			}
 
 			this->vertices.clear();
-			this->vertices.set_primitive_type(sf::Quads);
+			this->vertices.set_primitive_type(sf::PrimitiveType::Quads);
 			this->vertices.resize(indices.size() * 4);
 
 			auto texture_row_tile_count = this->texture_ptr->getSize().x / this->texture_tile_dimension.x;
@@ -2212,7 +2212,7 @@ namespace ql
 			}
 
 			this->vertices.clear();
-			this->vertices.set_primitive_type(sf::Quads);
+			this->vertices.set_primitive_type(sf::PrimitiveType::Quads);
 			this->vertices.resize(indices_with_rotation.size() * 4);
 
 			auto texture_row_tile_count = this->texture_ptr->getSize().x / this->texture_tile_dimension.x;

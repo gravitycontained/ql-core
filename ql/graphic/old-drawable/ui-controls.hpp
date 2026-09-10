@@ -1150,7 +1150,7 @@ namespace ql
 		ql::f32 knob_outline_thickness = 0.0f;
 		ql::rgba knob_outline_color = ql::rgba::unset();
 
-		sf::Keyboard::Key smooth_input_key = sf::Keyboard::LShift;
+		sf::Keyboard::Key smooth_input_key = sf::Keyboard::Key::LShift;
 		ql::f64 smooth_input_multiply = 0.1;
 
 		ql::f32 click_knob_pos_x = 0.0f;
