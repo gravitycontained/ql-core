@@ -404,7 +404,7 @@ namespace ql
 		this->view_rotation.y = std::min(this->view_rotation.y, ql::pi_32 / 2 - 0.01f);
 	}
 
-#if defined ql_INTERN_SFML_USE
+#if defined QL_GRAPHIC
 
 	void ql::camera::update(const ql::event& event)
 	{
