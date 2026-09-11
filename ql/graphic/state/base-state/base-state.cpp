@@ -4,6 +4,10 @@
 
 #include <ql/graphic/resources/resources.hpp>
 
+#ifdef QL_GLEW
+#include <GL/glew.h>
+#endif
+
 namespace ql
 {
 	void ql::base_state::init_before()
@@ -15,8 +19,8 @@ namespace ql
 		if (this->use_gl)
 		{
 			auto c = ql::frgba(this->clear_color);
-			qgl::gl::clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			qgl::gl::clear_color(c.r, c.g, c.b, c.a);
+			glClearColor(c.r, c.g, c.b, c.a);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		}
 		else
 		{

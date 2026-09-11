@@ -6,8 +6,7 @@
 #include <ql/core/advanced-type/signal/signal.hpp>
 
 #if defined QL_GLEW
-#include <ql/QGL/glew.hpp>
-#include <ql/QGL/shader.hpp>
+#include <GL/glew.h>
 #endif
 
 namespace ql
@@ -292,39 +291,43 @@ namespace ql
 			return;
 		}
 		this->created_gl = true;
-		qgl::gl::enable(GL_DEPTH_TEST);
-		qgl::gl::enable(GL_CULL_FACE);
+
+		// Note: glewExperimental should be set BEFORE calling glewInit()
+		// if you are initializing GLEW right after setting up the OpenGL context.
+		glewExperimental = GL_TRUE;
+
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_CULL_FACE);
 
 		switch (this->gl_cull_face)
 		{
 			case cull_face::front:
-				qgl::gl::cull_face(GL_FRONT);
+				glCullFace(GL_FRONT);
 				break;
 			case cull_face::back:
-				qgl::gl::cull_face(GL_BACK);
+				glCullFace(GL_BACK);
 				break;
 			case cull_face::front_and_back:
-				qgl::gl::cull_face(GL_FRONT_AND_BACK);
+				glCullFace(GL_FRONT_AND_BACK);
 				break;
 		};
 
-		qgl::gl::front_face(GL_CW);
-		qgl::gl::enable_glew_experimental();
+		glFrontFace(GL_CW);
 
 		this->resize_gl();
 	}
 
 	void state_manager::destroy_gl()
 	{
-		for (auto& shader : qgl::shaders)
-		{
-			shader.second.destroy();
-		}
+		//for (auto& shader : qgl::shaders)
+		//{
+		//	shader.second.destroy();
+		//}
 	}
 
 	void state_manager::resize_gl()
 	{
-		qgl::gl::viewport(0, 0, this->dimension.x, this->dimension.y);
+		glViewport(0, 0, static_cast<GLsizei>(this->dimension.x), static_cast<GLsizei>(this->dimension.y));
 	}
 #endif
 	void state_manager::enable_vsync()
